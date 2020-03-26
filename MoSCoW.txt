@@ -1,0 +1,22 @@
+Proposal: Our game is a Galaga-like game in which a player contols a spaceship and shoots at enemies that are also shooting at the player.
+
+Must Have:
+- Player-controllable ship that moves left and right and can shoot bullets
+- Enemies that appear from the top of the screen and can be shot by the player’s bullets and can also shoot the player and take their lives away
+- Win condition: wiping out all enemies of level
+- Lose condition: losing all lives
+
+Should Have:
+- Life counter in bottom left
+- Stats up top (1UP, High Score, 2UP)
+- Distinct enemy patterns (e.g. one ship spins clockwise before approaching its position) (Karina’s extension)
+
+Could Have:
+- Animated sprites for blown up ships
+- Scrolling background (or static)
+- Power-ups for different kinds of blasters
+- Multiplayer
+
+Won’t Have:
+- Ship abduction mechanics: in galaga, your ship can be captured and used against you, but then can be captured back as a second wingman fighter.
+- Enemies are more aggressive as the levels progress (but can grow in quantity).
