@@ -1,0 +1,29 @@
+-- Who worked on this project?
+
+
+
+-- How many hours did it take you to complete this project? (answer for each milestone)
+
+
+
+-- Did you implement any extentions? If so, which ones and how can they be tried out? Who implemented each?
+
+
+
+-- Did you use any code or resources from previous assignments? If so, list below.
+
+
+
+-- Did you use any external resources? If so, cite them below.
+
+
+
+-- Did you collaborate with any other students/TAs/Professors? If so, list below.
+
+
+
+-- (Optional) What was your favorite part of the project?
+
+
+
+-- (Optional) How would you improve the project?
