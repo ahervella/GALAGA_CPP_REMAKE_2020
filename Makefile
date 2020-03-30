@@ -31,12 +31,12 @@ LDFLAGS:=$(LDFLAGS)
 ## the following should not need to change
 
 ## generic options
-CXXFLAGS:=$(CXXFLAGS) -std=c++11 -Wall -Werror -pedantic-errors -Isrc $(EXTERN_CXXFLAGS)
+CXXFLAGS:=$(CXXFLAGS) -std=c++11 -Wall -Werror -pedantic-errors -Isrc/platformer -Isrc/base  $(EXTERN_CXXFLAGS)
 LDFLAGS:=$(LDFLAGS) -std=c++11
 
 ## platform-specific options
 ifeq ($(OS),Windows_NT)
-	CXXFLAGS:=$(CXXFLAGS) -I/usr/include/SDL2
+	CXXFLAGS:=$(CXXFLAGS) -I/usr/src/SDL2
 	LDFLAGS:=$(LDFLAGS) -L/usr/lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf
 	DOXYGEN=doxygen
 else ifeq ($(shell sh -c 'uname'),Darwin)
