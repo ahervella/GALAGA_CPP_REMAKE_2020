@@ -288,6 +288,8 @@ void SDLGraphicsProgram::resetToLevel(){
 
     BreakoutLevels[levelCount].resetLevel();
 
+    BreakoutLevels[levelCount].constructLevel(getSDLRenderer());
+
     ball.resetBall();
     scoreText.setText(0);
     //BRICK_GROUP_X_POS = (SCREEN_WIDTH - BRICK_WIDTHS * BRICK_COLUMNS) / 2;
@@ -467,6 +469,9 @@ void SDLGraphicsProgram::update() {
 
 // Update OpenGL
 void SDLGraphicsProgram::updateBreakout() {
+
+    //std::cout<<"breakout levels  "<<BreakoutLevels.size()<<"  "<<BreakoutLevels[levelCount].levelObjs.size()<<std::endl;
+
     //render background
     SDL_SetRenderDrawColor(gRenderer, 0x22, 0x22, 0x22, 0xFF);
     SDL_RenderClear(gRenderer);
@@ -602,6 +607,7 @@ void SDLGraphicsProgram::render() {
 void SDLGraphicsProgram::renderBreakout() {
 
     BreakoutLevels[levelCount].render(getSDLRenderer());
+    //std::cout<<"breakout levels  "<<BreakoutLevels.size()<<"  "<<BreakoutLevels[levelCount].levelObjs.size()<<std::endl;
 
     ball.render(getSDLRenderer());
     paddle.render(getSDLRenderer());
@@ -670,9 +676,7 @@ void SDLGraphicsProgram::renderEditor() {
         //render current level
         switch(gc){
             case -1:
-                std::cout<<"woeeee1"<<std::endl;
                 edt_levels_breakout[edt_currLevelIndex]->render(getSDLRenderer());
-                std::cout<<"woeeee2"<<std::endl;
                 break;
             case -2:
                 edt_levels_platformer[edt_currLevelIndex]->render(getSDLRenderer());
@@ -682,9 +686,8 @@ void SDLGraphicsProgram::renderEditor() {
                 break;
         }
 
-
+        std::cout<<"blahahahahhaaha"<<std::endl;
         edt_cursor.render(getSDLRenderer());
-        std::cout<<"woeeee3"<<std::endl;
     }
 //
 
@@ -721,6 +724,11 @@ void SDLGraphicsProgram::loop() {
 //Loops forever!
 void SDLGraphicsProgram::loopBreakout() {
 
+    //set alpha channel on
+    SDL_SetRenderDrawBlendMode(getSDLRenderer(), SDL_BLENDMODE_BLEND);
+
+
+    BreakoutLevels[levelCount].constructLevel(getSDLRenderer());
     // Main loop flag
     // If this is quit = 'true' then the program terminates.
     bool quit = false;
@@ -1044,7 +1052,7 @@ void SDLGraphicsProgram::loopEditor() {
                                     -1,
                                     {0, 0, 250, 100},
                                     {255, 0, 0, 255},
-                                    Constants::Breakout::TexturePath::CLEAR,
+                                    Constants::Platformer::TexturePath::CLEAR,
                                     gRenderer);
             break;
         case -2:
@@ -1055,7 +1063,7 @@ void SDLGraphicsProgram::loopEditor() {
                                     -1,
                                     {0, 0, 250, 100},
                                     {255, 0, 0, 255},
-                                    Constants::Platformer::TexturePath::CLEAR,
+                                    Constants::Breakout::TexturePath::CLEAR,
                                     gRenderer);
             break;
         case -3:
@@ -1346,7 +1354,6 @@ void SDLGraphicsProgram::loopEditor() {
 
         // Update our scene
         update();
-        std::cout<<"woeeee"<<std::endl;
 
         // Render
         render();
