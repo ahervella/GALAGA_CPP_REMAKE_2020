@@ -1,0 +1,7 @@
+SCORE Puntos: 
+LIVES Vidas: 
+WIN Ganaste! Pulse el botón 'Espacio' para seguir al siguiente nivel...
+DONE Se han acavados los niveles!
+LOSE Juego terminado!
+START Pulse el botón 'Espacio' para comenzar!
+LANG_MENU Utilice la tecla numérica para eligir su idioma!

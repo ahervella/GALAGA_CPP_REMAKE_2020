@@ -1,0 +1,7 @@
+SCORE Score: 
+LIVES Lives Left: 
+WIN You won! Press Space for next Level...
+DONE All levels done!
+LOSE Game Over!
+START Press 'Space' to start!
+LANG_MENU Use the number keys to select language!
