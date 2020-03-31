@@ -1,25 +1,41 @@
 -- Who worked on this project?
-
+Michael Reveliotis, Alejandro Hervella, Karina Sinha
 
 
 -- How many hours did it take you to complete this project? (answer for each milestone)
-
+Milestone 1: 5 hours (and counting...)
 
 
 -- Did you implement any extentions? If so, which ones and how can they be tried out? Who implemented each?
-
+Milestone 1: Not yet
 
 
 -- Did you use any code or resources from previous assignments? If so, list below.
-
+Breakout and Platformer projects (Michael and Alejandro's, pretty much all the code)
 
 
 -- Did you use any external resources? If so, cite them below.
+Breakout:
+	Breakout Assets from https://assetstore.unity.com/packages/templates/packs/2d-breakout-example-project-107757#content
+	Lazy Foo Sound Effects and Music Tutorial: https://lazyfoo.net/tutorials/SDL/21_sound_effects_and_music/index.php
+	Looking through directory for files: http://www.cplusplus.com/forum/beginner/10292/
+	ifstream reading characters: http://www.cplusplus.com/reference/fstream/ifstream/open/
+	string to int: https://www.techiedelight.com/convert-string-to-int-cpp/
+	
+Platformer:
+	opengameart.org for the brick and player sprites!
+		- awesomepossum and supahpossum: https://opengameart.org/content/the-awesome-possum-ultimate-smash-friends
+		- Droid from Android: https://opengameart.org/content/droid-the-android-mascot
+		- Block tile: https://opengameart.org/content/droid-the-android-mascot
+		- Collectible Coin: https://www.pngwave.com/png-clip-art-byvny
 
+	freesound.org for SFX and music!
+		- Background music ("Platform Game Theme Loop 3"): https://freesound.org/people/Mrthenoronha/sounds/476547/
+		- Jump sound effect ("2DCharacter_Jump01.flac"): https://freesound.org/people/corpocracy/sounds/403369/
 
 
 -- Did you collaborate with any other students/TAs/Professors? If so, list below.
-
+N/A
 
 
 -- (Optional) What was your favorite part of the project?
