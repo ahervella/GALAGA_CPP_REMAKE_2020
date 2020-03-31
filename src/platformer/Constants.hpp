@@ -21,8 +21,8 @@ namespace Constants {
 			const Vector3D GOAL_UNIT_DIM = Vector3D(1, 1);
 			const Vector3D ENEMY_UNIT_DIM = Vector3D(1, 1);
 
-			const float SCREEN_UNIT_WIDTH = 20;
-			const float SCREEN_UNIT_HEIGHT = 11;
+			const float SCREEN_UNIT_WIDTH = 20;//20
+			const float SCREEN_UNIT_HEIGHT = 11;//11
 			const Vector3D PLAYER_UNIT_DIM = Vector3D(1, 1);//1.4, 2);
 			const int LIVES = 0;
 
@@ -62,6 +62,30 @@ namespace Constants {
 		}
 	}
 	namespace Breakout {
+	    namespace Game{
+            const float UNIT = 40;
+            const Vector3D BLOCK_UNIT_DIM = Vector3D(1, 1);
+
+            const float SCREEN_UNIT_WIDTH = 12;//20
+            const float SCREEN_UNIT_HEIGHT = 12;//11
+            const Vector3D PLAYER_UNIT_DIM = Vector3D(1, 1);//1.4, 2);
+            const int LIVES = 0;
+
+            namespace Tag {
+                const int BLOCK_TAG = 1;
+                const int PLAYER_TAG = 2;
+                const int GOAL_TAG = 3;
+                const int COLLECTIBLE_TAG = 4;
+                const int ENEMY_TAG = 5;
+            }
+
+	    }
+
+	    namespace TexturePath{
+            const std::string CLEAR = getResourcePath("platformer/sprites") + "clear.png";
+
+	    }
+
 		namespace SFXPath {
 			const std::string BALL_BLOCK = getResourcePath("breakout") + "459145__mattix__retro-pew-shot-01.wav";
 			const std::string BALL_WALL = getResourcePath("breakout") + "219619__ani-music__pew-pew-sound-effect-peww1.wav";

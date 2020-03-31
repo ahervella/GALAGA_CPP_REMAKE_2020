@@ -13,7 +13,7 @@
 
 int main(int argc, char* argv[]){
     // Create an instance of an object for a SDLGraphicsProgram
-    SDLGraphicsProgram myedt_SDLGraphicsProgram(-1);
+    SDLGraphicsProgram myedt_SDLGraphicsProgram(-2);
     // Run our program forever
     myedt_SDLGraphicsProgram.loop();
     // When our program ends, it will exit scope, the

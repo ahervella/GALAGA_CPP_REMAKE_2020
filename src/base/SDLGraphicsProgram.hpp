@@ -32,7 +32,9 @@ class SDLGraphicsProgram{
 public:
 
 	/*GameCodes:
-	 * -1 = LevelEditor
+	 * -3 = LevelEditor Galaga
+	 * -2 = LevelEditor Platformer
+	 * -1 = LevelEditor Breakout
 	 * 1 = Breakout
 	 * 2 = Platformer
 	 * 3 = Galaga (To Do)

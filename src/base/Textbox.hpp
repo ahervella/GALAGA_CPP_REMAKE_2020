@@ -19,7 +19,7 @@ public:
     int textSize = 6;
     int x = 5;
     int y = 5;
-    const std::string textResPath = getResourcePath() + "NotoSerif-Black.ttf";
+    std::string textResPath = getResourcePath() + "NotoSerif-Black.ttf";
 
     /**
      * Default Textbox constructor. Does nothing.
