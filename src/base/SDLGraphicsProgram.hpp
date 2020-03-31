@@ -22,6 +22,9 @@
 
 #include "ResourceManager.hpp"
 
+#include "Level.hpp"
+#include "BreakoutLevel.hpp"
+
 class SDLGraphicsProgram{
 public:
 
@@ -47,6 +50,21 @@ public:
     void loopBreakout();
     // loop that runs forever for Platformer
     void loopPlatformer();
+
+    /**
+     * Per frame update.
+     */
+    void update();
+
+    /**
+     * Renders shapes and text to the screen.
+     */
+    void render();
+
+    /**
+     * Loop that runs forever for Platformer.
+     */
+     void loop();
 
     /**
      * Initializes the level and language config files in the resource manager
@@ -78,6 +96,14 @@ private:
     // Screen dimension constants
     int screenWidth;
     int screenHeight;
+
+    //level count for breakout
+    int levelCount = 0;
+
+    //levels for each type of game
+    std::vector<BreakoutLevel> BreakoutLevels;
+    std::vector<Level> PlatformerLevels;
+
     // The window we'll be rendering to
     SDL_Window* gWindow;
     // SDL Renderer
@@ -92,6 +118,10 @@ private:
     std::vector<std::string> languageFiles;
     //Vector for managed file resources
     std::shared_ptr<std::ifstream*> currLanguageStream;
+    //Background image
+    std::shared_ptr<SDL_Texture*> backgroundImage;
+    //Background image file
+    std::string backgroundImageFile;
 
 };
 

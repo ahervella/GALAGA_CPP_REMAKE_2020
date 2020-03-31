@@ -88,7 +88,7 @@ void Enemy::render(SDL_Renderer *gRenderer) {
 
 void Enemy::collisionUpdate(GameObject::SIDE collisionDirection, int otherTag) {
 	switch(otherTag) {
-		case Constants::Game::Tag::BLOCK_TAG:
+		case Constants::Platformer::Game::Tag::BLOCK_TAG:
 			switch (collisionDirection)
 				{
 					case NONE:

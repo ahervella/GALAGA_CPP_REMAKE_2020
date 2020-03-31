@@ -23,8 +23,6 @@
 
 #include "TinyMath.hpp"
 
-#include "Level.hpp"
-#include "BreakoutLevel.hpp"
 #include "Ball.hpp"
 #include "Paddle.hpp"
 #include "Brick.hpp"
@@ -43,8 +41,7 @@ int BRICK_COLUMNS  = -1;
 
 const SDL_Color PADDLE_COLOR = {0, 250, 0, 250};
 
-std::vector<BreakoutLevel> BreakoutLevels;
-std::vector<Level> PlatformerLevels;
+
 
 Textbox centerText = Textbox(NA_TEXT, 20, SCREEN_WIDTH / 2 - 175, SCREEN_HEIGHT / 2 - 100);
 CounterTextbox livesText = CounterTextbox(NA_TEXT, DEFAULT_LIVES, 15, 15, 3);
@@ -321,7 +318,7 @@ SDLGraphicsProgram::SDLGraphicsProgram(int gameCode) :
 	gc = gameCode;
 
     initLevelLoading();
-    //resetToLevel(levels[GameObject::levelCount]);
+    //resetToLevel(levels[levelCount]);
 
     // Initialization flag
     bool success = true;
@@ -399,6 +396,10 @@ SDLGraphicsProgram::SDLGraphicsProgram(int gameCode) :
     //Load background music
     this->backgroundMusicFile = getResourcePath() + backgroundMusicFile;
     backgroundMusic = resourceManager->getMusicResource(this->backgroundMusicFile);
+
+    //Load background image
+    this->backgroundImageFile = Constants::Platformer::TexturePath::BACKGROUND;
+    backgroundImage = resourceManager->getTextureResource(getSDLRenderer(), this->backgroundImageFile);
 }
 
 
@@ -424,6 +425,22 @@ SDLGraphicsProgram::~SDLGraphicsProgram() {
     SDL_Quit();
     //Destroy resource manager
     resourceManager->shutDown();
+}
+
+void SDLGraphicsProgram::update() {
+
+    switch (gc){
+    case 1:
+        updateBreakout();
+    return;
+    case 2:
+        updatePlatformer();
+    return;
+    case 3:
+        //galaga
+        return;
+}
+
 }
 
 // Update OpenGL
@@ -511,6 +528,23 @@ void SDLGraphicsProgram::updatePlatformer() {
     }
 }
 
+
+void SDLGraphicsProgram::render() {
+
+    switch (gc) {
+        case 1:
+            renderBreakout();
+            return;
+        case 2:
+            renderPlatformer();
+            return;
+        case 3:
+            //galaga
+            return;
+    }
+
+}
+
 void SDLGraphicsProgram::renderBreakout() {
 
     for (size_t i = 0; i < bricks.size(); i++) {
@@ -555,6 +589,23 @@ void SDLGraphicsProgram::renderPlatformer() {
 
 }
 
+
+void SDLGraphicsProgram::loop() {
+
+    switch (gc) {
+        case 1:
+            loopBreakout();
+            return;
+        case 2:
+            loopPlatformer();
+            return;
+        case 3:
+            //galaga
+            return;
+    }
+}
+
+
 //Loops forever!
 void SDLGraphicsProgram::loopBreakout() {
 
@@ -594,13 +645,13 @@ void SDLGraphicsProgram::loopBreakout() {
 
                     case SDLK_SPACE:
 
-                            if ((size_t)GameObject::levelCount < BreakoutLevels.size() && GameObject::gameOver){
-                                if(GameObject::levelCount != 0){
-                                    resetToLevel(BreakoutLevels[GameObject::levelCount]);
+                            if ((size_t) levelCount < BreakoutLevels.size() && GameObject::gameOver){
+                                if(levelCount != 0){
+                                    resetToLevel(BreakoutLevels[levelCount]);
                                 }
-                                GameObject::levelCount++;
+                                levelCount++;
 
-                                if((size_t)GameObject::levelCount == BreakoutLevels.size()) {
+                                if((size_t)levelCount == BreakoutLevels.size()) {
                                     centerText.text = gameTexts["DONE"];
                                 }
 
@@ -907,7 +958,20 @@ void SDLGraphicsProgram::initLevelLoading(){
             continue;}
 
         std::cout << "File path: " << filePath << std::endl;
-        levels.push_back(Level(filePath));
+
+        switch(gc){
+            case 1:
+                BreakoutLevels.push_back(BreakoutLevel(filePath));
+                break;
+            case 2:
+                PlatformerLevels.push_back(Level(filePath));
+                break;
+            case 3:
+                //galaga levels
+                break;
+
+        }
+
 
     }
 }
