@@ -21,8 +21,8 @@ namespace Constants {
 			const Vector3D GOAL_UNIT_DIM = Vector3D(1, 1);
 			const Vector3D ENEMY_UNIT_DIM = Vector3D(1, 1);
 
-			const float SCREEN_UNIT_WIDTH = 20;//20
-			const float SCREEN_UNIT_HEIGHT = 11;//11
+			const float SCREEN_UNIT_WIDTH = 12;//20
+			const float SCREEN_UNIT_HEIGHT = 14;//11
 			const Vector3D PLAYER_UNIT_DIM = Vector3D(1, 1);//1.4, 2);
 			const int LIVES = 0;
 

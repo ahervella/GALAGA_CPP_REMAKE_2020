@@ -274,8 +274,8 @@ void Level::constructLevel(SDL_Renderer *gRenderer) {
     levelObjs.clear();
     enemyObjs.clear();
 
-    float heightOffSet = Constants::Platformer::Game::UNIT * Constants::Platformer::Game::SCREEN_UNIT_HEIGHT -
-                         contents.size() * Constants::Platformer::Game::BLOCK_UNIT_DIM.y * Constants::Platformer::Game::UNIT;
+    float heightOffSet = 0;//Constants::Platformer::Game::UNIT * Constants::Platformer::Game::SCREEN_UNIT_HEIGHT -
+                         //contents.size() * Constants::Platformer::Game::BLOCK_UNIT_DIM.y * Constants::Platformer::Game::UNIT;
 
     for (size_t i = 0; i < contents.size(); i++) {
 

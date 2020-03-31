@@ -285,6 +285,9 @@ void updateBallCollisions() {
 
 
 void resetToLevel(BreakoutLevel lvl){
+
+    //BreakoutLevel lvl = BreakoutLevels[levelCount];
+
     BRICK_ROWS = lvl.BRICK_ROWS;
     std::cout<<"BRICK_ROWS"<<std::endl;
     std::cout<<BRICK_ROWS<<std::endl;
@@ -333,7 +336,10 @@ SDLGraphicsProgram::SDLGraphicsProgram(int gameCode) :
         initLevelLoading();
 	}
 
-    //resetToLevel(levels[levelCount]);
+    //
+    //
+    //
+    // resetToLevel(levels[levelCount]);
 
     // Initialization flag
     bool success = true;
@@ -645,13 +651,11 @@ void SDLGraphicsProgram::renderEditor() {
     SDL_RenderCopy(getSDLRenderer(), *backgroundImage, NULL, NULL);
 
 
-
     //"Main menu" text
     SDL_Texture *mainMenuTextImg = renderText(mainMenuText.text, mainMenuText.textResPath,
                                               mainMenuText.clr, mainMenuText.textSize, getSDLRenderer());
     //selectable textboxes below
     std::vector < SDL_Texture * > txtboxs;
-
 
     //if in menu select, render the mainMenuText and the level texts
     if (lvlSelectMode) {
@@ -668,9 +672,12 @@ void SDLGraphicsProgram::renderEditor() {
         }
     } else {
 
+        std::cout<<"made it past 222 boss"<<std::endl;
         //render current level
         edt_levels[edt_currLevelIndex]->render(getSDLRenderer());
+        std::cout<<"made it past first boss"<<std::endl;
         edt_cursor.render(getSDLRenderer());
+        std::cout<<"made it past sec boss"<<std::endl;
     }
 //
 
@@ -1024,7 +1031,7 @@ void SDLGraphicsProgram::loopEditor() {
     switch(gc){
         case -1:
             edt_cursor = GameObject(Vector3D(0,
-                                             (Constants::Breakout::Game::SCREEN_UNIT_HEIGHT - Constants::Breakout::Game::BLOCK_UNIT_DIM.y) * Constants::Breakout::Game::UNIT, 0),
+                                             (Constants::Breakout::Game::SCREEN_UNIT_HEIGHT) * Constants::Breakout::Game::UNIT, 0),
                                     Vector3D(Constants::Breakout::Game::BLOCK_UNIT_DIM.x * Constants::Breakout::Game::UNIT,
                                              Constants::Breakout::Game::BLOCK_UNIT_DIM.y * Constants::Breakout::Game::UNIT, 0),
                                     -1,
@@ -1035,7 +1042,7 @@ void SDLGraphicsProgram::loopEditor() {
             break;
         case -2:
             edt_cursor = GameObject(Vector3D(0,
-                                             (Constants::Platformer::Game::SCREEN_UNIT_HEIGHT - Constants::Platformer::Game::BLOCK_UNIT_DIM.y) * Constants::Platformer::Game::UNIT, 0),
+                                             (Constants::Platformer::Game::SCREEN_UNIT_HEIGHT) * Constants::Platformer::Game::UNIT, 0),
                                     Vector3D(Constants::Platformer::Game::BLOCK_UNIT_DIM.x * Constants::Platformer::Game::UNIT,
                                              Constants::Platformer::Game::BLOCK_UNIT_DIM.y * Constants::Platformer::Game::UNIT, 0),
                                     -1,
@@ -1275,6 +1282,8 @@ void SDLGraphicsProgram::loopEditor() {
 
         // Update our scene
         update();
+
+
         // Render
         render();
 
