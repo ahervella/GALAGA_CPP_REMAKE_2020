@@ -1,15 +1,17 @@
 #include <cxxtest/TestSuite.h>
 #include "GameObject.hpp"
+#include "Ball.hpp"
+#include "Paddle.hpp"
 #include "util.hpp"
 #include "ResourceManager.hpp"
 
-class GameObjectTestSuite: public CxxTest::TestSuite
+class BreakoutGameObjectTestSuite: public CxxTest::TestSuite
 {
 public:
 	Ball ball;
     Paddle p;
 
-    GameObjectTestSuite() {
+    BreakoutGameObjectTestSuite() {
         //ball.init(getResourcePath() + "459145__mattix__retro-pew-shot-01.wav", getResourcePath() + "219619__ani-music__pew-pew-sound-effect-peww1.wav");
         ball.resetBall();
     }
