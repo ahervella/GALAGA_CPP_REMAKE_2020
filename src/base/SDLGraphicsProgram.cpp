@@ -672,7 +672,7 @@ void SDLGraphicsProgram::renderEditor() {
         edt_levels[edt_currLevelIndex]->render(getSDLRenderer());
         edt_cursor.render(getSDLRenderer());
     }
-
+//
 
     SDL_RenderPresent(getSDLRenderer());
     SDL_DestroyTexture(mainMenuTextImg);
