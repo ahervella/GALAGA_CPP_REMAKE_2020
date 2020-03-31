@@ -24,7 +24,7 @@
 
 //#define SCREEN_WIDTH 500
 //#define SCREEN_HEIGHT 500
-#define SCREEN_TICKS_PER_FRAME 1000/60
+
 
 //#define BRICK_ROWS 3
 //#define BRICK_COLUMNS 8
@@ -43,8 +43,7 @@
 //#define DEFAULT_LIVES 3
 
 //#define GAME_OVER_TEXT "Game Over! ~(O ^ o)~"
-#define GAME_WON_TEXT "You won! Space for next Level!"
-#define NA_TEXT "N/A"
+
 
 class Level {
 

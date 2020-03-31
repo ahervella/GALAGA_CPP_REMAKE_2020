@@ -19,6 +19,11 @@
 
 #include "ResourceManager.hpp"
 
+#define DEFAULT_LIVES 3
+#define SCREEN_TICKS_PER_FRAME 1000/60
+
+#define GAME_WON_TEXT "You won! Space for next Level!"
+#define NA_TEXT "N/A"
 
 // This class sets up a full graphics program
 class SDLGraphicsProgram{
