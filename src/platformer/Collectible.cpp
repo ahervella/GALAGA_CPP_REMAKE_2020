@@ -7,6 +7,11 @@ Collectible::Collectible(Vector3D pos, Vector3D dim, std::string spritesheetFile
 {
 }
 
+Collectible::Collectible(Vector3D pos, Vector3D dim) :
+		GameObject(pos, dim, Constants::Platformer::Game::Tag::COLLECTIBLE_TAG)
+{
+}
+
 Collectible::~Collectible()
 {
 }

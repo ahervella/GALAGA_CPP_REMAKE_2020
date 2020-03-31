@@ -11,6 +11,12 @@ Goal::Goal(Vector3D pos, Vector3D dim, std::string spritesheetFile, SDL_Renderer
 
 }
 
+Goal::Goal(Vector3D pos, Vector3D dim) :
+		GameObject(pos, dim, Constants::Platformer::Game::Tag::GOAL_TAG)
+{
+
+}
+
 Goal::~Goal()
 {
 
