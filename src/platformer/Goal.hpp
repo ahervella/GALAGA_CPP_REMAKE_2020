@@ -12,6 +12,9 @@ public:
 
 	Goal(Vector3D pos, Vector3D dim, std::string spritesheetFile, SDL_Renderer* gRenderer);
 
+	//Used for testing
+	Goal(Vector3D pos, Vector3D dim);
+
 	~Goal();
 };
 

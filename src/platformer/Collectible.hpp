@@ -12,6 +12,9 @@ public:
 
 	Collectible(Vector3D pos, Vector3D dim, std::string spritesheetFile, SDL_Renderer* gRenderer);
 
+	//Used for testing
+	Collectible(Vector3D pos, Vector3D dim);
+
 	~Collectible();
 };
 

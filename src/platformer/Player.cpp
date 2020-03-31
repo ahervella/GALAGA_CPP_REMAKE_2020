@@ -24,6 +24,22 @@ Player::Player(Vector3D pos, Vector3D dim, std::string spritesheetFileName, SDL_
 	this->loseSFX = ResourceManager::getInstance()->getSFXResource(loseSFXFileName);
 }
 
+Player::Player(Vector3D pos, Vector3D dim) :
+		GameObject(pos, dim, Constants::Platformer::Game::Tag::PLAYER_TAG)
+{
+	this->jumpSFXFileName = Constants::Platformer::SFXPath::JUMP;
+	this->jumpSFX = ResourceManager::getInstance()->getSFXResource(jumpSFXFileName);
+
+	this->collectSFXFileName = Constants::Platformer::SFXPath::COLLECT;
+	this->collectSFX = ResourceManager::getInstance()->getSFXResource(collectSFXFileName);
+
+	this->goalSFXFileName = Constants::Platformer::SFXPath::GOAL;
+	this->goalSFX = ResourceManager::getInstance()->getSFXResource(goalSFXFileName);
+
+	this->loseSFXFileName = Constants::Platformer::SFXPath::LOSE;
+	this->loseSFX = ResourceManager::getInstance()->getSFXResource(loseSFXFileName);
+}
+
 Player::~Player() {
     if (jumpSFX) {
         jumpSFX.reset();
@@ -93,6 +109,9 @@ void Player::render(SDL_Renderer *gRenderer) {
 void Player::move(){
 
     //std::cout<<"move " + std::to_string(vel.y)<<std::endl;
+
+	//An extra safety measure
+	if(gameOver) { return; }
     pos += vel;
 }
 

@@ -62,6 +62,9 @@ public:
 
     GameObject(Vector3D pos, Vector3D dim, int tag, std::string spritesheetFileName, SDL_Renderer* gRenderer);
 
+    //Used for testing
+    GameObject(Vector3D pos, Vector3D dim, int tag);
+
     GameObject(Vector3D pos, Vector3D dim, int tag, SDL_Color fillClr, SDL_Color lineClr, std::string spritesheetFileName, SDL_Renderer* gRenderer);
 
     virtual ~GameObject();

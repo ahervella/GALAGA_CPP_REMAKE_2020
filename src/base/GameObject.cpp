@@ -20,6 +20,12 @@ GameObject::GameObject(Vector3D pos, Vector3D dim, int tag, std::string spritesh
     this->spritesheetFileName = spritesheetFileName;
 }
 
+GameObject::GameObject(Vector3D pos, Vector3D dim, int tag) {
+	this->pos = pos;
+	this->dim = dim;
+	this->tag = tag;
+}
+
 GameObject::GameObject(Vector3D pos, Vector3D dim, int tag, SDL_Color fillClr, SDL_Color lineClr, std::string spritesheetFileName, SDL_Renderer* gRenderer) {
     this->pos = pos;
     this->dim = dim;

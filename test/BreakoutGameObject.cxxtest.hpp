@@ -26,12 +26,12 @@ public:
     void testBallInit() {
 
     	Ball ball2;
-    	ball2.init(getResourcePath() + "459145__mattix__retro-pew-shot-01.wav", getResourcePath() + "219619__ani-music__pew-pew-sound-effect-peww1.wav");
+    	ball2.init(getResourcePath("breakout") + "459145__mattix__retro-pew-shot-01.wav", getResourcePath("breakout") + "219619__ani-music__pew-pew-sound-effect-peww1.wav");
     	//Each SFX resource should now have a use count of 2 from the ResourceManager and from ball2
     	//(3 after we get a new shared_ptr to it from the resource manager)
-    	std::shared_ptr<Mix_Chunk*> sfx1 = ResourceManager::getInstance()->getSFXResource(getResourcePath() + "459145__mattix__retro-pew-shot-01.wav");
+    	std::shared_ptr<Mix_Chunk*> sfx1 = ResourceManager::getInstance()->getSFXResource(getResourcePath("breakout") + "459145__mattix__retro-pew-shot-01.wav");
     	TS_ASSERT_EQUALS(sfx1.use_count(), 3);
-    	std::shared_ptr<Mix_Chunk*> sfx2 = ResourceManager::getInstance()->getSFXResource(getResourcePath() + "219619__ani-music__pew-pew-sound-effect-peww1.wav");
+    	std::shared_ptr<Mix_Chunk*> sfx2 = ResourceManager::getInstance()->getSFXResource(getResourcePath("breakout") + "219619__ani-music__pew-pew-sound-effect-peww1.wav");
     	TS_ASSERT_EQUALS(sfx2.use_count(), 3);
     	//Resetting so we don't run into errors with other tests that rely on shared_ptrs from ResourceManager
     	sfx1.reset();

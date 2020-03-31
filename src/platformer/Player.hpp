@@ -14,6 +14,10 @@ public:
     Player();
 
     Player(Vector3D pos, Vector3D dim, std::string spritesheetFile, SDL_Renderer* gRenderer);
+
+    //Used for testing
+    Player(Vector3D pos, Vector3D dim);
+
     ~Player();
 
     /**
