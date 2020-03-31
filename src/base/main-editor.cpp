@@ -4,7 +4,7 @@
 
 //Main program inspired by previous labs (i.e. Lab 2)
 //#include "SDLGraphicsProgram.hpp"
-#include "edt_SDLGraphicsProgram.hpp"
+#include "SDLGraphicsProgram.hpp"
 
 //will need to overwrite:
 //loop()
@@ -13,7 +13,7 @@
 
 int main(int argc, char* argv[]){
     // Create an instance of an object for a SDLGraphicsProgram
-    edt_SDLGraphicsProgram myedt_SDLGraphicsProgram;
+    SDLGraphicsProgram myedt_SDLGraphicsProgram(-1);
     // Run our program forever
     myedt_SDLGraphicsProgram.loop();
     // When our program ends, it will exit scope, the

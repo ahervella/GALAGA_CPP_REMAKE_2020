@@ -20,6 +20,9 @@
 #include <time.h>
 #include <vector>
 
+
+#include "Textbox.hpp"
+
 #include "ResourceManager.hpp"
 
 #include "Level.hpp"
@@ -29,6 +32,7 @@ class SDLGraphicsProgram{
 public:
 
 	/*GameCodes:
+	 * -1 = LevelEditor
 	 * 1 = Breakout
 	 * 2 = Platformer
 	 * 3 = Galaga (To Do)
@@ -38,18 +42,34 @@ public:
     SDLGraphicsProgram(int gameCode);
     // Desctructor
     ~SDLGraphicsProgram();
+
+    /**
+     * Initializes the level and language config files in the resource manager
+     */
+    void initLevelLoading();
+
+    void initLevelLoadingEditor();
+
+    void initLevelLoadingGames();
+
     // Per frame update for Breakout
     void updateBreakout();
     // Per frame update for Platformer
     void updatePlatformer();
+    // Per frame update for Editor
+    void updateEditor();
     // Renders shapes to the screen for Breakout
     void renderBreakout();
     // Renders shapes to the screen for Platformer
     void renderPlatformer();
+    // Renders shapes to the screen for Editor
+    void renderEditor();
     // loop that runs forever for Breakout
     void loopBreakout();
     // loop that runs forever for Platformer
     void loopPlatformer();
+    // loop that runs forever for the Editor
+    void loopEditor();
 
     /**
      * Per frame update.
@@ -67,11 +87,6 @@ public:
      void loop();
 
     /**
-     * Initializes the level and language config files in the resource manager
-     */
-    void initLevelLoading();
-
-    /**
      * Gets all the language files
      */
     void getLanguages();
@@ -82,6 +97,17 @@ public:
      * @param langIndex: Index of vector of language files to read from
      */
     void changeLanguage(int langIndex);
+
+    /**
+     * edits the tile at the given position to be of new type blockStr
+     * @param blockPos the position of the tile we will edit.
+     * @param blockStr a strig correlating the new type of block it will be.
+     */
+    void editTile(Vector3D blockPos, std::string blockStr);
+
+    //helper for editing the editorTile files in real time.
+    void levelHelper(int lvlInt);
+
     // Get Pointer to Window
     //Blah
     SDL_Window* getSDLWindow();
@@ -99,6 +125,18 @@ private:
 
     //level count for breakout
     int levelCount = 0;
+
+
+    //level editor variables
+    int edt_currLevelIndex;
+
+    GameObject edt_cursor;
+    Vector3D edt_cursorBlockPos = Vector3D(0,0);
+
+    std::vector<Level *> edt_levels;
+    std::vector<Textbox> edt_menuTexts;
+
+    bool lvlSelectMode = true;
 
     //levels for each type of game
     std::vector<BreakoutLevel> BreakoutLevels;
