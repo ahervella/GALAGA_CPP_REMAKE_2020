@@ -24,11 +24,16 @@
 #include "TinyMath.hpp"
 
 #include "Level.hpp"
+#include "BreakoutLevel.hpp"
+#include "Ball.hpp"
+#include "Paddle.hpp"
+#include "Brick.hpp"
 
 #define SCREEN_TICKS_PER_FRAME 1000/60
 
 #define GAME_WON_TEXT "You won! Space for next Level!"
 #define NA_TEXT "N/A"
+#define DEFAULT_LIVES 3
 
 int BRICK_GROUP_X_POS = -1;
 
@@ -37,7 +42,8 @@ int BRICK_COLUMNS  = -1;
 
 const SDL_Color PADDLE_COLOR = {0, 250, 0, 250};
 
-std::vector<BreakoutLevel> levels;
+std::vector<BreakoutLevel> BreakoutLevels;
+std::vector<Level> PlatformerLevels;
 
 Textbox centerText = Textbox(NA_TEXT, 20, SCREEN_WIDTH / 2 - 175, SCREEN_HEIGHT / 2 - 100);
 CounterTextbox livesText = CounterTextbox(NA_TEXT, DEFAULT_LIVES, 15, 15, 3);
@@ -269,7 +275,7 @@ void updateBallCollisions() {
 }
 
 
-void resetToLevel(Level lvl){
+void resetToLevel(BreakoutLevel lvl){
     BRICK_ROWS = lvl.BRICK_ROWS;
     std::cout<<"BRICK_ROWS"<<std::endl;
     std::cout<<BRICK_ROWS<<std::endl;
@@ -314,7 +320,7 @@ SDLGraphicsProgram::SDLGraphicsProgram(int gameCode) :
 	gc = gameCode;
 
     initLevelLoading();
-    resetToLevel(levels[GameObject::levelCount]);
+    //resetToLevel(levels[GameObject::levelCount]);
 
     // Initialization flag
     bool success = true;
@@ -386,7 +392,7 @@ SDLGraphicsProgram::SDLGraphicsProgram(int gameCode) :
 
     else if (gc == 2)
     {
-    	backgroundMusicFile = "PlatformerMusic"
+    	backgroundMusicFile = "PlatformerMusic";
     }
 
     //Load background music
@@ -451,8 +457,8 @@ void SDLGraphicsProgram::updatePlatformer() {
     //TODO: need to also find a way to break boxes and remove them in the individual level objs
     //if we want to break blocks
 
-    std::vector<GameObject> objs = levels[currLevelIndex].levelObjs;//levels[currLevelIndex].levelObjs;
-    Player* p = &levels[currLevelIndex].player;
+    std::vector<GameObject> objs = PlatformerLevels[currLevelIndex].levelObjs;//levels[currLevelIndex].levelObjs;
+    Player* p = &PlatformerLevels[currLevelIndex].player;
     //If we have a collision, let the player figure out what to do based on where the collision is from
     //TODO: For future, figure out
 
@@ -466,7 +472,7 @@ void SDLGraphicsProgram::updatePlatformer() {
         if (p->collisionUpdate(p->isColliding(objs[i]), tag)){
         	indexToRemove = i;
         	std::cout << "GOT PAST COLLIDING" << std::endl;
-        	levels[currLevelIndex].levelObjs.erase(levels[currLevelIndex].levelObjs.begin() + indexToRemove);
+        	PlatformerLevels[currLevelIndex].levelObjs.erase(PlatformerLevels[currLevelIndex].levelObjs.begin() + indexToRemove);
         	std::cout << "DELETED" << std::endl;
             if(tag == Constants::Game::Tag::GOAL_TAG) {
             	std::cout << "WIN: TOUCHED GOAL" << std::endl;
@@ -477,8 +483,8 @@ void SDLGraphicsProgram::updatePlatformer() {
 
     }
 
-    for(size_t j = 0; j < levels[currLevelIndex].enemyObjs.size(); ++j) {
-    	if(p->collisionUpdate(p->isColliding(levels[currLevelIndex].enemyObjs[j]), Constants::Game::Tag::ENEMY_TAG)) {
+    for(size_t j = 0; j < PlatformerLevels[currLevelIndex].enemyObjs.size(); ++j) {
+    	if(p->collisionUpdate(p->isColliding(PlatformerLevels[currLevelIndex].enemyObjs[j]), Constants::Game::Tag::ENEMY_TAG)) {
     		std::cout << "LOSE: TOUCHED ENEMY" << std::endl;
     		loseLife();
     		if(GameObject::gameOver) {
@@ -487,8 +493,8 @@ void SDLGraphicsProgram::updatePlatformer() {
     		}
     	}
     	for(size_t s = 0; s < objs.size(); ++s) {
-    		levels[currLevelIndex].enemyObjs[j].collisionUpdate
-				(levels[currLevelIndex].enemyObjs[j].isColliding(objs[s]), objs[s].tag);
+    		PlatformerLevels[currLevelIndex].enemyObjs[j].collisionUpdate
+				(PlatformerLevels[currLevelIndex].enemyObjs[j].isColliding(objs[s]), objs[s].tag);
     	}
     }
 
@@ -498,9 +504,9 @@ void SDLGraphicsProgram::updatePlatformer() {
 
     p->update();
 
-    for(size_t k = 0; k < levels[currLevelIndex].enemyObjs.size(); ++k) {
-    	levels[currLevelIndex].enemyObjs[k].move();
-    	levels[currLevelIndex].enemyObjs[k].update();
+    for(size_t k = 0; k < PlatformerLevels[currLevelIndex].enemyObjs.size(); ++k) {
+    	PlatformerLevels[currLevelIndex].enemyObjs[k].move();
+    	PlatformerLevels[currLevelIndex].enemyObjs[k].update();
     }
 }
 
@@ -542,7 +548,7 @@ void SDLGraphicsProgram::renderPlatformer() {
 
 	SDL_RenderCopy(getSDLRenderer(), *backgroundImage, NULL, NULL);
 
-    levels[currLevelIndex].render(getSDLRenderer());
+	PlatformerLevels[currLevelIndex].render(getSDLRenderer());
 
     SDL_RenderPresent(getSDLRenderer());
 
@@ -587,13 +593,13 @@ void SDLGraphicsProgram::loopBreakout() {
 
                     case SDLK_SPACE:
 
-                            if ((size_t)GameObject::levelCount < levels.size() && GameObject::gameOver){
+                            if ((size_t)GameObject::levelCount < BreakoutLevels.size() && GameObject::gameOver){
                                 if(GameObject::levelCount != 0){
-                                    resetToLevel(levels[GameObject::levelCount]);
+                                    resetToLevel(BreakoutLevels[GameObject::levelCount]);
                                 }
                                 GameObject::levelCount++;
 
-                                if((size_t)GameObject::levelCount == levels.size()) {
+                                if((size_t)GameObject::levelCount == BreakoutLevels.size()) {
                                     centerText.text = gameTexts["DONE"];
                                 }
 
@@ -689,7 +695,7 @@ void SDLGraphicsProgram::loopPlatformer() {
     initLevelLoading();
 
     //construct current level (probably level 1, index 0)
-    levels[currLevelIndex].constructLevel(getSDLRenderer());
+    PlatformerLevels[currLevelIndex].constructLevel(getSDLRenderer());
 
     // Main loop flag
     // If this is quit = 'true' then the program terminates.
@@ -709,7 +715,7 @@ void SDLGraphicsProgram::loopPlatformer() {
     // While application is running
     while (!quit) {
 
-        Player* p = &levels[currLevelIndex].player;
+        Player* p = &PlatformerLevels[currLevelIndex].player;
 
        // p->vel.x = 0;
 
@@ -741,17 +747,17 @@ void SDLGraphicsProgram::loopPlatformer() {
                 switch( e.key.keysym.sym ){
 
                 	case SDLK_SPACE:
-                		if ((size_t)currLevelIndex < levels.size() && GameObject::gameOver){
+                		if ((size_t)currLevelIndex < PlatformerLevels.size() && GameObject::gameOver){
 
 
                 		    currLevelIndex++;
 
-                		    if((size_t)currLevelIndex == levels.size()) {
+                		    if((size_t)currLevelIndex == PlatformerLevels.size()) {
                 		        centerText.text = gameTexts["DONE"];
                 		    }
 
                 			if(currLevelIndex != 0){
-                				levels[currLevelIndex].constructLevel(getSDLRenderer());
+                				PlatformerLevels[currLevelIndex].constructLevel(getSDLRenderer());
                 		    }
 
 
@@ -784,7 +790,6 @@ void SDLGraphicsProgram::loopPlatformer() {
                     case SDLK_LEFT:
                         if (!leftJustPressed){
                             p->vel.x = (-1.0f * MAX_SPEED_X);
-                            //levels[currLevelIndex].p
                             leftJustPressed = true;
                         }
                         break;
@@ -803,7 +808,7 @@ void SDLGraphicsProgram::loopPlatformer() {
                         quit = true;
                         break;
                     case SDLK_r:
-                        levels[currLevelIndex].constructLevel(getSDLRenderer());
+                    	PlatformerLevels[currLevelIndex].constructLevel(getSDLRenderer());
                         GameObject::gameOver = false;
                         break;
                 }

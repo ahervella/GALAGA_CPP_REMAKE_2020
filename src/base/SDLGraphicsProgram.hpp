@@ -46,7 +46,7 @@ public:
     // loop that runs forever for Breakout
     void loopBreakout();
     // loop that runs forever for Platformer
-    void loopPlaformer();
+    void loopPlatformer();
 
     /**
      * Initializes the level and language config files in the resource manager
