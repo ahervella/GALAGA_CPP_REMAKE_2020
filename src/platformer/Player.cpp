@@ -4,7 +4,7 @@
 
 #include "Player.hpp"
 
-int Player::lifeCount = Constants::Game::LIVES;
+int Player::lifeCount = Constants::Platformer::Game::LIVES;
 
 Player::Player() : GameObject() {}
 
@@ -156,7 +156,7 @@ void Player::playLoseSFXFile() {
 
 bool Player::collisionUpdate(GameObject::SIDE collisionDirection, int otherTag) {
 	switch(otherTag) {
-		case Constants::Game::Tag::BLOCK_TAG:
+		case Constants::Platformer::Game::Tag::BLOCK_TAG:
 			switch (collisionDirection)
 				{
 
@@ -203,14 +203,14 @@ bool Player::collisionUpdate(GameObject::SIDE collisionDirection, int otherTag) 
 						}
 				}
 			break;
-		case Constants::Game::Tag::GOAL_TAG:
+		case Constants::Platformer::Game::Tag::GOAL_TAG:
 			if(collisionDirection != SIDE::NONE) {
 				//TODO: Play sound (check!), end game, print "You win! Next level!"
 				this->playGoalSFXFile();
 				return true;
 			}
 			break;
-		case Constants::Game::Tag::COLLECTIBLE_TAG:
+		case Constants::Platformer::Game::Tag::COLLECTIBLE_TAG:
 			if(collisionDirection != SIDE::NONE) {
 				//TODO: Play sound (check!), delete collectible, add 1 to score (check!)
 				this->playCollectSFXFile();
@@ -219,7 +219,7 @@ bool Player::collisionUpdate(GameObject::SIDE collisionDirection, int otherTag) 
 				return true;
 			}
 			break;
-		case Constants::Game::Tag::ENEMY_TAG:
+		case Constants::Platformer::Game::Tag::ENEMY_TAG:
 			if(collisionDirection != SIDE::NONE) {
 				//TODO: Play sound (check!), stop game and prints "You lose!"
 				this->playLoseSFXFile();
