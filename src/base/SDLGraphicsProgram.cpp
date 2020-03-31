@@ -621,6 +621,8 @@ void SDLGraphicsProgram::loopBreakout() {
     bool leftJustPressed = false;
     Mix_PlayMusic(*(backgroundMusic), -1);
 
+    resetToLevel(BreakoutLevels[levelCount]);
+
     std::cout<<"working3"<<std::endl;
 
     // While application is running
@@ -645,14 +647,19 @@ void SDLGraphicsProgram::loopBreakout() {
                     case SDLK_SPACE:
 
                             if ((size_t) levelCount < BreakoutLevels.size() && GameObject::gameOver){
-                                if(levelCount != 0){
+
+                            	levelCount++;
+
+                            	if((size_t)levelCount == BreakoutLevels.size()) {
+                            		centerText.text = gameTexts["DONE"];
+                            	}
+
+                            	if(levelCount != 0){
                                     resetToLevel(BreakoutLevels[levelCount]);
                                 }
-                                levelCount++;
 
-                                if((size_t)levelCount == BreakoutLevels.size()) {
-                                    centerText.text = gameTexts["DONE"];
-                                }
+
+
 
                                 GameObject::gameOver = false;
                                 centerText.text = " ";
@@ -743,7 +750,7 @@ void SDLGraphicsProgram::loopPlatformer() {
     SDL_SetRenderDrawBlendMode(getSDLRenderer(), SDL_BLENDMODE_BLEND);
 
     //doing this here because can't call virtual function in constructor!
-    initLevelLoading();
+    //initLevelLoading();
 
     //construct current level (probably level 1, index 0)
     PlatformerLevels[currLevelIndex].constructLevel(getSDLRenderer());
