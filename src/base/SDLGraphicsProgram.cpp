@@ -1019,8 +1019,6 @@ void SDLGraphicsProgram::loopEditor() {
     // Enable text input
     SDL_StartTextInput();
 
-    bool rightJustPressed = false;
-    bool leftJustPressed = false;
     Mix_PlayMusic(*(backgroundMusic), -1);
 
     //std::cout<<"working3"<<std::endl;
@@ -1195,21 +1193,6 @@ void SDLGraphicsProgram::loopEditor() {
             }
 
 
-
-            if (e.type == SDL_KEYUP){
-                switch( e.key.keysym.sym ){
-                    case SDLK_RIGHT:
-                        //if(rightJustPressed){
-                        rightJustPressed = false;
-                        //}
-                        break;
-                    case SDLK_LEFT:
-                        // if(leftJustPressed){
-                        leftJustPressed = false;
-                        //}
-                        break;
-                }
-            }
 
         }
 
