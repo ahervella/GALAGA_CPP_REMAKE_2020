@@ -31,7 +31,7 @@ LDFLAGS:=$(LDFLAGS)
 ## the following should not need to change
 
 ## generic options
-CXXFLAGS:=$(CXXFLAGS) -std=c++11 -Wall -Werror -pedantic-errors -Isrc/platformer -Isrc/base  $(EXTERN_CXXFLAGS)
+CXXFLAGS:=$(CXXFLAGS) -std=c++11 -Wall -Werror -pedantic-errors -Isrc/platformer -Isrc/base  -Isrc/breakout $(EXTERN_CXXFLAGS)
 LDFLAGS:=$(LDFLAGS) -std=c++11
 
 ## platform-specific options
