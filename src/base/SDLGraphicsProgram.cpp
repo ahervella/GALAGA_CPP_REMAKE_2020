@@ -1052,7 +1052,7 @@ void SDLGraphicsProgram::loopEditor() {
                                     -1,
                                     {0, 0, 250, 100},
                                     {255, 0, 0, 255},
-                                    Constants::Platformer::TexturePath::CLEAR,
+                                    Constants::Breakout::TexturePath::CLEAR,
                                     gRenderer);
             break;
         case -2:
@@ -1063,7 +1063,7 @@ void SDLGraphicsProgram::loopEditor() {
                                     -1,
                                     {0, 0, 250, 100},
                                     {255, 0, 0, 255},
-                                    Constants::Breakout::TexturePath::CLEAR,
+                                    Constants::Platformer::TexturePath::CLEAR,
                                     gRenderer);
             break;
         case -3:
