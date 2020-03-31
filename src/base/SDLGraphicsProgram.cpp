@@ -562,12 +562,13 @@ void SDLGraphicsProgram::updateEditor() {
 
     switch(gc){
         case -1:
-            break;
+            //break;
             if (!lvlSelectMode) {
                 edt_cursor.pos = Vector3D(
                         edt_cursorBlockPos.x * Constants::Breakout::Game::UNIT,
                         edt_cursorBlockPos.y * Constants::Breakout::Game::UNIT);
             }
+            break;
         case -2:
             if (!lvlSelectMode) {
                 edt_cursor.pos = Vector3D(
