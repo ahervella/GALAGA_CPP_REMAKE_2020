@@ -34,7 +34,7 @@ void Ball::update() {
 
 void Ball::render(SDL_Renderer *gRenderer) {
     SDL_Rect fillRect = {(int) x, (int) y, (int) r * 2, (int) r * 2};
-    //sets render color to red
+    //sets render color to white
     SDL_SetRenderDrawColor(gRenderer, clr.r, clr.g, clr.b, clr.a);
     SDL_RenderDrawRect(gRenderer, &fillRect);
 }
