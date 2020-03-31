@@ -1,9 +1,12 @@
-//
-// Created by Alejandro Hervella on 2/6/20.
-//
+/*
+ * SDLGraphicsProgram.hpp
+ *
+ *  Created on: Mar 30, 2020
+ *      Author: Karina
+ */
 
-#ifndef PROJ1_BREAKOUT_MIKEY_BREAKOUT_SDLGRAPHICSPROGRAM_HPP
-#define PROJ1_BREAKOUT_MIKEY_BREAKOUT_SDLGRAPHICSPROGRAM_HPP
+#ifndef SRC_BASE_SDLGRAPHICSPROGRAM_HPP_
+#define SRC_BASE_SDLGRAPHICSPROGRAM_HPP_
 
 #include <SDL.h>
 
@@ -19,21 +22,31 @@
 
 #include "ResourceManager.hpp"
 
-
-// This class sets up a full graphics program
 class SDLGraphicsProgram{
 public:
 
+	/*GameCodes:
+	 * 1 = Breakout
+	 * 2 = Platformer
+	 * 3 = Galaga (To Do)
+	 */
+
     // Constructor
-    SDLGraphicsProgram();
+    SDLGraphicsProgram(int gameCode);
     // Desctructor
     ~SDLGraphicsProgram();
-    // Per frame update
-    void update();
-    // Renders shapes to the screen
-    void render();
-    // loop that runs forever
-    void loop();
+    // Per frame update for Breakout
+    void updateBreakout();
+    // Per frame update for Platformer
+    void updatePlatformer();
+    // Renders shapes to the screen for Breakout
+    void renderBreakout();
+    // Renders shapes to the screen for Platformer
+    void renderPlatformer();
+    // loop that runs forever for Breakout
+    void loopBreakout();
+    // loop that runs forever for Platformer
+    void loopPlatformer();
 
     /**
      * Initializes the level and language config files in the resource manager
@@ -58,7 +71,13 @@ public:
     SDL_Renderer* getSDLRenderer();
 
 
-protected:
+
+private:
+    //Game Code
+    int gc;
+    // Screen dimension constants
+    int screenWidth;
+    int screenHeight;
     // The window we'll be rendering to
     SDL_Window* gWindow;
     // SDL Renderer
@@ -73,11 +92,10 @@ protected:
     std::vector<std::string> languageFiles;
     //Vector for managed file resources
     std::shared_ptr<std::ifstream*> currLanguageStream;
-    //Background image
-    std::shared_ptr<SDL_Texture*> backgroundImage;
-    //Background image file
-    std::string backgroundImageFile;
 
 };
 
-#endif //PROJ1_BREAKOUT_MIKEY_BREAKOUT_SDLGRAPHICSPROGRAM_H
+
+
+
+#endif /* SRC_BASE_SDLGRAPHICSPROGRAM_HPP_ */

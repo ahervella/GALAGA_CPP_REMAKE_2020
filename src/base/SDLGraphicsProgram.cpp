@@ -1,11 +1,13 @@
-//
-// Created by Alejandro Hervella on 2/6/20.
-//
+/*
+ * SDLGraphicsProgram.cpp
+ *
+ *  Created on: Mar 30, 2020
+ *      Author: Karina
+ */
 
-#include "SDLGraphicsProgram-breakout.hpp"
+#include "SDLGraphicsProgram.hpp"
 
 #include <algorithm>
-//#include "TinyMath.hpp"
 #include <memory>
 
 //for getting files from directory
@@ -15,106 +17,47 @@
 #include <sys/types.h>
 #include <string.h>
 
-
 #include "Textbox.hpp"
 
 #include "GameObject.hpp"
 
-#include"TinyMath.hpp"
+#include "TinyMath.hpp"
 
-//#define SCREEN_WIDTH 500
-//#define SCREEN_HEIGHT 500
+#include "Level.hpp"
+#include "BreakoutLevel.hpp"
+#include "Ball.hpp"
+#include "Paddle.hpp"
+#include "Brick.hpp"
 
+#define SCREEN_TICKS_PER_FRAME 1000/60
 
-//#define BRICK_ROWS 3
-//#define BRICK_COLUMNS 8
-//#define BRICK_WIDTHS 50
-//#define BRICK_HEIGHTS 10
-//#define BRICK_GROUP_DIST_FROM_CEILING 40
+#define GAME_WON_TEXT "You won! Space for next Level!"
+#define NA_TEXT "N/A"
+#define DEFAULT_LIVES 3
 
-
-//#define BALL_SPEED 5
-//#define BALL_RADIUS 5
-
-//#define PADDLE_WIDTH 75
-//#define PADDLE_HEIGHT 10
-//#define PADDLE_DIST_FROM_CEILING 400
-//#define PADDLE_SPEED 6
-//#define DEFAULT_LIVES 3
-
-//#define GAME_OVER_TEXT "Game Over! ~(O ^ o)~"
-
-
-class Level {
-
-
-public:
-    //2 for columns and rows
-    std::vector<int> contents;
-    int BRICK_COLUMNS;
-    int BRICK_ROWS;
-
-    Level(std::string configFilePath) {
-        this -> configFilePath = configFilePath;
-        //std::cout<<configFilePath<<std::endl;
-        this -> configFileStream = ResourceManager::getInstance()->getConfigFileResource(configFilePath);
-        parseStreamToString();
-
-        BRICK_COLUMNS = contents[0];
-        BRICK_ROWS = contents[1];
-        std::cout<<BRICK_ROWS<<std::endl;
-
-    }
-
-    ~Level(){
-        this -> configFileStream.reset();
-        ResourceManager::getInstance()->deleteConfigFileResource(this-> configFilePath);
-    }
-
-private:
-    std::string configFilePath;
-    std::shared_ptr<std::ifstream*> configFileStream;
-
-
-    void parseStreamToString(){
-
-        int curr_line;
-
-        while((*configFileStream)->good()){
-
-            char c = (*configFileStream)->get();
-
-            if (c == '\n'){
-                contents.push_back(curr_line);
-                c = (*configFileStream)->get();
-                contents.push_back(c - '0');
-                break;
-            }
-            curr_line = c - '0';
-        }
-
-    }
-
-
-};
-
-//const int TOTAL_BRICKS = BRICK_ROWS * BRICK_COLUMNS;
 int BRICK_GROUP_X_POS = -1;
 
 int BRICK_ROWS = -1;
 int BRICK_COLUMNS  = -1;
-//const SDL_Color BALL_COLOR = {250, 250, 250, 250};
+
 const SDL_Color PADDLE_COLOR = {0, 250, 0, 250};
-//const SDL_Color BRICK_COLOR = {50, 50, 50, 0};
 
-
-std::vector<Level> levels;
-
+std::vector<BreakoutLevel> BreakoutLevels;
+std::vector<Level> PlatformerLevels;
 
 Textbox centerText = Textbox(NA_TEXT, 20, SCREEN_WIDTH / 2 - 175, SCREEN_HEIGHT / 2 - 100);
 CounterTextbox livesText = CounterTextbox(NA_TEXT, DEFAULT_LIVES, 15, 15, 3);
 CounterTextbox scoreText = CounterTextbox(NA_TEXT, 0, 15, SCREEN_WIDTH - 75, 3);
 
+std::vector <Brick> bricks;
+Ball ball;
+Paddle paddle;
+int prevCollisionID = -1;
+int brickCollisionIndex = -1;
+
+int lifeCount = DEFAULT_LIVES;
+int score = 0;
+int currLevelIndex = 0;
 
 std::map<std::string, std::string> gameTexts{
         {"LANG_MENU", NA_TEXT},
@@ -126,187 +69,23 @@ std::map<std::string, std::string> gameTexts{
         {"SCORE", NA_TEXT}
 };
 
+// Define functions to help with Breakout
 
-void SDLGraphicsProgram::getLanguages(){
+void gameOver() {
+    GameObject::gameOver = true;
 
-    std::ifstream fin;
-    DIR *dp;
-    struct dirent *dirp;
-    struct stat filestat;
-    std::string resourceConfigsPath = getResourcePath("lang_config");
-
-
-
-    dp = opendir(resourceConfigsPath.c_str());
-
-    if (dp == NULL)
-    {
-        std::cout << "Error opening " << resourceConfigsPath << std::endl;
+    std::cout << "Game over set" << std::endl;
+    if (Player::lifeCount < 0) {
+        centerText.text = centerText.text = gameTexts["LOSE"];
+        std::cout << "Game over text set (lose)" << std::endl;
         return;
     }
 
-    while ((dirp = readdir( dp )))
-    {
-        std::string contents;
-
-        std::string filePath = resourceConfigsPath + dirp->d_name;
-
-        //prevent from getting other hidden non text file paths
-        if (stat( filePath.c_str(), &filestat )) {continue;}
-        if (S_ISDIR( filestat.st_mode ))  {continue;}
-
-        languageFiles.push_back(filePath);
-
-    }
+    centerText.text = gameTexts["WIN"];
+    std::cout << "Game over text set (win)" << std::endl;
 
 }
 
-void SDLGraphicsProgram::changeLanguage(int langIndex){
-
-	if(currLanguageStream) {
-		currLanguageStream.reset();
-	}
-    currLanguageStream = ResourceManager::getInstance()->getConfigFileResource(languageFiles[langIndex]);
-        std::string contents;
-        std::string line;
-        std::string key;
-        std::string value;
-        std::ifstream* blah = *(currLanguageStream);
-
-        //so that no previous language phrases are still left in cae file is not complete.
-    for(auto const& keyy: gameTexts){
-            gameTexts[keyy.first] = NA_TEXT;
-    }
-
-    //(*currLanguageStream)->open(languageFiles[langIndex].c_str(), std::fstream::out );
-    //TODO: Fails on the first call to changeLanguage for some reason.
-    /*
-    blah->open(languageFiles[langIndex].c_str(), std::fstream::out );
-    if(blah->fail()) {
-    	std::cout << "Error: " << strerror(errno) << std::endl;
-    }
-    */
-    blah->close();
-    blah->open(languageFiles[langIndex].c_str());
-
-
-    while ( /*(*currLanguageStream)*/blah->good() ){
-    	std::cout << "blah is good!" << std::endl;
-        std::getline(*blah, line);
-        std::istringstream ss(line);
-        if(std::getline(ss, key, ' ')) {
-        	std::cout << "Key:" << key << std::endl;
-        	if(gameTexts.count(key) > 0) {
-        		if(std::getline(ss, value)) {
-        			gameTexts[key] = value;
-                    std::cout<<key + gameTexts[key]<<std::endl<<std::endl;
-        		}
-        	}
-        }
-        /*
-        ss >> key >> value; // set the variables
-        if (gameTexts.count(key) > 0){
-            gameTexts[key] = value;
-            std::cout<<key + gameTexts[key]<<std::endl<<std::endl;
-        }
-        else{
-            std::cout<<"Warning--Could not parse key: " + key + ", with value: " + value<<std::endl<<std::endl;
-        }
-        */
-    }
-
-
-
-
-/*
-        while ( *(*currLanguageStream) >> key >> value ) {
-            if (gameTexts.count(key) > 0){
-                gameTexts[key] = value;
-                std::cout<<key + gameTexts[key]<<std::endl<<std::endl;
-            }
-            else{
-                std::cout<<"Warning--Could not parse key: " + key + ", with value: " + value<<std::endl<<std::endl;
-            }
-
-        }
-
-*/
-
-    (*currLanguageStream)->close();
-
-
-    for(auto const& key: gameTexts){
-        if (key.second == NA_TEXT){
-            std::cout<<"Warning--No match for key: \"" + key.first + "\" was found!"<<std::endl<<std::endl;
-        }
-    }
-
-
-    livesText.text = livesText.textTemplate = gameTexts["LIVES"];
-    scoreText.text = scoreText.textTemplate = gameTexts["SCORE"];
-
-    livesText.setText(livesText.currCounter);
-    scoreText.setText(scoreText.currCounter);
-
-}
-
-
-void SDLGraphicsProgram::initLevelLoading(){
-
-
-    getLanguages();
-    for(auto i = languageFiles.begin(); i != languageFiles.end(); i++) {
-    	std::cout << *i << std::endl;
-    }
-    //Default to English
-    changeLanguage(0);
-
-    std::ifstream fin;
-    DIR *dp;
-    struct dirent *dirp;
-    struct stat filestat;
-    std::string resourceConfigsPath = getResourcePath("level_config");
-
-
-
-    dp = opendir(resourceConfigsPath.c_str());
-
-    if (dp == NULL)
-    {
-        std::cout << "Error opening " << resourceConfigsPath << std::endl;
-        return;
-    }
-
-
-
-    while ((dirp = readdir( dp )))
-    {
-        std::string contents;
-
-        std::string filePath = resourceConfigsPath + dirp->d_name;
-
-        //prevent from getting other hidden non text file paths
-        if (stat( filePath.c_str(), &filestat )) {continue;}
-        if (S_ISDIR( filestat.st_mode ))  {continue;}
-
-        levels.push_back(Level(filePath));
-
-    }
-
-
-
-}
-
-
-
-std::vector <Brick> bricks;
-Ball ball;
-Paddle paddle;
-int prevCollisionID = -1;
-int brickCollisionIndex = -1;
-
-int lifeCount = DEFAULT_LIVES;
-int score = 0;
 
 void checkBrickCollision(float &newAngle, int &collisionID, int &brickCollisionIndex) {
 
@@ -410,18 +189,6 @@ void checkBrickCollision(float &newAngle, int &collisionID, int &brickCollisionI
     }
 }
 
-void gameOver() {
-    GameObject::firstGameOver = true;
-    GameObject::gameOver = true;
-
-    if (lifeCount < 0) {
-        centerText.text = centerText.text = gameTexts["LOSE"];
-        return;
-    }
-
-    centerText.text = gameTexts["WIN"];
-}
-
 void loseLife() {
     lifeCount -= 1;
 
@@ -508,7 +275,7 @@ void updateBallCollisions() {
 }
 
 
-void resetToLevel(Level lvl){
+void resetToLevel(BreakoutLevel lvl){
     BRICK_ROWS = lvl.BRICK_ROWS;
     std::cout<<"BRICK_ROWS"<<std::endl;
     std::cout<<BRICK_ROWS<<std::endl;
@@ -541,23 +308,19 @@ void resetToLevel(Level lvl){
     paddle.init(PADDLE_WIDTH, PADDLE_HEIGHT, paddleCenter, PADDLE_DIST_FROM_CEILING, PADDLE_COLOR);
 }
 
+//Define SDLGraphicsProgram functions
+
 // Initialization function
 // Returns a true or false value based on successful completion of setup.
 // Takes in dimensions of window.
-SDLGraphicsProgram::SDLGraphicsProgram(int w, int h, std::string backgroundMusicFile) :
-        screenWidth(w),
-        screenHeight(h),
+SDLGraphicsProgram::SDLGraphicsProgram(int gameCode) :
         gWindow(nullptr),
         gRenderer(nullptr) {
-    // Initialize random number generation.
+
+	gc = gameCode;
 
     initLevelLoading();
-    resetToLevel(levels[GameObject::levelCount]);
-
-
-
-
-
+    //resetToLevel(levels[GameObject::levelCount]);
 
     // Initialization flag
     bool success = true;
@@ -620,8 +383,18 @@ SDLGraphicsProgram::SDLGraphicsProgram(int w, int h, std::string backgroundMusic
 
     //Resource Manager initialization
     resourceManager = ResourceManager::getInstance();
-    //Ball init with sound files
-    ball.init(getResourcePath() + "459145__mattix__retro-pew-shot-01.wav", getResourcePath() + "219619__ani-music__pew-pew-sound-effect-peww1.wav");
+    if (gc == 1)
+    {
+    	//Ball init with sound files
+    	ball.init(getResourcePath() + "459145__mattix__retro-pew-shot-01.wav", getResourcePath() + "219619__ani-music__pew-pew-sound-effect-peww1.wav");
+    	backgroundMusicFile = "BreakoutMusic";
+    }
+
+    else if (gc == 2)
+    {
+    	backgroundMusicFile = "PlatformerMusic";
+    }
+
     //Load background music
     this->backgroundMusicFile = getResourcePath() + backgroundMusicFile;
     backgroundMusic = resourceManager->getMusicResource(this->backgroundMusicFile);
@@ -645,8 +418,6 @@ SDLGraphicsProgram::~SDLGraphicsProgram() {
     //Quit SDL subsystems
     //TODO: Check if any other ones need to be quit
 
-
-
     TTF_Quit();
     Mix_Quit();
     SDL_Quit();
@@ -654,9 +425,8 @@ SDLGraphicsProgram::~SDLGraphicsProgram() {
     resourceManager->shutDown();
 }
 
-
 // Update OpenGL
-void SDLGraphicsProgram::update() {
+void SDLGraphicsProgram::updateBreakout() {
     //render background
     SDL_SetRenderDrawColor(gRenderer, 0x22, 0x22, 0x22, 0xFF);
     SDL_RenderClear(gRenderer);
@@ -669,16 +439,78 @@ void SDLGraphicsProgram::update() {
 
     //update collisions (paddle)
     updateBallCollisions();
-
-
 }
 
+// Update OpenGL
+void SDLGraphicsProgram::updatePlatformer() {
+	if(GameObject::gameOver) {
+		return;
+	}
+    //render background
+    SDL_SetRenderDrawColor(gRenderer, 0x22, 0x22, 0x22, 0xFF);
+    SDL_RenderClear(gRenderer);
 
-// Render
-// The render function gets called once per loop
-//after update() function in the main loop (background
-//and positions already changed by now)
-void SDLGraphicsProgram::render() {
+    //Check for collision between player and blocks.
+    //Here we can determine collisions between player and blocks below/to the side of a player
+    //And here we can promptly update what needs to get updated based on that
+
+    //TODO: need to also find a way to break boxes and remove them in the individual level objs
+    //if we want to break blocks
+
+    std::vector<GameObject> objs = PlatformerLevels[currLevelIndex].levelObjs;//levels[currLevelIndex].levelObjs;
+    Player* p = &PlatformerLevels[currLevelIndex].player;
+    //If we have a collision, let the player figure out what to do based on where the collision is from
+    //TODO: For future, figure out
+
+    //scoreText.setText(p->getScore());
+
+    int indexToRemove = -1;
+
+    for(size_t i = 0; i < objs.size(); ++i) {
+        std::cout<<"Index: "<<i<<std::endl;
+        int tag = objs[i].tag;
+        if (p->collisionUpdate(p->isColliding(objs[i]), tag)){
+        	indexToRemove = i;
+        	std::cout << "GOT PAST COLLIDING" << std::endl;
+        	PlatformerLevels[currLevelIndex].levelObjs.erase(PlatformerLevels[currLevelIndex].levelObjs.begin() + indexToRemove);
+        	std::cout << "DELETED" << std::endl;
+            if(tag == Constants::Game::Tag::GOAL_TAG) {
+            	std::cout << "WIN: TOUCHED GOAL" << std::endl;
+            	gameOver();
+            	return;
+            }
+        }
+
+    }
+
+    for(size_t j = 0; j < PlatformerLevels[currLevelIndex].enemyObjs.size(); ++j) {
+    	if(p->collisionUpdate(p->isColliding(PlatformerLevels[currLevelIndex].enemyObjs[j]), Constants::Game::Tag::ENEMY_TAG)) {
+    		std::cout << "LOSE: TOUCHED ENEMY" << std::endl;
+    		loseLife();
+    		if(GameObject::gameOver) {
+    			//Stop the game if we hit game over after losing a life
+    			return;
+    		}
+    	}
+    	for(size_t s = 0; s < objs.size(); ++s) {
+    		PlatformerLevels[currLevelIndex].enemyObjs[j].collisionUpdate
+				(PlatformerLevels[currLevelIndex].enemyObjs[j].isColliding(objs[s]), objs[s].tag);
+    	}
+    }
+
+    //all velocities should be final at this point in frame for player, apply to position
+    //std::cout<<"size: " + std::to_string(objs.size())<<std::endl;
+    p->move();
+
+    p->update();
+
+    for(size_t k = 0; k < PlatformerLevels[currLevelIndex].enemyObjs.size(); ++k) {
+    	PlatformerLevels[currLevelIndex].enemyObjs[k].move();
+    	PlatformerLevels[currLevelIndex].enemyObjs[k].update();
+    }
+}
+
+void SDLGraphicsProgram::renderBreakout() {
 
     for (size_t i = 0; i < bricks.size(); i++) {
         bricks[i].render(getSDLRenderer());
@@ -712,10 +544,18 @@ void SDLGraphicsProgram::render() {
 
 }
 
+void SDLGraphicsProgram::renderPlatformer() {
+
+	SDL_RenderCopy(getSDLRenderer(), *backgroundImage, NULL, NULL);
+
+	PlatformerLevels[currLevelIndex].render(getSDLRenderer());
+
+    SDL_RenderPresent(getSDLRenderer());
+
+}
 
 //Loops forever!
-void SDLGraphicsProgram::loop() {
-
+void SDLGraphicsProgram::loopBreakout() {
 
     // Main loop flag
     // If this is quit = 'true' then the program terminates.
@@ -753,26 +593,19 @@ void SDLGraphicsProgram::loop() {
 
                     case SDLK_SPACE:
 
-                            if ((size_t)GameObject::levelCount < levels.size() && GameObject::gameOver){
+                            if ((size_t)GameObject::levelCount < BreakoutLevels.size() && GameObject::gameOver){
                                 if(GameObject::levelCount != 0){
-                                    resetToLevel(levels[GameObject::levelCount]);
+                                    resetToLevel(BreakoutLevels[GameObject::levelCount]);
                                 }
-
-
                                 GameObject::levelCount++;
 
-                                if((size_t)GameObject::levelCount == levels.size()) {
+                                if((size_t)GameObject::levelCount == BreakoutLevels.size()) {
                                     centerText.text = gameTexts["DONE"];
                                 }
 
                                 GameObject::gameOver = false;
                                 centerText.text = " ";
-
-
                             }
-
-                            //resetToLevel(levels[1]);
-                        //}
 
                         break;
 
@@ -805,8 +638,6 @@ void SDLGraphicsProgram::loop() {
                 }
             }
 
-
-
             if (e.type == SDL_KEYUP){
                 switch( e.key.keysym.sym ){
                     case SDLK_RIGHT:
@@ -834,15 +665,12 @@ void SDLGraphicsProgram::loop() {
             if (!leftJustPressed && !rightJustPressed){
                 paddle.speed = 0;
             }
-
         }
 
-
-
         // Update our scene
-        update();
+        updateBreakout();
         // Render
-        render();
+        renderBreakout();
 
         //Cap frame rate
         unsigned int endFrame = SDL_GetTicks();
@@ -854,6 +682,315 @@ void SDLGraphicsProgram::loop() {
 
     //Disable text input
     SDL_StopTextInput();
+}
+
+//Loops forever!
+void SDLGraphicsProgram::loopPlatformer() {
+    //start of program
+
+    //set alpha channel on
+    SDL_SetRenderDrawBlendMode(getSDLRenderer(), SDL_BLENDMODE_BLEND);
+
+    //doing this here because can't call virtual function in constructor!
+    initLevelLoading();
+
+    //construct current level (probably level 1, index 0)
+    PlatformerLevels[currLevelIndex].constructLevel(getSDLRenderer());
+
+    // Main loop flag
+    // If this is quit = 'true' then the program terminates.
+    bool quit = false;
+    // Event handler that handles various events in SDL
+    // that are related to input and output
+    SDL_Event e;
+    // Enable text input
+    SDL_StartTextInput();
+
+    bool rightJustPressed = false;
+    bool leftJustPressed = false;
+    Mix_PlayMusic(*(backgroundMusic), -1);
+
+    //std::cout<<"working3"<<std::endl;
+
+    // While application is running
+    while (!quit) {
+
+        Player* p = &PlatformerLevels[currLevelIndex].player;
+
+       // p->vel.x = 0;
+
+        if (p->justJumped){
+            p->justJumped = false;
+        }
+
+
+        if (p->vel.y < MAX_SPEED_Y){
+            p->vel.y += GRAV;
+        }
+
+        //Start timer to find out how much time this frame takes
+        unsigned int startFrame = SDL_GetTicks();
+        //Handle events on queue
+        while (SDL_PollEvent(&e) != 0) {
+            // User posts an event to quit
+            // An example is hitting the "x" in the corner of the window.
+            if (e.type == SDL_QUIT) {
+                quit = true;
+
+            }
+
+            //logic for pressing keys here makes it so the latest left or right key pressed
+            //down takes priority for direction (so holding both down will not make it stay still).
+
+            if (e.type == SDL_KEYDOWN ) {
+
+                switch( e.key.keysym.sym ){
+
+                	case SDLK_SPACE:
+                		if ((size_t)currLevelIndex < PlatformerLevels.size() && GameObject::gameOver){
+
+
+                		    currLevelIndex++;
+
+                		    if((size_t)currLevelIndex == PlatformerLevels.size()) {
+                		        centerText.text = gameTexts["DONE"];
+                		    }
+
+                			if(currLevelIndex != 0){
+                				PlatformerLevels[currLevelIndex].constructLevel(getSDLRenderer());
+                		    }
+
+
+                		    GameObject::gameOver = false;
+                		    centerText.text = " ";
+
+
+                		}
+
+                		break;
+
+                    case SDLK_UP:
+
+                        if(p->isJumping()){break;}
+                        p->vel.y = -1.0f * MAX_SPEED_Y;
+                        if (!p->isJumping()){
+                            p->justJumped = true;
+                        }
+
+                        p->jump(); //makes jumped true
+
+                        break;
+
+                    case SDLK_RIGHT:
+                        if (!rightJustPressed){
+                            p->vel.x = MAX_SPEED_X;//paddle.speed = PADDLE_SPEED;
+                            rightJustPressed = true;
+                        }
+                        break;
+                    case SDLK_LEFT:
+                        if (!leftJustPressed){
+                            p->vel.x = (-1.0f * MAX_SPEED_X);
+                            leftJustPressed = true;
+                        }
+                        break;
+                    case SDLK_1:
+                        changeLanguage(0);
+                        break;
+                    case SDLK_2:
+                        changeLanguage(1);
+                        break;
+
+                    case SDLK_3:
+                        changeLanguage(2);
+                        break;
+
+                    case SDLK_q:
+                        quit = true;
+                        break;
+                    case SDLK_r:
+                    	PlatformerLevels[currLevelIndex].constructLevel(getSDLRenderer());
+                        GameObject::gameOver = false;
+                        break;
+                }
+            }
+
+            if (e.type == SDL_KEYUP){
+                switch( e.key.keysym.sym ){
+                    case SDLK_RIGHT:
+                        if(rightJustPressed){
+                            rightJustPressed = false;
+                        }
+                        break;
+                    case SDLK_LEFT:
+                        if(leftJustPressed){
+                            leftJustPressed = false;
+                        }
+                        break;
+                }
+            }
+
+            //needed for when let go after holding both down.
+            if (leftJustPressed && !rightJustPressed){
+                p->vel.x = (-1.0f * MAX_SPEED_X);
+            }
+
+            if (!leftJustPressed && rightJustPressed){
+                p->vel.x = MAX_SPEED_X;
+            }
+
+            if (!leftJustPressed && !rightJustPressed){
+                p->vel.x = 0;
+            }
+        }
+
+        // Update our scene
+        updatePlatformer();
+        // Render
+        renderPlatformer();
+
+        //Cap frame rate
+        unsigned int endFrame = SDL_GetTicks();
+        unsigned int frameTick = endFrame - startFrame;
+        if (frameTick < SCREEN_TICKS_PER_FRAME) {
+            SDL_Delay(SCREEN_TICKS_PER_FRAME - frameTick);
+        }
+    }
+    //Disable text input
+    SDL_StopTextInput();
+}
+
+void SDLGraphicsProgram::initLevelLoading(){
+
+    getLanguages();
+    //Default to English
+    changeLanguage(0);
+
+    std::ifstream fin;
+    DIR *dp;
+    struct dirent *dirp;
+    struct stat filestat;
+
+
+    std::string resourceConfigsPath = getResourcePath("level_config");
+
+    //open directory path
+    dp = opendir(resourceConfigsPath.c_str());
+
+    if (dp == NULL)
+    {
+        std::cout << "Error opening " << resourceConfigsPath << std::endl;
+        return;
+    }
+
+    //load level configs
+    while ((dirp = readdir( dp )))
+    {
+
+        std::string contents;
+        std::string skipStringMessage = "Skipped: " + (std::string(dirp->d_name));
+
+
+        std::string filePath = resourceConfigsPath + dirp->d_name;
+
+        if ((std::string(dirp->d_name)).find(".") == 0){
+            std::cout<< skipStringMessage <<std::endl<<std::endl;
+            continue;}
+
+        //prevent from getting other hidden non text file paths
+        if (stat( filePath.c_str(), &filestat )) {
+            std::cout<<skipStringMessage<<std::endl<<std::endl;
+            continue;}
+
+        if (S_ISDIR( filestat.st_mode ))  {
+            std::cout<<skipStringMessage<<std::endl<<std::endl;
+            continue;}
+
+        std::cout << "File path: " << filePath << std::endl;
+        levels.push_back(Level(filePath));
+
+    }
+}
+
+void SDLGraphicsProgram::getLanguages(){
+
+    std::ifstream fin;
+    DIR *dp;
+    struct dirent *dirp;
+    struct stat filestat;
+    std::string resourceConfigsPath = getResourcePath("lang_config");
+
+    dp = opendir(resourceConfigsPath.c_str());
+
+    if (dp == NULL)
+    {
+        std::cout << "Error opening " << resourceConfigsPath << std::endl;
+        return;
+    }
+
+    while ((dirp = readdir( dp )))
+    {
+        std::string contents;
+
+        std::string filePath = resourceConfigsPath + dirp->d_name;
+
+        std::string skipStringMessage = "Skipped: " + (std::string(dirp->d_name));
+
+        if ((std::string(dirp->d_name)).find(".") == 0){
+            std::cout<< skipStringMessage <<std::endl<<std::endl;
+            continue;}
+
+        //prevent from getting other hidden non text file paths
+        if (stat( filePath.c_str(), &filestat )) {
+            std::cout<< skipStringMessage <<std::endl<<std::endl;
+            continue;}
+
+        if (S_ISDIR( filestat.st_mode ))  {
+            std::cout<< skipStringMessage <<std::endl<<std::endl;
+            continue;}
+
+        std::cout<< "Not skipping: " + (std::string(dirp->d_name) )<<std::endl<<std::endl;
+
+        languageFiles.push_back(filePath);
+    }
+}
+
+void SDLGraphicsProgram::changeLanguage(int langIndex){
+
+	currLanguageStream.reset();
+    currLanguageStream = ResourceManager::getInstance()->getConfigFileResource(languageFiles[langIndex]);
+        std::string contents;
+        std::string line;
+        std::string key;
+        std::string value;
+        std::ifstream* blah = *(currLanguageStream);
+
+        //so that no previous language phrases are still left in cae file is not complete.
+    for(auto const& keyy: gameTexts){
+            gameTexts[keyy.first] = NA_TEXT;
+    }
+
+    (*currLanguageStream)->open(languageFiles[langIndex].c_str(), std::fstream::out );
+
+    while ( (*currLanguageStream)->good() ) {
+        std::getline(*blah, line);
+        std::istringstream ss(line);
+        if (std::getline(ss, key, ' ')) {
+            if (gameTexts.count(key) > 0) {
+                if (std::getline(ss, value)) {
+                    gameTexts[key] = value;
+                    std::cout << key + gameTexts[key] << std::endl << std::endl;
+                }
+            }
+        }
+    }
+
+    (*currLanguageStream)->close();
+
+    for(auto const& key: gameTexts){
+        if (key.second == NA_TEXT){
+            std::cout<<"Warning--No match for key: \"" + key.first + "\" was found!"<<std::endl<<std::endl;
+        }
+    }
 }
 
 
@@ -868,6 +1005,3 @@ SDL_Window *SDLGraphicsProgram::getSDLWindow() {
 SDL_Renderer *SDLGraphicsProgram::getSDLRenderer() {
     return gRenderer;
 }
-
-
-

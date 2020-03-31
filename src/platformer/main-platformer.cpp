@@ -1,5 +1,5 @@
 //Main program inspired by previous labs (i.e. Lab 2)
-#include "SDLGraphicsProgram-platformer.hpp"
+#include "SDLGraphicsProgram.hpp"
 
 int main(int argc, char* argv[]){
   // Create an instance of an object for a SDLGraphicsProgram
