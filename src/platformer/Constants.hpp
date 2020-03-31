@@ -39,7 +39,7 @@ namespace Constants {
 
 			const std::string PLAYER = getResourcePath("platformer/sprites") + "droid_from_android.png";
 			const std::string BLOCK = getResourcePath("platformer/sprites") + "block_tiles_red.png";
-			const std::string BACKGROUND = getResourcePath("paltformer/sprites") + "7536921_orig.png";
+			const std::string BACKGROUND = getResourcePath("platformer/sprites") + "7536921_orig.png";
 			const std::string COLLECTIBLE = getResourcePath("platformer/sprites") + "coin.png";
 			//TODO: GET GOAL SPRITE
 			const std::string GOAL = getResourcePath("platformer/sprites") + "174-1743878_open-flag-sprite-clipart.png";

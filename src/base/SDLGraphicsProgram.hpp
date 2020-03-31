@@ -94,8 +94,8 @@ private:
     //Game Code
     int gc;
     // Screen dimension constants
-    int screenWidth;
-    int screenHeight;
+    int screenWidth = 500;
+    int screenHeight = 500;
 
     //level count for breakout
     int levelCount = 0;

@@ -394,7 +394,6 @@ SDLGraphicsProgram::SDLGraphicsProgram(int gameCode) :
     }
 
     //Load background music
-    this->backgroundMusicFile = getResourcePath() + backgroundMusicFile;
     backgroundMusic = resourceManager->getMusicResource(this->backgroundMusicFile);
 
     //Load background image
@@ -923,7 +922,14 @@ void SDLGraphicsProgram::initLevelLoading(){
     struct stat filestat;
 
 
-    std::string resourceConfigsPath = getResourcePath("level_config");
+    std::string resourceConfigsPath = "";
+    if(gc == 1) {
+    	resourceConfigsPath = getResourcePath("breakout/level_config");
+
+    }
+    if(gc == 2) {
+        resourceConfigsPath = getResourcePath("platformer/level_config");
+    }
 
     //open directory path
     dp = opendir(resourceConfigsPath.c_str());
@@ -982,7 +988,13 @@ void SDLGraphicsProgram::getLanguages(){
     DIR *dp;
     struct dirent *dirp;
     struct stat filestat;
-    std::string resourceConfigsPath = getResourcePath("lang_config");
+    std::string resourceConfigsPath = "";
+    if(gc == 1) {
+    	resourceConfigsPath = getResourcePath("breakout/lang_config");
+    }
+    if(gc == 2) {
+    	resourceConfigsPath = getResourcePath("platformer/lang_config");
+    }
 
     dp = opendir(resourceConfigsPath.c_str());
 
