@@ -67,7 +67,7 @@ namespace Constants {
             const Vector3D BLOCK_UNIT_DIM = Vector3D(1, 1);
 
             const float SCREEN_UNIT_WIDTH = 12;//20
-            const float SCREEN_UNIT_HEIGHT = 12;//11
+            const float SCREEN_UNIT_HEIGHT = 14;//11
             const Vector3D PLAYER_UNIT_DIM = Vector3D(1, 1);//1.4, 2);
             const int LIVES = 0;
 
@@ -83,8 +83,9 @@ namespace Constants {
 
 	    namespace TexturePath{
             const std::string CLEAR = getResourcePath("platformer/sprites") + "clear.png";
+            const std::string BLOCK = getResourcePath("platformer/sprites") + "block_tiles_red.png";
 
-	    }
+        }
 
 		namespace SFXPath {
 			const std::string BALL_BLOCK = getResourcePath("breakout") + "459145__mattix__retro-pew-shot-01.wav";

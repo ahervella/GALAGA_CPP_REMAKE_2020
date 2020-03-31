@@ -58,7 +58,7 @@ Textbox centerText = Textbox(NA_TEXT, 20, SCREEN_WIDTH / 2 - 175, SCREEN_HEIGHT 
 CounterTextbox livesText = CounterTextbox(NA_TEXT, DEFAULT_LIVES, 15, 15, 3);
 CounterTextbox scoreText = CounterTextbox(NA_TEXT, 0, 15, SCREEN_WIDTH - 75, 3);
 
-std::vector <Brick> bricks;
+//std::vector <Brick> bricks;
 Ball ball;
 Paddle paddle;
 int prevCollisionID = -1;
@@ -96,7 +96,7 @@ void gameOver() {
 }
 
 
-void checkBrickCollision(float &newAngle, int &collisionID, int &brickCollisionIndex) {
+void SDLGraphicsProgram::checkBrickCollision(float &newAngle, int &collisionID, int &brickCollisionIndex) {
 
     Brick collidingBrick = Brick();
     float closestDistance = -1;
@@ -108,8 +108,8 @@ void checkBrickCollision(float &newAngle, int &collisionID, int &brickCollisionI
     float ballCenterX = ball.x + ball.r;
     float ballCenterY = ball.y + ball.r;
 
-    for (size_t i = 0; i < bricks.size(); i++) {
-        Brick b = bricks[i];
+    for (size_t i = 0; i < BreakoutLevels[levelCount].levelObjs.size(); i++) {
+        Brick b = BreakoutLevels[levelCount].levelObjs[i];
 
         float brickLeft = b.x;
         float brickRight = b.x + b.w;
@@ -210,21 +210,21 @@ void loseLife() {
     livesText.setText(lifeCount);
 }
 
-void removeBrick(int rmIndex) {
+void SDLGraphicsProgram::removeBrick(int rmIndex) {
 
 
     scoreText.setText(++score);
 
-    bricks.erase(bricks.begin() + rmIndex);
+    BreakoutLevels[levelCount].levelObjs.erase(BreakoutLevels[levelCount].levelObjs.begin() + rmIndex);
 
-    std::cout<<bricks.size()<<std::endl;
-    if (bricks.size() <= 0) {
+    std::cout<<BreakoutLevels[levelCount].levelObjs.size()<<std::endl;
+    if (BreakoutLevels[levelCount].levelObjs.size() <= 0) {
         gameOver();
         return;
     }
 }
 
-void updateBallCollisions() {
+void SDLGraphicsProgram::updateBallCollisions() {
 
     int collisionID = -1;
     float newAngle = ball.angle;
@@ -284,20 +284,17 @@ void updateBallCollisions() {
 }
 
 
-void resetToLevel(BreakoutLevel lvl){
+void SDLGraphicsProgram::resetToLevel(){
 
-    //BreakoutLevel lvl = BreakoutLevels[levelCount];
+    BreakoutLevels[levelCount].resetLevel();
 
-    BRICK_ROWS = lvl.BRICK_ROWS;
-    std::cout<<"BRICK_ROWS"<<std::endl;
-    std::cout<<BRICK_ROWS<<std::endl;
-    BRICK_COLUMNS = lvl.BRICK_COLUMNS;
     ball.resetBall();
     scoreText.setText(0);
-    BRICK_GROUP_X_POS = (SCREEN_WIDTH - BRICK_WIDTHS * BRICK_COLUMNS) / 2;
+    //BRICK_GROUP_X_POS = (SCREEN_WIDTH - BRICK_WIDTHS * BRICK_COLUMNS) / 2;
 
 
-    for(int i = 0; i < BRICK_ROWS * BRICK_COLUMNS; i++){
+    /*
+    for(size_t i = 0; i < lvl.levelObjs.size(); i++){
 
         bricks.push_back(Brick());
 
@@ -315,7 +312,7 @@ void resetToLevel(BreakoutLevel lvl){
     }
 
 
-
+*/
     float paddleCenter = (SCREEN_WIDTH - PADDLE_WIDTH) / 2.0;
     paddle.init(PADDLE_WIDTH, PADDLE_HEIGHT, paddleCenter, PADDLE_DIST_FROM_CEILING, PADDLE_COLOR);
 }
@@ -604,9 +601,7 @@ void SDLGraphicsProgram::render() {
 
 void SDLGraphicsProgram::renderBreakout() {
 
-    for (size_t i = 0; i < bricks.size(); i++) {
-        bricks[i].render(getSDLRenderer());
-    }
+    BreakoutLevels[levelCount].render(getSDLRenderer());
 
     ball.render(getSDLRenderer());
     paddle.render(getSDLRenderer());
@@ -672,12 +667,24 @@ void SDLGraphicsProgram::renderEditor() {
         }
     } else {
 
-        std::cout<<"made it past 222 boss"<<std::endl;
         //render current level
-        edt_levels[edt_currLevelIndex]->render(getSDLRenderer());
-        std::cout<<"made it past first boss"<<std::endl;
+        switch(gc){
+            case -1:
+                std::cout<<"woeeee1"<<std::endl;
+                edt_levels_breakout[edt_currLevelIndex]->render(getSDLRenderer());
+                std::cout<<"woeeee2"<<std::endl;
+                break;
+            case -2:
+                edt_levels_platformer[edt_currLevelIndex]->render(getSDLRenderer());
+                break;
+            case -3:
+                //galaga stuff
+                break;
+        }
+
+
         edt_cursor.render(getSDLRenderer());
-        std::cout<<"made it past sec boss"<<std::endl;
+        std::cout<<"woeeee3"<<std::endl;
     }
 //
 
@@ -727,7 +734,7 @@ void SDLGraphicsProgram::loopBreakout() {
     bool leftJustPressed = false;
     Mix_PlayMusic(*(backgroundMusic), -1);
 
-    resetToLevel(BreakoutLevels[levelCount]);
+    resetToLevel();
 
     std::cout<<"working3"<<std::endl;
 
@@ -761,7 +768,7 @@ void SDLGraphicsProgram::loopBreakout() {
                             	}
 
                             	if(levelCount != 0){
-                                    resetToLevel(BreakoutLevels[levelCount]);
+                                    resetToLevel();
                                 }
 
 
@@ -1166,7 +1173,18 @@ void SDLGraphicsProgram::loopEditor() {
                         //doshit
                         edt_currLevelIndex = 0;
 
-                        edt_levels[edt_currLevelIndex]->constructLevel(getSDLRenderer());
+                        switch(gc){
+                            case -1:
+                                edt_levels_breakout[edt_currLevelIndex]->constructLevel(getSDLRenderer());
+                                break;
+                            case -2:
+                                edt_levels_platformer[edt_currLevelIndex]->constructLevel(getSDLRenderer());
+                                break;
+                            case -3:
+                                //galaga stuff
+                                break;
+                        }
+
 
                         lvlSelectMode = false;
                         //1 key
@@ -1177,8 +1195,18 @@ void SDLGraphicsProgram::loopEditor() {
 
                         levelHelper(2);
 
+                        switch(gc){
+                            case -1:
+                                edt_levels_breakout[edt_currLevelIndex]->constructLevel(getSDLRenderer());
+                                break;
+                            case -2:
+                                edt_levels_platformer[edt_currLevelIndex]->constructLevel(getSDLRenderer());
+                                break;
+                            case -3:
+                                //galaga stuff
+                                break;
+                        }
 
-                        edt_levels[edt_currLevelIndex]->constructLevel(getSDLRenderer());
 
                         lvlSelectMode = false;
                         //2 key
@@ -1191,8 +1219,17 @@ void SDLGraphicsProgram::loopEditor() {
 
                         levelHelper(3);
 
-
-                        edt_levels[edt_currLevelIndex]->constructLevel(getSDLRenderer());
+                        switch(gc){
+                            case -1:
+                                edt_levels_breakout[edt_currLevelIndex]->constructLevel(getSDLRenderer());
+                                break;
+                            case -2:
+                                edt_levels_platformer[edt_currLevelIndex]->constructLevel(getSDLRenderer());
+                                break;
+                            case -3:
+                                //galaga stuff
+                                break;
+                        }
 
                         lvlSelectMode = false;
                         break;
@@ -1203,8 +1240,17 @@ void SDLGraphicsProgram::loopEditor() {
 
                         levelHelper(4);
 
-
-                        edt_levels[edt_currLevelIndex]->constructLevel(getSDLRenderer());
+                        switch(gc){
+                            case -1:
+                                edt_levels_breakout[edt_currLevelIndex]->constructLevel(getSDLRenderer());
+                                break;
+                            case -2:
+                                edt_levels_platformer[edt_currLevelIndex]->constructLevel(getSDLRenderer());
+                                break;
+                            case -3:
+                                //galaga stuff
+                                break;
+                        }
 
                         lvlSelectMode = false;
                         break;
@@ -1215,8 +1261,17 @@ void SDLGraphicsProgram::loopEditor() {
 
                         levelHelper(5);
 
-
-                        edt_levels[edt_currLevelIndex]->constructLevel(getSDLRenderer());
+                        switch(gc){
+                            case -1:
+                                edt_levels_breakout[edt_currLevelIndex]->constructLevel(getSDLRenderer());
+                                break;
+                            case -2:
+                                edt_levels_platformer[edt_currLevelIndex]->constructLevel(getSDLRenderer());
+                                break;
+                            case -3:
+                                //galaga stuff
+                                break;
+                        }
 
                         lvlSelectMode = false;
                         break;
@@ -1227,15 +1282,24 @@ void SDLGraphicsProgram::loopEditor() {
 
                         levelHelper(6);
 
-
-                        edt_levels[edt_currLevelIndex]->constructLevel(getSDLRenderer());
+                        switch(gc){
+                            case -1:
+                                edt_levels_breakout[edt_currLevelIndex]->constructLevel(getSDLRenderer());
+                                break;
+                            case -2:
+                                edt_levels_platformer[edt_currLevelIndex]->constructLevel(getSDLRenderer());
+                                break;
+                            case -3:
+                                //galaga stuff
+                                break;
+                        }
 
                         lvlSelectMode = false;
                         break;
 
                     case SDLK_c:
                         editTile(edt_cursorBlockPos, "c");
-                        //edt_levels[edt_currLevelIndex].writeToCfgFile("s");
+                        //edt_levels_platformer[edt_currLevelIndex].writeToCfgFile("s");
                         //do shit for collectible
                         break;
                     case SDLK_b:
@@ -1282,7 +1346,7 @@ void SDLGraphicsProgram::loopEditor() {
 
         // Update our scene
         update();
-
+        std::cout<<"woeeee"<<std::endl;
 
         // Render
         render();
@@ -1298,7 +1362,7 @@ void SDLGraphicsProgram::loopEditor() {
     //Disable text input
     SDL_StopTextInput();
 
-    for(Level* lvl : edt_levels){
+    for(Level* lvl : edt_levels_platformer){
         delete lvl;
     }
 
@@ -1345,9 +1409,22 @@ void SDLGraphicsProgram::initLevelLoadingEditor() {
     switch(gc){
         case -1:
             mainMenuText = Textbox("MAIN MENU: ", TEXT_SIZE, TEXT_X_ANCHOR_BREAKOUT, TEXT_Y_ANCHOR_BREAKOUT);
+
+            for(BreakoutLevel* lvl : edt_levels_breakout){
+                delete lvl;
+            }
+
+            edt_levels_breakout.clear();
+
             break;
         case -2:
             mainMenuText = Textbox("MAIN MENU: ", TEXT_SIZE, TEXT_X_ANCHOR_PLATFORMER, TEXT_Y_ANCHOR_PLATFORMER);
+
+            for(Level* lvl : edt_levels_platformer){
+                delete lvl;
+            }
+
+            edt_levels_platformer.clear();
             break;
         case -3:
             //galaga stuff
@@ -1359,11 +1436,7 @@ void SDLGraphicsProgram::initLevelLoadingEditor() {
 
 
 
-    for(Level* lvl : edt_levels){
-        delete lvl;
-    }
 
-    edt_levels.clear();
     //getLanguages();
     //Default to English
     //changeLanguage(0);
@@ -1430,9 +1503,11 @@ void SDLGraphicsProgram::initLevelLoadingEditor() {
         switch(gc){
             case -1:
                 edt_menuTexts.push_back(Textbox(filename, TEXT_SIZE/1.5, TEXT_X_ANCHOR_BREAKOUT, TEXT_Y_ANCHOR_BREAKOUT + textYPosIncrementer));
+                edt_levels_breakout.push_back(new BreakoutLevel(filePath));
                 break;
             case -2:
                 edt_menuTexts.push_back(Textbox(filename, TEXT_SIZE/1.5, TEXT_X_ANCHOR_PLATFORMER, TEXT_Y_ANCHOR_PLATFORMER + textYPosIncrementer));
+                edt_levels_platformer.push_back(new Level(filePath));
                 break;
             case -3:
                 //galaga stuff
@@ -1444,7 +1519,7 @@ void SDLGraphicsProgram::initLevelLoadingEditor() {
 
         //std::cout << "File pathhhh: " << filePath << std::endl;
 
-        edt_levels.push_back(new Level(filePath));
+
 
 
     }
@@ -1643,7 +1718,59 @@ void SDLGraphicsProgram::changeLanguage(int langIndex){
 
 void SDLGraphicsProgram::editTile(Vector3D blockPos, std::string blockStr) {
 
-    Level* lvl = edt_levels[edt_currLevelIndex];
+    switch(gc){
+        case -1:
+            editTileBreakout(blockPos, blockStr);
+            break;
+        case -2:
+            editTilePlatformer(blockPos, blockStr);
+            break;
+        case -3:
+            //galaga stuff
+            break;
+    }
+
+}
+
+void SDLGraphicsProgram::editTileBreakout(Vector3D blockPos, std::string blockStr) {
+
+
+    BreakoutLevel* lvl = edt_levels_breakout[edt_currLevelIndex];
+
+    std::vector<std::string> contents;// = lvl->contents;
+
+    //bool clearBlock = false;
+    //bool newBlock = true;
+
+    for (std::string blah : lvl->contents){
+        contents.push_back(blah);
+    }
+
+
+    switch(blockStr[0]){
+        case 'b':
+        case 'B':
+
+            contents[blockPos.y].replace(blockPos.x, 1, "X");
+            break;
+    }
+
+    std::string newContents;
+
+    for(size_t i = 0; i < contents.size(); i++){
+        newContents += contents[i];
+        if (i != contents.size() -1){
+            newContents += "\n";
+        }
+    }
+
+    lvl->writeToCfgFile(newContents, gRenderer);
+
+}
+
+void SDLGraphicsProgram::editTilePlatformer(Vector3D blockPos, std::string blockStr) {
+
+    Level* lvl = edt_levels_platformer[edt_currLevelIndex];
 
     std::vector<std::string> contents;// = lvl->contents;
 
@@ -1706,10 +1833,28 @@ void SDLGraphicsProgram::editTile(Vector3D blockPos, std::string blockStr) {
 
 void SDLGraphicsProgram::levelHelper(int lvlInt) {
 
-    //std::cout<<edt_levels.size()<<"  level sizessss"<<std::endl;
-    int currLevel = edt_levels.size() + 1;
+    //std::cout<<edt_levels_platformer.size()<<"  level sizessss"<<std::endl;
 
-    while ((size_t)edt_levels.size() < (size_t)lvlInt) {
+    int currLevel = 0;
+    int sizeCompare = 0;
+    switch(gc){
+        case -1:
+            sizeCompare = edt_levels_breakout.size();
+            currLevel = edt_levels_breakout.size() + 1;
+            break;
+        case -2:
+            sizeCompare = edt_levels_platformer.size();
+            currLevel = edt_levels_platformer.size() + 1;
+            break;
+        case -3:
+            //galaga stuff
+            break;
+    }
+
+
+
+
+    while ((size_t)sizeCompare < (size_t)lvlInt) {
 
         //make new file
         std::ofstream outfile(getResourcePath("level_config") + "lvl0" + std::to_string(currLevel) + ".cfg");
@@ -1763,7 +1908,22 @@ void SDLGraphicsProgram::levelHelper(int lvlInt) {
         outfile.close();
 
 
-        edt_levels.push_back(new Level(getResourcePath("level_config") + "lvl0" + std::to_string(currLevel) + ".cfg"));
+
+        switch(gc){
+            case -1:
+                edt_levels_breakout.push_back(new BreakoutLevel(getResourcePath("level_config") + "lvl0" + std::to_string(currLevel) + ".cfg"));
+                break;
+            case -2:
+                edt_levels_platformer.push_back(new Level(getResourcePath("level_config") + "lvl0" + std::to_string(currLevel) + ".cfg"));
+                break;
+            case -3:
+                //galaga stuff
+                break;
+        }
+
+
+
+
         currLevel++;
     }
 

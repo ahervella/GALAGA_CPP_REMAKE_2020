@@ -73,6 +73,15 @@ public:
     // loop that runs forever for the Editor
     void loopEditor();
 
+    void editTileBreakout(Vector3D blockPos, std::string blockStr);
+    void editTilePlatformer(Vector3D blockPos, std::string blockStr);
+    /**
+     * edits the tile at the given position to be of new type blockStr
+     * @param blockPos the position of the tile we will edit.
+     * @param blockStr a strig correlating the new type of block it will be.
+     */
+    void editTile(Vector3D blockPos, std::string blockStr);
+
     /**
      * Per frame update.
      */
@@ -100,15 +109,16 @@ public:
      */
     void changeLanguage(int langIndex);
 
-    /**
-     * edits the tile at the given position to be of new type blockStr
-     * @param blockPos the position of the tile we will edit.
-     * @param blockStr a strig correlating the new type of block it will be.
-     */
-    void editTile(Vector3D blockPos, std::string blockStr);
+
 
     //helper for editing the editorTile files in real time.
     void levelHelper(int lvlInt);
+
+    //breakout methods
+    void resetToLevel();
+    void checkBrickCollision(float &newAngle, int &collisionID, int &brickCollisionIndex);
+    void removeBrick(int rmIndex);
+    void updateBallCollisions();
 
     // Get Pointer to Window
     //Blah
@@ -135,7 +145,8 @@ private:
     GameObject edt_cursor;
     Vector3D edt_cursorBlockPos = Vector3D(0,0);
 
-    std::vector<Level *> edt_levels;
+    std::vector<Level *> edt_levels_platformer;
+    std::vector<BreakoutLevel *> edt_levels_breakout;
     std::vector<Textbox> edt_menuTexts;
 
     bool lvlSelectMode = true;
