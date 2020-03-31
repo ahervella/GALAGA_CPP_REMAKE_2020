@@ -3,7 +3,7 @@
 Enemy::Enemy() : GameObject() {}
 
 Enemy::Enemy(Vector3D pos, Vector3D dim, std::string spritesheetFileName, SDL_Renderer* gRenderer) :
-		GameObject(pos, dim, Constants::Game::Tag::ENEMY_TAG, spritesheetFileName, gRenderer)
+		GameObject(pos, dim, Constants::Platformer::Game::Tag::ENEMY_TAG, spritesheetFileName, gRenderer)
 {
 
 }

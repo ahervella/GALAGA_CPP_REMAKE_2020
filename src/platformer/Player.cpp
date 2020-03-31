@@ -9,18 +9,18 @@ int Player::lifeCount = Constants::Game::LIVES;
 Player::Player() : GameObject() {}
 
 Player::Player(Vector3D pos, Vector3D dim, std::string spritesheetFileName, SDL_Renderer* gRenderer) :
-		GameObject(pos, dim, Constants::Game::Tag::PLAYER_TAG, spritesheetFileName, gRenderer)
+		GameObject(pos, dim, Constants::Platformer::Game::Tag::PLAYER_TAG, spritesheetFileName, gRenderer)
 {
-	this->jumpSFXFileName = Constants::SFXPath::JUMP;
+	this->jumpSFXFileName = Constants::Platformer::SFXPath::JUMP;
 	this->jumpSFX = ResourceManager::getInstance()->getSFXResource(jumpSFXFileName);
 
-	this->collectSFXFileName = Constants::SFXPath::COLLECT;
+	this->collectSFXFileName = Constants::Platformer::SFXPath::COLLECT;
 	this->collectSFX = ResourceManager::getInstance()->getSFXResource(collectSFXFileName);
 
-	this->goalSFXFileName = Constants::SFXPath::GOAL;
+	this->goalSFXFileName = Constants::Platformer::SFXPath::GOAL;
 	this->goalSFX = ResourceManager::getInstance()->getSFXResource(goalSFXFileName);
 
-	this->loseSFXFileName = Constants::SFXPath::LOSE;
+	this->loseSFXFileName = Constants::Platformer::SFXPath::LOSE;
 	this->loseSFX = ResourceManager::getInstance()->getSFXResource(loseSFXFileName);
 }
 
