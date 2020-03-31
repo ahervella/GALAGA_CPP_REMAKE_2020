@@ -28,6 +28,7 @@
 #include "Ball.hpp"
 #include "Paddle.hpp"
 #include "Brick.hpp"
+#include "Constants.hpp"
 
 #define SCREEN_TICKS_PER_FRAME 1000/60
 
@@ -386,13 +387,13 @@ SDLGraphicsProgram::SDLGraphicsProgram(int gameCode) :
     if (gc == 1)
     {
     	//Ball init with sound files
-    	ball.init(getResourcePath() + "459145__mattix__retro-pew-shot-01.wav", getResourcePath() + "219619__ani-music__pew-pew-sound-effect-peww1.wav");
-    	backgroundMusicFile = "BreakoutMusic";
+    	ball.init(Constants::Breakout::SFXPath::BALL_BLOCK, Constants::Breakout::SFXPath::BALL_WALL);
+    	backgroundMusicFile = Constants::Breakout::SFXPath::MUSIC;
     }
 
     else if (gc == 2)
     {
-    	backgroundMusicFile = "PlatformerMusic";
+    	backgroundMusicFile = Constants::Platformer::SFXPath::MUSIC;
     }
 
     //Load background music
@@ -474,7 +475,7 @@ void SDLGraphicsProgram::updatePlatformer() {
         	std::cout << "GOT PAST COLLIDING" << std::endl;
         	PlatformerLevels[currLevelIndex].levelObjs.erase(PlatformerLevels[currLevelIndex].levelObjs.begin() + indexToRemove);
         	std::cout << "DELETED" << std::endl;
-            if(tag == Constants::Game::Tag::GOAL_TAG) {
+            if(tag == Constants::Platformer::Game::Tag::GOAL_TAG) {
             	std::cout << "WIN: TOUCHED GOAL" << std::endl;
             	gameOver();
             	return;
@@ -484,7 +485,7 @@ void SDLGraphicsProgram::updatePlatformer() {
     }
 
     for(size_t j = 0; j < PlatformerLevels[currLevelIndex].enemyObjs.size(); ++j) {
-    	if(p->collisionUpdate(p->isColliding(PlatformerLevels[currLevelIndex].enemyObjs[j]), Constants::Game::Tag::ENEMY_TAG)) {
+    	if(p->collisionUpdate(p->isColliding(PlatformerLevels[currLevelIndex].enemyObjs[j]), Constants::Platformer::Game::Tag::ENEMY_TAG)) {
     		std::cout << "LOSE: TOUCHED ENEMY" << std::endl;
     		loseLife();
     		if(GameObject::gameOver) {

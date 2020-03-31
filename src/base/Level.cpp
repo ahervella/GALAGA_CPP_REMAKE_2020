@@ -72,7 +72,7 @@ void Level::calcCollisionObjs(SDL_Renderer *gRenderer) {
 //TODO: double check this shit still works for clearning properly.
     std::vector <GameObject> thingsToKeep;
     for(GameObject obj : levelObjs) {
-        if (obj.tag != Constants::Game::Tag::BLOCK_TAG){
+        if (obj.tag != Constants::Platformer::Game::Tag::BLOCK_TAG){
                 thingsToKeep.push_back(obj);
         }
     }
@@ -92,7 +92,7 @@ void Level::calcCollisionObjs(SDL_Renderer *gRenderer) {
 
     for (GameObject obj : blockObjs) {
 
-        if (obj.tag != Constants::Game::Tag::BLOCK_TAG){
+        if (obj.tag != Constants::Platformer::Game::Tag::BLOCK_TAG){
         return;
         }
 
@@ -177,8 +177,8 @@ void Level::calcCollisionObjs(SDL_Renderer *gRenderer) {
             SDL_Rect currVerR = verRects[i];
 
             //check if the shape is a lone shape (in the vertical group)
-            if (currVerR.w == Constants::Game::BLOCK_UNIT_DIM.x * Constants::Game::UNIT
-            && currVerR.h == Constants::Game::BLOCK_UNIT_DIM.y * Constants::Game::UNIT) {
+            if (currVerR.w == Constants::Platformer::Game::BLOCK_UNIT_DIM.x * Constants::Platformer::Game::UNIT
+            && currVerR.h == Constants::Platformer::Game::BLOCK_UNIT_DIM.y * Constants::Platformer::Game::UNIT) {
 
                 //It is a lone shape (in the vertical group). Find if its also a lone shape in the horizontal group
                 for (size_t j = 0; j < horRects.size(); ++j) {
@@ -187,8 +187,8 @@ void Level::calcCollisionObjs(SDL_Renderer *gRenderer) {
                     SDL_Rect currHorR = horRects[j];
 
                     //check if the horizontal shape is a lone shape (in the horizontal group)
-                    if (currHorR.w == Constants::Game::BLOCK_UNIT_DIM.x * Constants::Game::UNIT
-                    && currHorR.h == Constants::Game::BLOCK_UNIT_DIM.y * Constants::Game::UNIT) {
+                    if (currHorR.w == Constants::Platformer::Game::BLOCK_UNIT_DIM.x * Constants::Platformer::Game::UNIT
+                    && currHorR.h == Constants::Platformer::Game::BLOCK_UNIT_DIM.y * Constants::Platformer::Game::UNIT) {
 
                         //it is also a lone shape. Now check if both lone shapes (one from the vert group, the other
                         //from the horiz group) are the SAME lone shape by checking their positions
@@ -218,14 +218,14 @@ void Level::calcCollisionObjs(SDL_Renderer *gRenderer) {
 
             SDL_Rect currHorR = horRects[i];
 
-            if (currHorR.w == Constants::Game::BLOCK_UNIT_DIM.x * Constants::Game::UNIT
-            && currHorR.h == Constants::Game::BLOCK_UNIT_DIM.y * Constants::Game::UNIT) {
+            if (currHorR.w == Constants::Platformer::Game::BLOCK_UNIT_DIM.x * Constants::Platformer::Game::UNIT
+            && currHorR.h == Constants::Platformer::Game::BLOCK_UNIT_DIM.y * Constants::Platformer::Game::UNIT) {
 
                 for (size_t j = 0; j < verRects.size(); ++j) {
                     SDL_Rect currVerR = verRects[j];
 
-                    if (currVerR.w == Constants::Game::BLOCK_UNIT_DIM.x * Constants::Game::UNIT
-                    && currVerR.h == Constants::Game::BLOCK_UNIT_DIM.y * Constants::Game::UNIT) {
+                    if (currVerR.w == Constants::Platformer::Game::BLOCK_UNIT_DIM.x * Constants::Platformer::Game::UNIT
+                    && currVerR.h == Constants::Platformer::Game::BLOCK_UNIT_DIM.y * Constants::Platformer::Game::UNIT) {
                         if (currHorR.x == currVerR.x && currHorR.y == currVerR.y) {
                             horRectIndToKeep.push_back(i);
                             break;
@@ -247,15 +247,15 @@ void Level::calcCollisionObjs(SDL_Renderer *gRenderer) {
         for (size_t i = 0; i < verRectIndToKeep.size(); ++i) {
 
             SDL_Rect rect = verRects[verRectIndToKeep[i]];
-            GameObject obj = GameObject(Vector3D(rect.x, rect.y), Vector3D(rect.w, rect.h), Constants::Game::Tag::BLOCK_TAG,
-            Constants::TexturePath::BLOCK, gRenderer);
+            GameObject obj = GameObject(Vector3D(rect.x, rect.y), Vector3D(rect.w, rect.h), Constants::Platformer::Game::Tag::BLOCK_TAG,
+            Constants::Platformer::TexturePath::BLOCK, gRenderer);
             levelObjs.push_back(obj);
         }
 
         for (size_t i = 0; i < horRectIndToKeep.size(); ++i) {
                     SDL_Rect rect = horRects[horRectIndToKeep[i]];
-                    GameObject obj = GameObject(Vector3D(rect.x, rect.y), Vector3D(rect.w, rect.h), Constants::Game::Tag::BLOCK_TAG,
-                    Constants::TexturePath::BLOCK, gRenderer);
+                    GameObject obj = GameObject(Vector3D(rect.x, rect.y), Vector3D(rect.w, rect.h), Constants::Platformer::Game::Tag::BLOCK_TAG,
+                    Constants::Platformer::TexturePath::BLOCK, gRenderer);
 
             levelObjs.push_back(obj);
         }
@@ -274,30 +274,30 @@ void Level::constructLevel(SDL_Renderer *gRenderer) {
     levelObjs.clear();
     enemyObjs.clear();
 
-    float heightOffSet = Constants::Game::UNIT * Constants::Game::SCREEN_UNIT_HEIGHT -
-                         contents.size() * Constants::Game::BLOCK_UNIT_DIM.y * Constants::Game::UNIT;
+    float heightOffSet = Constants::Platformer::Game::UNIT * Constants::Platformer::Game::SCREEN_UNIT_HEIGHT -
+                         contents.size() * Constants::Platformer::Game::BLOCK_UNIT_DIM.y * Constants::Platformer::Game::UNIT;
 
     for (size_t i = 0; i < contents.size(); i++) {
 
         for (std::string::size_type j = 0; j < contents[i].size(); ++j) {
 
-            Vector3D elementPos = Vector3D(j * Constants::Game::BLOCK_UNIT_DIM.x * Constants::Game::UNIT,
-                                           i * Constants::Game::UNIT * Constants::Game::BLOCK_UNIT_DIM.y);
+            Vector3D elementPos = Vector3D(j * Constants::Platformer::Game::BLOCK_UNIT_DIM.x * Constants::Platformer::Game::UNIT,
+                                           i * Constants::Platformer::Game::UNIT * Constants::Platformer::Game::BLOCK_UNIT_DIM.y);
 
             elementPos.y += heightOffSet;
 
 
-            Vector3D playerDim = Constants::Game::PLAYER_UNIT_DIM * Constants::Game::UNIT;
-            Vector3D blockDim = Constants::Game::BLOCK_UNIT_DIM * Constants::Game::UNIT;
-            Vector3D goalDim = Constants::Game::GOAL_UNIT_DIM * Constants::Game::UNIT;
-            Vector3D enemyDim = Constants::Game::ENEMY_UNIT_DIM * Constants::Game::UNIT;
-            Vector3D collectibleDim = Constants::Game::COLLECTIBLE_UNIT_DIM * Constants::Game::UNIT;
+            Vector3D playerDim = Constants::Platformer::Game::PLAYER_UNIT_DIM * Constants::Platformer::Game::UNIT;
+            Vector3D blockDim = Constants::Platformer::Game::BLOCK_UNIT_DIM * Constants::Platformer::Game::UNIT;
+            Vector3D goalDim = Constants::Platformer::Game::GOAL_UNIT_DIM * Constants::Platformer::Game::UNIT;
+            Vector3D enemyDim = Constants::Platformer::Game::ENEMY_UNIT_DIM * Constants::Platformer::Game::UNIT;
+            Vector3D collectibleDim = Constants::Platformer::Game::COLLECTIBLE_UNIT_DIM * Constants::Platformer::Game::UNIT;
 
-            std::string playerTextureFileName = Constants::TexturePath::PLAYER;
-            std::string blockTextureFileName = Constants::TexturePath::BLOCK;
-            std::string collectibleTextureFileName = Constants::TexturePath::COLLECTIBLE;
-            std::string goalTextureFileName = Constants::TexturePath::GOAL;
-            std::string enemyTextureFileName = Constants::TexturePath::ENEMY;
+            std::string playerTextureFileName = Constants::Platformer::TexturePath::PLAYER;
+            std::string blockTextureFileName = Constants::Platformer::TexturePath::BLOCK;
+            std::string collectibleTextureFileName = Constants::Platformer::TexturePath::COLLECTIBLE;
+            std::string goalTextureFileName = Constants::Platformer::TexturePath::GOAL;
+            std::string enemyTextureFileName = Constants::Platformer::TexturePath::ENEMY;
 
             SDL_Color clearClr = {0, 0, 0, 0};
 
@@ -318,7 +318,7 @@ void Level::constructLevel(SDL_Renderer *gRenderer) {
                     break;
                 case 'X':
                 case 'x':
-                    block = GameObject(elementPos, blockDim, Constants::Game::Tag::BLOCK_TAG, clearClr, clearClr, blockTextureFileName,
+                    block = GameObject(elementPos, blockDim, Constants::Platformer::Game::Tag::BLOCK_TAG, clearClr, clearClr, blockTextureFileName,
                                                   gRenderer);
                     blockObjs.push_back(block);
                     std::cout << "Make block" << std::endl;
