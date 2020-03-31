@@ -25,8 +25,14 @@
 class SDLGraphicsProgram{
 public:
 
+	/*GameCodes:
+	 * 1 = Breakout
+	 * 2 = Platformer
+	 * 3 = Galaga (To Do)
+	 */
+
     // Constructor
-    SDLGraphicsProgram(int w, int h, std::string backgroundMusicFile);
+    SDLGraphicsProgram(int gameCode);
     // Desctructor
     ~SDLGraphicsProgram();
     // Per frame update for Breakout
@@ -67,6 +73,8 @@ public:
 
 
 private:
+    //Game Code
+    int gc;
     // Screen dimension constants
     int screenWidth;
     int screenHeight;

@@ -307,12 +307,11 @@ void resetToLevel(Level lvl){
 // Initialization function
 // Returns a true or false value based on successful completion of setup.
 // Takes in dimensions of window.
-SDLGraphicsProgram::SDLGraphicsProgram(int w, int h, std::string backgroundMusicFile) :
-        screenWidth(w),
-        screenHeight(h),
+SDLGraphicsProgram::SDLGraphicsProgram(int gameCode) :
         gWindow(nullptr),
         gRenderer(nullptr) {
-    // Initialize random number generation.
+
+	gc = gameCode;
 
     initLevelLoading();
     resetToLevel(levels[GameObject::levelCount]);
@@ -378,8 +377,18 @@ SDLGraphicsProgram::SDLGraphicsProgram(int w, int h, std::string backgroundMusic
 
     //Resource Manager initialization
     resourceManager = ResourceManager::getInstance();
-    //Ball init with sound files
-    ball.init(getResourcePath() + "459145__mattix__retro-pew-shot-01.wav", getResourcePath() + "219619__ani-music__pew-pew-sound-effect-peww1.wav");
+    if (gc == 1)
+    {
+    	//Ball init with sound files
+    	ball.init(getResourcePath() + "459145__mattix__retro-pew-shot-01.wav", getResourcePath() + "219619__ani-music__pew-pew-sound-effect-peww1.wav");
+    	backgroundMusicFile = "BreakoutMusic";
+    }
+
+    else if (gc == 2)
+    {
+    	backgroundMusicFile = "PlatformerMusic"
+    }
+
     //Load background music
     this->backgroundMusicFile = getResourcePath() + backgroundMusicFile;
     backgroundMusic = resourceManager->getMusicResource(this->backgroundMusicFile);
@@ -542,7 +551,6 @@ void SDLGraphicsProgram::renderPlatformer() {
 //Loops forever!
 void SDLGraphicsProgram::loopBreakout() {
 
-
     // Main loop flag
     // If this is quit = 'true' then the program terminates.
     bool quit = false;
@@ -654,9 +662,9 @@ void SDLGraphicsProgram::loopBreakout() {
         }
 
         // Update our scene
-        update();
+        updateBreakout();
         // Render
-        render();
+        renderBreakout();
 
         //Cap frame rate
         unsigned int endFrame = SDL_GetTicks();
@@ -672,7 +680,6 @@ void SDLGraphicsProgram::loopBreakout() {
 
 //Loops forever!
 void SDLGraphicsProgram::loopPlatformer() {
-
     //start of program
 
     //set alpha channel on
@@ -832,9 +839,9 @@ void SDLGraphicsProgram::loopPlatformer() {
         }
 
         // Update our scene
-        update();
+        updatePlatformer();
         // Render
-        render();
+        renderPlatformer();
 
         //Cap frame rate
         unsigned int endFrame = SDL_GetTicks();
