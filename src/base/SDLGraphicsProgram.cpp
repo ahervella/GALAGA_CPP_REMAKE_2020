@@ -1040,7 +1040,9 @@ void SDLGraphicsProgram::getLanguages(){
 
 void SDLGraphicsProgram::changeLanguage(int langIndex){
 
-	currLanguageStream.reset();
+	if(currLanguageStream) {
+		currLanguageStream.reset();
+	}
     currLanguageStream = ResourceManager::getInstance()->getConfigFileResource(languageFiles[langIndex]);
         std::string contents;
         std::string line;
@@ -1053,6 +1055,25 @@ void SDLGraphicsProgram::changeLanguage(int langIndex){
             gameTexts[keyy.first] = NA_TEXT;
     }
 
+    blah->close();
+    blah->open(languageFiles[langIndex].c_str());
+
+
+    while ( /*(*currLanguageStream)*/blah->good() ){
+     	std::cout << "blah is good!" << std::endl;
+        std::getline(*blah, line);
+        std::istringstream ss(line);
+        if(std::getline(ss, key, ' ')) {
+          	std::cout << "Key:" << key << std::endl;
+           	if(gameTexts.count(key) > 0) {
+           		if(std::getline(ss, value)) {
+           			gameTexts[key] = value;
+                    std::cout<<key + gameTexts[key]<<std::endl<<std::endl;
+           		}
+           	}
+        }
+    }
+/*
     (*currLanguageStream)->open(languageFiles[langIndex].c_str(), std::fstream::out );
 
     while ( (*currLanguageStream)->good() ) {
@@ -1067,14 +1088,22 @@ void SDLGraphicsProgram::changeLanguage(int langIndex){
             }
         }
     }
+*/
 
     (*currLanguageStream)->close();
+
 
     for(auto const& key: gameTexts){
         if (key.second == NA_TEXT){
             std::cout<<"Warning--No match for key: \"" + key.first + "\" was found!"<<std::endl<<std::endl;
         }
     }
+
+    livesText.text = livesText.textTemplate = gameTexts["LIVES"];
+    scoreText.text = scoreText.textTemplate = gameTexts["SCORE"];
+
+    livesText.setText(livesText.currCounter);
+    scoreText.setText(scoreText.currCounter);
 }
 
 
