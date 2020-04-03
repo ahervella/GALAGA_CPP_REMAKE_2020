@@ -4,7 +4,9 @@
 #include "GameObject.hpp"
 #include "Constants.hpp"
 
-//A collectible object
+/**
+ * A goal in the platformer game. If the player collects this, they win!
+ */
 class Goal : public GameObject {
 
 public:

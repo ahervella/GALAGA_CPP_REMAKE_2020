@@ -4,7 +4,9 @@
 #include "GameObject.hpp"
 #include "Constants.hpp"
 
-//A collectible object
+/**
+ * A collectible object in the Platformer game
+ */
 class Collectible : public GameObject {
 
 public:

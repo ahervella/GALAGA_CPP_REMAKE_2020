@@ -28,6 +28,17 @@
 #include "Level.hpp"
 #include "BreakoutLevel.hpp"
 
+/**
+ * The class that runs our games/level editors. Maintains the code to run each game/editor, and the game/editor is determined by a
+ * game code that is given as a parameter to the SDLGraphicsProgram constructor. The game codes are as follows:
+ * -3 = LevelEditor Galaga (To Do)
+ * -2 = LevelEditor Platformer
+ * -1 = LevelEditor Breakout
+ * 1 = Breakout
+ * 2 = Platformer
+ * 3 = Galaga (To Do)
+ *
+ */
 class SDLGraphicsProgram{
 public:
 
@@ -50,8 +61,14 @@ public:
      */
     void initLevelLoading();
 
+    /**
+     * Initializes the level and config files in the resource manager (used in a level editor)
+     */
     void initLevelLoadingEditor();
 
+    /**
+     * Initializes the level and config files in the resource manager (used for game levels during gameplay)
+     */
     void initLevelLoadingGames();
 
     // Per frame update for Breakout
@@ -73,7 +90,13 @@ public:
     // loop that runs forever for the Editor
     void loopEditor();
 
+    /**
+     * Edits a tile in the breakout level editor
+     */
     void editTileBreakout(Vector3D blockPos, std::string blockStr);
+    /**
+     * Edits a tile in the platformer level editor
+     */
     void editTilePlatformer(Vector3D blockPos, std::string blockStr);
     /**
      * edits the tile at the given position to be of new type blockStr
@@ -109,6 +132,15 @@ public:
      */
     void changeLanguage(int langIndex);
 
+    /**
+     * Handles the loss of a life in the games supported by SDLGraphicsProgram
+     */
+    void loseLife();
+
+    /**
+     * Handles the game ending in the games supported by SDLGraphicsProgram
+     */
+    void gameOver();
 
 
     //helper for editing the editorTile files in real time.

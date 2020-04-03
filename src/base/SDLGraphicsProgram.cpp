@@ -50,6 +50,11 @@ int BRICK_COLUMNS  = -1;
 
 const SDL_Color PADDLE_COLOR = {0, 250, 0, 250};
 
+//May not use these, but this might be fun to play with
+const SDL_Color TEXT_COLOR_NEUTRAL = {255, 255, 255, 255};
+const SDL_Color TEXT_COLOR_LOSE = {255, 0, 0, 255};
+const SDL_Color TEXT_COLOR_WIN = {0, 255, 0, 255};
+
 //level editor main menu text
 
 Textbox mainMenuText;
@@ -66,6 +71,7 @@ int brickCollisionIndex = -1;
 
 int lifeCount = DEFAULT_LIVES;
 int score = 0;
+int currLevelScore = 0;
 int currLevelIndex = 0;
 
 std::map<std::string, std::string> gameTexts{
@@ -80,18 +86,40 @@ std::map<std::string, std::string> gameTexts{
 
 // Define functions to help with Breakout
 
-void gameOver() {
+void SDLGraphicsProgram::gameOver() {
     GameObject::gameOver = true;
 
     std::cout << "Game over set" << std::endl;
-    if (Player::lifeCount < 0) {
-        centerText.text = centerText.text = gameTexts["LOSE"];
-        std::cout << "Game over text set (lose)" << std::endl;
-        return;
+    int lives = 0;
+    int level_num = 0;
+    int level_max = 0;
+    //Probably should refactor this, but lifeCount is the global variable used for breakout
+    if(gc == 1) {
+    	lives = lifeCount;
+    	level_num = levelCount;
+    	level_max = BreakoutLevels.size();
+    }
+    //Player::lifeCount holds the lives for Platformer
+    else if(gc == 2) {
+    	lives = Player::lifeCount;
+    	level_num = currLevelIndex;
+    	level_max = PlatformerLevels.size();
     }
 
-    centerText.text = gameTexts["WIN"];
-    std::cout << "Game over text set (win)" << std::endl;
+	if (lives < 0) {
+		centerText.text = gameTexts["LOSE"];
+		std::cout << "Game over text set (lose)" << std::endl;
+		return;
+	}
+
+	if(level_num + 1 == level_max) {
+		centerText.text = gameTexts["DONE"];
+		std::cout << "Game done text set" << std::endl;
+	}
+	else {
+		centerText.text = gameTexts["WIN"];
+		std::cout << "Game over text set (win)" << std::endl;
+	}
 
 }
 
@@ -198,22 +226,36 @@ void SDLGraphicsProgram::checkBrickCollision(float &newAngle, int &collisionID, 
     }
 }
 
-void loseLife() {
-    lifeCount -= 1;
+//Losing a life
+void SDLGraphicsProgram::loseLife() {
 
-    if (lifeCount < 0) {
-        gameOver();
-        return;
-    }
+	if(gc == 1) {
+		lifeCount -= 1;
 
-    ball.resetBall();
-    livesText.setText(lifeCount);
+    	if (lifeCount < 0) {
+        	gameOver();
+        	return;
+    	}
+
+    	ball.resetBall();
+    	livesText.setText(lifeCount);
+	}
+
+	else if (gc == 2) {
+		Player::lifeCount -= 1;
+
+		if(Player::lifeCount < 0) {
+			gameOver();
+			return;
+		}
+	}
 }
 
 void SDLGraphicsProgram::removeBrick(int rmIndex) {
 
 
     scoreText.setText(++score);
+    currLevelScore++;
 
     BreakoutLevels[levelCount].levelObjs.erase(BreakoutLevels[levelCount].levelObjs.begin() + rmIndex);
 
@@ -290,8 +332,15 @@ void SDLGraphicsProgram::resetToLevel(){
 
     BreakoutLevels[levelCount].constructLevel(getSDLRenderer());
 
+    //Reset text
+    centerText.text = " ";
+
+    //Reset score to pre-level score
+    score -= currLevelScore;
+    currLevelScore = 0;
+
     ball.resetBall();
-    scoreText.setText(0);
+    scoreText.setText(score);
     //BRICK_GROUP_X_POS = (SCREEN_WIDTH - BRICK_WIDTHS * BRICK_COLUMNS) / 2;
 
 
@@ -429,7 +478,7 @@ SDLGraphicsProgram::~SDLGraphicsProgram() {
 	Mix_HaltMusic();
 	backgroundMusic.reset();
 	resourceManager->deleteMusicResource(backgroundMusicFile);
-    // Destroy Renderer
+	// Destroy Renderer
     SDL_DestroyRenderer(gRenderer);
     //Destroy window
     SDL_DestroyWindow(gWindow);
@@ -627,14 +676,42 @@ void SDLGraphicsProgram::renderBreakout() {
 
 
     //render center texture
-    SDL_Texture *centerTextImage = renderText(centerText.text, livesText.textResPath, centerText.clr,
-                                              centerText.textSize, getSDLRenderer());
-    renderTexture(centerTextImage, getSDLRenderer(), centerText.x, centerText.y);
+    //Trying to skip new line characters here with strtok. There are better ways, but this will work
+    int y = centerText.y;
+    //
+    bool first = true;
+    char * origText = new char[centerText.text.length() + 1];
+    strcpy(origText, centerText.text.c_str());
+    //Loop for writing new lines on a seaparate line
+    char * line = strtok(origText, "\\");
+    while (line != NULL) {
+    	//A hack for skipping the 'n' in '\n' after strtok skips the '\'.
+    	//The first time around, the beginning of the string is the start of the string and not the trailing 'n'
+    	if(first) {
+    		first = false;
+    	}
+    	//After the first strtok call, the string will start with 'n'. Skip that.
+    	else {
+    		//Make sure there is a character afterwards
+    		if(line + 1 != '\0') {
+    			line += 1;
+    		}
+    	}
+    	SDL_Texture *centerTextImage = renderText(line, livesText.textResPath, centerText.clr,
+    	                                              centerText.textSize, getSDLRenderer());
+    	//TODO: Get centered position here. It fits, but it could look better, y'know?
+    	renderTexture(centerTextImage, getSDLRenderer(), centerText.x, y);
+
+        SDL_DestroyTexture(centerTextImage);
+        line = strtok(NULL, "\\");
+        y += centerText.textSize;
+    }
+
+    delete [] origText;
 
     SDL_RenderPresent(getSDLRenderer());
     SDL_DestroyTexture(livesTextImage);
     SDL_DestroyTexture(scoreTextImage);
-    SDL_DestroyTexture(centerTextImage);
 
 }
 
@@ -650,6 +727,7 @@ void SDLGraphicsProgram::renderPlatformer() {
 
 void SDLGraphicsProgram::renderEditor() {
 
+	//TODO: See if this needs to be removed to get plain black image for Breakout Editor and kept for Platformer editor
     SDL_RenderCopy(getSDLRenderer(), *backgroundImage, NULL, NULL);
 
 
@@ -744,6 +822,8 @@ void SDLGraphicsProgram::loopBreakout() {
     Mix_PlayMusic(*(backgroundMusic), -1);
 
     resetToLevel();
+    bool started = false;
+    centerText.text = gameTexts["START"];
 
     std::cout<<"working3"<<std::endl;
 
@@ -766,15 +846,33 @@ void SDLGraphicsProgram::loopBreakout() {
 
                 switch( e.key.keysym.sym ){
 
-                    case SDLK_SPACE:
+                	//Essentially, only have space do something when we need to start the game
+                	case SDLK_SPACE:
+                		if(!started) {
+                			started = true;
+                			GameObject::gameOver = false;
+                			centerText.text = " ";
+                		}
+                		break;
 
-                            if ((size_t) levelCount < BreakoutLevels.size() && GameObject::gameOver){
+                    case SDLK_n:
+
+                            if (started && (size_t) levelCount < BreakoutLevels.size() && GameObject::gameOver && lifeCount >= 0){
+
+
+                            	//Advancing to next level --> we keep currLevelScore and don't subtract it in resetToLevel()
+                            	//This will prevent that
+                            	currLevelScore = 0;
+
+                            	if((size_t)levelCount + 1 == BreakoutLevels.size()) {
+                            		//This is set elsewhere when calculating the game over conditions (win/lose/end of game)
+                            		//So probably not needed
+                            		centerText.text = gameTexts["DONE"];
+                            		//TODO: More graceful exit? Quitting/going to the next level at this point causes a whacky exit code
+                            		return;
+                            	}
 
                             	levelCount++;
-
-                            	if((size_t)levelCount == BreakoutLevels.size()) {
-                            		centerText.text = gameTexts["DONE"];
-                            	}
 
                             	if(levelCount != 0){
                                     resetToLevel();
@@ -815,6 +913,22 @@ void SDLGraphicsProgram::loopBreakout() {
                     case SDLK_q:
                         quit = true;
                         break;
+                    case SDLK_r:
+                    	if(started) {
+							if(lifeCount < 0) {
+								lifeCount = DEFAULT_LIVES;
+								//Reset score, set score and life texts, reset center text
+								centerText.text = " ";
+								livesText.setText(lifeCount);
+								score = 0;
+								//If we restart after losing all lives, we don't want to subtract the score earned in the level from 0
+								currLevelScore = 0;
+								scoreText.setText(score);
+							}
+							resetToLevel();
+							GameObject::gameOver = false;
+							break;
+                    	}
                 }
             }
 
@@ -926,15 +1040,17 @@ void SDLGraphicsProgram::loopPlatformer() {
 
                 switch( e.key.keysym.sym ){
 
-                	case SDLK_SPACE:
-                		if ((size_t)currLevelIndex < PlatformerLevels.size() && GameObject::gameOver){
+                	case SDLK_n:
+                		if ((size_t)currLevelIndex < PlatformerLevels.size() && GameObject::gameOver && Player::lifeCount >= 0){
 
+
+
+                		    if((size_t)currLevelIndex + 1 == PlatformerLevels.size()) {
+                		        centerText.text = gameTexts["DONE"];
+                		        return;
+                		    }
 
                 		    currLevelIndex++;
-
-                		    if((size_t)currLevelIndex == PlatformerLevels.size()) {
-                		        centerText.text = gameTexts["DONE"];
-                		    }
 
                 			if(currLevelIndex != 0){
                 				PlatformerLevels[currLevelIndex].constructLevel(getSDLRenderer());
@@ -988,8 +1104,12 @@ void SDLGraphicsProgram::loopPlatformer() {
                         quit = true;
                         break;
                     case SDLK_r:
+                    	if(Player::lifeCount < 0) {
+                    		Player::lifeCount = 0;
+                    	}
                     	PlatformerLevels[currLevelIndex].constructLevel(getSDLRenderer());
                         GameObject::gameOver = false;
+                        centerText.text = " ";
                         break;
                 }
             }
@@ -1721,6 +1841,36 @@ void SDLGraphicsProgram::changeLanguage(int langIndex){
 
     livesText.setText(livesText.currCounter);
     scoreText.setText(scoreText.currCounter);
+    if(!GameObject::gameOver) {
+    	centerText.text = " ";
+    }
+    else {
+    	int lives = 0;
+    	int level_num = 0;
+    	int level_max = 0;
+    	//A result of using two different variables each for lives and level number depending on the game.
+    	if(gc == 1) {
+    		lives = lifeCount;
+    		level_num = levelCount;
+    		level_max = BreakoutLevels.size();
+    	}
+    	else if(gc == 2) {
+    		lives = Player::lifeCount;
+    		level_num = currLevelIndex;
+    		level_max = PlatformerLevels.size();
+
+    	}
+    	if(lives < 0) {
+    		centerText.text = gameTexts["LOSE"];
+    	}
+    	else {
+    		if(level_num + 1 == level_max) {
+    			centerText.text = gameTexts["DONE"];
+    			return;
+    		}
+    		centerText.text = gameTexts["WIN"];
+    	}
+    }
 }
 
 

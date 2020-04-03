@@ -6,6 +6,9 @@
 #include "GameObject.hpp"
 #include "Constants.hpp"
 
+/**
+ * Class that represents the player of the Platformer game
+ */
 class Player : public GameObject{
 
 public:

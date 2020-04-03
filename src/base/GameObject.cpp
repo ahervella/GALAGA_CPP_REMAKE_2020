@@ -5,7 +5,7 @@
 #include "ResourceManager.hpp"
 #include <iostream>
 
-bool GameObject::gameOver = false;
+bool GameObject::gameOver = true;
 
 GameObject::GameObject(){}
 

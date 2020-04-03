@@ -9,13 +9,15 @@
 #include <string>
 
 
-
+/**
+ * A class that represents a textbox to display important text in a game
+ */
 class Textbox {
 
 public:
 	std::string text;
 
-    SDL_Color clr = {0, 0, 0, 255};
+    SDL_Color clr = {255, 255, 255, 255};
     int textSize = 6;
     int x = 5;
     int y = 5;
@@ -37,6 +39,9 @@ public:
     Textbox(std::string text, int textSize, int x, int y);
 };
 
+/**
+ * A subclass of TextBox that includes a field for a counted variable (lives, score, etc.)
+ */
 class CounterTextbox : public Textbox {
 
 public:
