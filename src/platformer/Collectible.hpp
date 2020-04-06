@@ -2,7 +2,7 @@
 #define COLLECTIBLE_HPP
 
 #include "GameObject.hpp"
-#include "Constants.hpp"
+#include "../base/Constants.hpp"
 
 /**
  * A collectible object in the Platformer game

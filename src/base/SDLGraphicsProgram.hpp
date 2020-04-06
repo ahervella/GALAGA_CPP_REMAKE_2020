@@ -25,7 +25,7 @@
 
 #include "ResourceManager.hpp"
 
-#include "Level.hpp"
+#include "../platformer/Level.hpp"
 #include "BreakoutLevel.hpp"
 
 /**

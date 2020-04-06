@@ -2,7 +2,7 @@
 #define ENEMY_HPP
 
 #include "GameObject.hpp"
-#include "Constants.hpp"
+#include "../base/Constants.hpp"
 
 /**
  * An enemy in the Platformer game

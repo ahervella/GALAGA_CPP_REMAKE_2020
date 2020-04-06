@@ -51,9 +51,9 @@ int BRICK_COLUMNS  = -1;
 const SDL_Color PADDLE_COLOR = {0, 250, 0, 250};
 
 //May not use these, but this might be fun to play with
-const SDL_Color TEXT_COLOR_NEUTRAL = {255, 255, 255, 255};
-const SDL_Color TEXT_COLOR_LOSE = {255, 0, 0, 255};
-const SDL_Color TEXT_COLOR_WIN = {0, 255, 0, 255};
+//const SDL_Color TEXT_COLOR_NEUTRAL = {255, 255, 255, 255};
+//const SDL_Color TEXT_COLOR_LOSE = {255, 0, 0, 255};
+//const SDL_Color TEXT_COLOR_WIN = {0, 255, 0, 255};
 
 //level editor main menu text
 
@@ -693,7 +693,7 @@ void SDLGraphicsProgram::renderBreakout() {
     	//After the first strtok call, the string will start with 'n'. Skip that.
     	else {
     		//Make sure there is a character afterwards
-    		if(line + 1 != '\0') {
+    		if(*line + 1 != '\0') {
     			line += 1;
     		}
     	}

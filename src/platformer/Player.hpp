@@ -4,7 +4,7 @@
 
 
 #include "GameObject.hpp"
-#include "Constants.hpp"
+#include "../base/Constants.hpp"
 
 /**
  * Class that represents the player of the Platformer game

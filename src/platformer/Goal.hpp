@@ -2,7 +2,7 @@
 #define GOAL_HPP
 
 #include "GameObject.hpp"
-#include "Constants.hpp"
+#include "../base/Constants.hpp"
 
 /**
  * A goal in the platformer game. If the player collects this, they win!
