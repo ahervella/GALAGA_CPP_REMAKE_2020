@@ -61,6 +61,7 @@ public:
      * Uses a direction from which the player collides with an object to make a state update on the player
      *
      * @param collisionDirection: The direction from which a collision on the player is detected
+     * @param otherTag: the tag of the other object
      */
     bool collisionUpdate(GameObject::SIDE collisionDirection, int otherTag);
 

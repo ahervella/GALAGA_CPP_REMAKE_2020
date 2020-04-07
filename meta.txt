@@ -18,6 +18,7 @@ Breakout and Platformer projects (Michael and Alejandro's, pretty much all the c
 Galaga:
     We made out own sprites!
     Music: https://freemusicarchive.org/music/Csum/Anaerobica/01_Csum_-_Wild_Colours
+    Background: https://www.tynker.com/community/projects/play/galaga/596d22c71c36d1e4608b456f
 
 
 Breakout:
