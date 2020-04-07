@@ -19,18 +19,20 @@ namespace Constants {
             const float SCREEN_UNIT_WIDTH = 12;//20
             const float SCREEN_UNIT_HEIGHT = 14;//11
             const Vector3D PLAYER_UNIT_DIM = Vector3D(1, 1);//1.4, 2);
-            const int LIVES = 3;
+            const int LIVES = 0;
 
             namespace Tag {
                 const int BADY_TAG = 1;
                 const int PLAYER_TAG = 2;
                 const int PLAYER_BULLET_TAG = 3;
+                const int BADY_BULLET_TAG = 4;
             }
 
         }
 
         namespace TexturePath{
             const std::string CLEAR = getResourcePath("platformer/sprites") + "clear.png";
+            const std::string BULLET = getResourcePath("galaga") + "galaga-png-101-images-in-collection-page-2-galaga-png-1152_1152.png";
             const std::string BADY1 = getResourcePath("galaga") + "Bady1.png";
             const std::string BADY2 = getResourcePath("galaga") + "Bady2.png";
             const std::string BADY3 = getResourcePath("galaga") + "Bady3.png";

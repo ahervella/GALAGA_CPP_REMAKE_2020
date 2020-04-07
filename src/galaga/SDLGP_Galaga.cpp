@@ -6,6 +6,7 @@
  */
 
 #include "SDLGP_Galaga.hpp"
+#include <algorithm>
 
 
 
@@ -142,10 +143,26 @@ void SDLGP_Galaga::update()
 
     std::vector<Bady> objs = GalagaLevels[currLevelIndex].levelObjs;//levels[currLevelIndex].levelObjs;
     PlayerShip* p = &GalagaLevels[currLevelIndex].player;
+    std::vector<Bullet> bullets = GalagaLevels[currLevelIndex].bullets;
     //If we have a collision, let the player figure out what to do based on where the collision is from
     //TODO: For future, figure out
 
     scoreText.setText(p->getScore());
+
+    for(size_t i = 0; i < GalagaLevels[currLevelIndex].levelObjs.size(); ++i) {
+    	if(GalagaLevels[currLevelIndex].levelObjs[i].hasFired()) {
+    		Vector3D pos = GalagaLevels[currLevelIndex].levelObjs[i].pos;
+    		Vector3D dim = GalagaLevels[currLevelIndex].levelObjs[i].dim;
+    		GalagaLevels[currLevelIndex].bullets.push_back
+				(Bullet(pos, dim, Constants::Galaga::Game::Tag::BADY_BULLET_TAG, Constants::Galaga::TexturePath::BULLET, gRenderer));
+    	}
+    }
+    if(p->hasFired()) {
+    	Vector3D pos = p->pos;
+    	Vector3D dim = p->dim;
+    	GalagaLevels[currLevelIndex].bullets.push_back
+    			(Bullet(pos, dim, Constants::Galaga::Game::Tag::PLAYER_BULLET_TAG, Constants::Galaga::TexturePath::BULLET, gRenderer));
+    }
 
     //TODO: Could use this later on for grabbing powerups
     /*
@@ -168,6 +185,65 @@ void SDLGP_Galaga::update()
 
     }
      */
+    std::vector<Bullet> bulletsToRemove;
+    std::vector<Bady> badysToRemove;
+    for(size_t i = 0; i < bullets.size(); ++i) {
+    	if(bullets[i].pos.y < 0 || bullets[i].pos.y > (Constants::Galaga::Game::UNIT * Constants::Galaga::Game::SCREEN_UNIT_HEIGHT)) {
+    		bulletsToRemove.push_back(bullets[i]);
+    		continue;
+    	}
+    	//Could be a player bullet or enemy bullet
+    	int tag = bullets[i].tag;
+    	bool hit = false;
+    	for(size_t k = 0; k < objs.size(); ++k) {
+    		if(objs[k].collisionUpdate(objs[k].isColliding(bullets[i]), tag)) {
+    			hit = true;
+    			badysToRemove.push_back(objs[k]);
+        		p->setScore(p->getScore() + 1);
+    			break;
+    		}
+    	}
+    	if(!hit && p->collisionUpdate(p->isColliding(bullets[i]), tag)) {
+    		hit = true;
+    		loseLife();
+    		if(GameObject::gameOver) {
+    		    //Stop the game if we hit game over after losing a life
+    		    return;
+    		}
+    	}
+    	if(!hit) {
+    		bulletsToRemove.push_back(bullets[i]);
+    	}
+    }
+
+    //Removing enemies and bullets that need to be removed
+
+    for (auto obj: bulletsToRemove) {
+        auto elem = std::find(bullets.begin(), bullets.end(), obj);
+        if (elem != bullets.end()) {
+          bullets.erase(elem);
+        }
+    }
+    GalagaLevels[currLevelIndex].bullets = bullets;
+
+    for (auto obj: badysToRemove) {
+           auto elem = std::find(objs.begin(), objs.end(), obj);
+           if (elem != objs.end()) {
+             objs.erase(elem);
+           }
+    }
+    GalagaLevels[currLevelIndex].levelObjs = objs;
+
+//    for(Bullet b: bulletsToRemove) {
+//    	GalagaLevels[currLevelIndex].bullets.erase(std::remove
+//    			(GalagaLevels[currLevelIndex].bullets.begin(), GalagaLevels[currLevelIndex].bullets.end(), b),
+//				GalagaLevels[currLevelIndex].bullets.end());
+//    }
+//    for(Bady b: badysToRemove) {
+//    	GalagaLevels[currLevelIndex].levelObjs.erase(std::remove
+//    	    			(GalagaLevels[currLevelIndex].levelObjs.begin(), GalagaLevels[currLevelIndex].levelObjs.end(), b),
+//    					GalagaLevels[currLevelIndex].levelObjs.end());
+//    }
 
     /*
     for(size_t j = 0; j < PlatformerLevels[currLevelIndex].enemyObjs.size(); ++j) {
@@ -192,6 +268,13 @@ void SDLGP_Galaga::update()
 
     p->move();
     p->update();
+
+    for(size_t i = 0; i < GalagaLevels[currLevelIndex].levelObjs.size(); ++i) {
+    	GalagaLevels[currLevelIndex].levelObjs[i].update();
+    }
+    for(size_t k = 0; k < GalagaLevels[currLevelIndex].bullets.size(); ++k) {
+    	GalagaLevels[currLevelIndex].bullets[k].update();
+    }
 
     /*
     for(size_t k = 0; k < PlatformerLevels[currLevelIndex].enemyObjs.size(); ++k) {
@@ -395,12 +478,38 @@ void SDLGP_Galaga::loop()
 
 void SDLGP_Galaga::gameOver()
 {
+	GameObject::gameOver = true;
 
+	std::cout << "Game over set" << std::endl;
+
+	int lives = PlayerShip::lifeCount;
+	int level_num = currLevelIndex;
+	int level_max = GalagaLevels.size();
+
+	if (lives < 0) {
+		centerText.text = gameTexts["LOSE"];
+		std::cout << "Game over text set (lose)" << std::endl;
+		return;
+	}
+
+	if(level_num + 1 == level_max) {
+		centerText.text = gameTexts["DONE"];
+		std::cout << "Game done text set" << std::endl;
+	}
+	else {
+		centerText.text = gameTexts["WIN"];
+		std::cout << "Game over text set (win)" << std::endl;
+	}
 }
 
 void SDLGP_Galaga::loseLife()
 {
+	PlayerShip::lifeCount -= 1;
 
+	if(PlayerShip::lifeCount < 0) {
+		gameOver();
+		return;
+	}
 }
 
 void SDLGP_Galaga::initLevel()

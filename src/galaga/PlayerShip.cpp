@@ -58,6 +58,9 @@ void PlayerShip::update() {
 	if(gameOver) {
 		return;
 	}
+	if(bulletFired) {
+		bulletFired = false;
+	}
 	//Add one to sinceLastShot for each frame we're updating in
 	sinceLastShot += 1;
 }
@@ -67,6 +70,16 @@ void PlayerShip::render(SDL_Renderer* gRenderer) {
 	int h;
 	SDL_QueryTexture(*spritesheet, NULL, NULL, &w, &h);
 
+	Src.w = w;
+	Src.h = h;
+	Src.x = 0;
+	Src.y = 0;
+
+	Dest.x = pos.x;
+	Dest.y = pos.y;
+	Dest.w = dim.x;
+	Dest.h = dim.y;
+
 	SDL_RenderCopy(gRenderer, *spritesheet, &Src, &Dest);
 }
 
@@ -75,13 +88,29 @@ void PlayerShip::shoot()
 	if(sinceLastShot >= cooldown) {
 		//Fire bullet, reset sinceLastShot
 		sinceLastShot = 0;
+		bulletFired = true;
 	}
+}
+
+bool PlayerShip::hasFired() {
+	return bulletFired;
 }
 
 int PlayerShip::getScore() {
 	return score;
 }
 
+void PlayerShip::setScore(int s) {
+	score = s;
+}
+
 bool PlayerShip::collisionUpdate(GameObject::SIDE collisionDirection, int otherTag) {
+	switch(otherTag) {
+			case Constants::Galaga::Game::Tag::BADY_BULLET_TAG:
+				if(collisionDirection != GameObject::SIDE::NONE) {
+					//TODO: Lose a life (handled by level)
+					return true;
+				}
+	}
 	return false;
 }
