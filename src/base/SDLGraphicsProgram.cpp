@@ -609,7 +609,7 @@ void SDLGraphicsProgram::updatePlatformer() {
 }
 
 //TODO: still need to implement
-void SDLGalagaProgram::updateGalaga(){}
+void SDLGraphicsProgram::updateGalaga(){}
 
 void SDLGraphicsProgram::updateEditor() {
     //render background
@@ -2049,8 +2049,8 @@ void SDLGraphicsProgram::editTileGalaga(Vector3D blockPos, int badyTypeInt) {
     }
 
 
-            contents[blockPos.y].replace(blockPos.x, 1, badyTypeInt);
-            break;
+            contents[blockPos.y].replace(blockPos.x, 1, std::to_string(badyTypeInt));
+
 
 
     std::string newContents;
@@ -2168,7 +2168,7 @@ void SDLGraphicsProgram::levelHelper(int lvlInt) {
                 edt_levels_platformer.push_back(new Level(getResourcePath("level_config") + "lvl0" + std::to_string(currLevel) + ".cfg"));
                 break;
             case -3:
-                edt_levels_galaga.push_back(new Level(getResourcePath("level_config") + "lvl0" + std::to_string(currLevel) + ".cfg"));
+                edt_levels_galaga.push_back(new GalagaLevel(getResourcePath("level_config") + "lvl0" + std::to_string(currLevel) + ".cfg"));
                 break;
         }
 
