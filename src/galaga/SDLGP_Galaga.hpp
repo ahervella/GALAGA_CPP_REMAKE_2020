@@ -28,7 +28,11 @@ public:
 
 	void resetToLevel();
 
-	void changeLanguage(int langIndex);
+    void makePlayerShip();
+
+    void changeLanguage(int langIndex);
+
+    void resetShipPosition();
 
 private:
 	std::vector<GalagaLevel> GalagaLevels;

@@ -7,7 +7,7 @@
 
 #include "SDLGP_Galaga.hpp"
 
-
+PlayerShip playerShip;
 
 SDLGP_Galaga::SDLGP_Galaga()
 {
@@ -22,6 +22,15 @@ SDLGP_Galaga::~SDLGP_Galaga()
 }
 
 
+
+void SDLGP_Galaga::makePlayerShip() {
+
+    std::string playerShipTexturePath = Constants::Galaga::TexturePath::PLAYERSHIP;
+
+    playerShip = PlayerShip(Vector3D(0, 0), Vector3D(0, 0),  playerShipTexturePath, gRenderer);
+
+    resetShipPosition();
+}
 
 
 void SDLGP_Galaga::changeLanguage(int langIndex){
@@ -119,7 +128,24 @@ void SDLGP_Galaga::changeLanguage(int langIndex){
 }
 
 
+
+void SDLGP_Galaga::resetShipPosition(){
+    int shipPosX = (Constants::Galaga::Game::SCREEN_UNIT_WIDTH / 2 - Constants::Galaga::Game::PLAYER_UNIT_DIM.x)
+                   * Constants::Galaga::Game::UNIT;
+
+    int shipPosY = (Constants::Galaga::Game::SCREEN_UNIT_HEIGHT - (2 * Constants::Galaga::Game::PLAYER_UNIT_DIM.y))
+                   * Constants::Galaga::Game::UNIT;
+
+    Vector3D shipDim = Constants::Galaga::Game::PLAYER_UNIT_DIM * Constants::Galaga::Game::UNIT;
+    playerShip.resetPosition(Vector3D(shipPosX, shipPosY), shipDim);
+}
+
+
 void SDLGP_Galaga::resetToLevel(){
+
+
+    resetShipPosition();
+
     centerText.text = " ";
 
     //Reset score to pre-level score
@@ -131,6 +157,7 @@ void SDLGP_Galaga::resetToLevel(){
 
 void SDLGP_Galaga::update()
 {
+
     if(GameObject::gameOver) {
         return;
     }
@@ -141,11 +168,17 @@ void SDLGP_Galaga::update()
     //Check for collision between player and enemies/bullets
 
     std::vector<Bady> objs = GalagaLevels[currLevelIndex].levelObjs;//levels[currLevelIndex].levelObjs;
-    PlayerShip* p = &GalagaLevels[currLevelIndex].player;
+
+
+    playerShip.move();
+    playerShip.update();
+
+
     //If we have a collision, let the player figure out what to do based on where the collision is from
     //TODO: For future, figure out
 
-    scoreText.setText(p->getScore());
+    scoreText.setText(playerShip.getScore());
+
 
     //TODO: Could use this later on for grabbing powerups
     /*
@@ -190,8 +223,8 @@ void SDLGP_Galaga::update()
     //all velocities should be final at this point in frame for player, apply to position
     //std::cout<<"size: " + std::to_string(objs.size())<<std::endl;
 
-    p->move();
-    p->update();
+    //p->move();
+    //p->update();
 
     /*
     for(size_t k = 0; k < PlatformerLevels[currLevelIndex].enemyObjs.size(); ++k) {
@@ -208,17 +241,24 @@ void SDLGP_Galaga::render()
     renderTexts();
 
     GalagaLevels[currLevelIndex].render(getSDLRenderer());
+    playerShip.render(getSDLRenderer());
+
 
     SDL_RenderPresent(getSDLRenderer());
+
 }
 
 void SDLGP_Galaga::loop()
 {
+
     //set alpha channel on
     SDL_SetRenderDrawBlendMode(getSDLRenderer(), SDL_BLENDMODE_BLEND);
 
+    makePlayerShip();
 
     GalagaLevels[currLevelIndex].constructLevel(getSDLRenderer());
+
+
     // Main loop flag
     // If this is quit = 'true' then the program terminates.
     bool quit = false;
@@ -228,19 +268,18 @@ void SDLGP_Galaga::loop()
     // Enable text input
     SDL_StartTextInput();
 
+
     bool rightJustPressed = false;
     bool leftJustPressed = false;
     Mix_PlayMusic(*(backgroundMusic), -1);
+
 
     resetToLevel();
     bool started = false;
     centerText.text = gameTexts["START"];
 
-    std::cout<<"working3"<<std::endl;
-
     // While application is running
     while (!quit) {
-        PlayerShip* p = &GalagaLevels[currLevelIndex].player;
         //Start timer to find out how much time this frame takes
         unsigned int startFrame = SDL_GetTicks();
         //Handle events on queue
@@ -266,7 +305,7 @@ void SDLGP_Galaga::loop()
                             centerText.text = " ";
                         }
                         else {
-                            p->shoot();
+                            playerShip.shoot();
                         }
                         break;
 
@@ -304,13 +343,13 @@ void SDLGP_Galaga::loop()
 
                     case SDLK_RIGHT:
                         if (!rightJustPressed){
-                            p->changeDirection(1);
+                            playerShip.changeDirection(1);
                             rightJustPressed = true;
                         }
                         break;
                     case SDLK_LEFT:
                         if (!leftJustPressed){
-                            p->changeDirection(-1);
+                            playerShip.changeDirection(-1);
                             leftJustPressed = true;
                         }
                         break;
@@ -364,15 +403,15 @@ void SDLGP_Galaga::loop()
 
             //needed for when let go after holding both down.
             if (leftJustPressed && !rightJustPressed){
-                p->changeDirection(-1);
+                playerShip.changeDirection(-1);
             }
 
             if (!leftJustPressed && rightJustPressed){
-                p->changeDirection(1);
+                playerShip.changeDirection(1);
             }
 
             if (!leftJustPressed && !rightJustPressed){
-                p->changeDirection(0);
+                playerShip.changeDirection(0);
             }
         }
 
@@ -447,7 +486,7 @@ void SDLGP_Galaga::initLevel()
 
         std::cout << "File path: " << filePath << std::endl;
 
-        //push back galaga levels
+        GalagaLevels.push_back(GalagaLevel(filePath));
     }
 }
 

@@ -25,7 +25,7 @@ public:
 
     std::vector<Bady> levelObjs;
 
-    PlayerShip player;
+
 
     GalagaLevel(std::string configFilePath) {
 
@@ -112,7 +112,6 @@ public:
         for (Bady obj : levelObjs) {
             obj.render(gRenderer);
         }
-        player.render(gRenderer);
     }
 
 

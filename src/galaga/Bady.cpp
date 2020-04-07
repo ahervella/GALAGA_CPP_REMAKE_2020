@@ -8,7 +8,7 @@ Bady::Bady(Vector3D pos, Vector3D dim, std::string spritesheetFile, SDL_Renderer
 }
 
 Bady::Bady(Vector3D pos, Vector3D dim) :
-		GameObject(pos, dim, Constants::Platformer::Game::Tag::COLLECTIBLE_TAG)
+		GameObject(pos, dim, Constants::Galaga::Game::Tag::BADY_TAG)
 {
 }
 

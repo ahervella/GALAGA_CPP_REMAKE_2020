@@ -223,14 +223,18 @@ GameObject::~GameObject()
 
         SDL_Rect fillRect = {(int) pos.x, (int) pos.y, (int) dim.x, (int) dim.y};
         //sets render color to fill color
+
+
         SDL_SetRenderDrawColor(gRenderer, fillClr.r, fillClr.g, fillClr.b, fillClr.a);
         SDL_RenderFillRect(gRenderer, &fillRect);
+
         //sets render color to line color
         SDL_SetRenderDrawColor(gRenderer, lineClr.r, lineClr.g, lineClr.b, lineClr.a);
         SDL_RenderDrawRect(gRenderer, &fillRect);
 
     	SDL_Rect dest = {(int) pos.x, (int)pos.y, (int)dim.x, (int)dim.y};
     	SDL_RenderCopy(gRenderer, *spritesheet, NULL, &dest);
+
     }
 
 

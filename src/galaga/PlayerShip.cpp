@@ -20,6 +20,10 @@ PlayerShip::PlayerShip(Vector3D pos, Vector3D dim) :
 	//this->shootSFXFileName = Constants::Galaga::SFXPath::
 
 	//this->loseSFXFileName = Constants::Galaga::SFXPath::
+    if (spritesheet) {
+        spritesheet.reset();
+        ResourceManager::getInstance()->deleteTextureResource(spritesheetFileName);
+    }
 }
 
 PlayerShip::~PlayerShip() {
@@ -46,12 +50,13 @@ void PlayerShip::changeDirection(int dir)
 	if(dir < 0) {
 		direction = -1;
 	}
-	if(dir > 0) {
+	else if(dir > 0) {
 		direction = 1;
 	}
 	else {
 		direction = 0;
 	}
+
 }
 
 void PlayerShip::update() {
@@ -61,14 +66,18 @@ void PlayerShip::update() {
 	//Add one to sinceLastShot for each frame we're updating in
 	sinceLastShot += 1;
 }
-
+/*
 void PlayerShip::render(SDL_Renderer* gRenderer) {
+
+
 	int w;
 	int h;
 	SDL_QueryTexture(*spritesheet, NULL, NULL, &w, &h);
 
 	SDL_RenderCopy(gRenderer, *spritesheet, &Src, &Dest);
+
 }
+*/
 
 void PlayerShip::shoot()
 {
@@ -84,4 +93,9 @@ int PlayerShip::getScore() {
 
 bool PlayerShip::collisionUpdate(GameObject::SIDE collisionDirection, int otherTag) {
 	return false;
+}
+
+void PlayerShip::resetPosition(Vector3D pos, Vector3D dim){
+    this->pos = pos;
+    this->dim = dim;
 }

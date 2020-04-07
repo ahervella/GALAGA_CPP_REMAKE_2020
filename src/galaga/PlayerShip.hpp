@@ -32,7 +32,7 @@ public:
 	void update() override;
 
 	//Render the PlayerShip
-	void render(SDL_Renderer* gRenderer) override;
+	//void render(SDL_Renderer* gRenderer) override;
 
 	/**
 	 * Switches the direction that the player will move when calling move(). 0 for neutral, 1 for right, and -1 for left
@@ -52,7 +52,7 @@ public:
      */
 	bool collisionUpdate(GameObject::SIDE collisionDirection, int otherTag);
 
-
+    void resetPosition(Vector3D pos, Vector3D dim);
 
 private:
 	//Player's score
@@ -74,8 +74,8 @@ private:
 	//Keeping track of the number of frames since the last shot
 	int sinceLastShot = 120;
 
-	SDL_Rect Src;
-	SDL_Rect Dest;
+	//SDL_Rect Src;
+	//SDL_Rect Dest;
 
 };
 
