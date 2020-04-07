@@ -15,6 +15,7 @@
 
 #include "Bady.hpp"
 #include "PlayerShip.hpp"
+#include "Bullet.hpp"
 
 class GalagaLevel {
 
@@ -26,6 +27,8 @@ public:
     std::vector<Bady> levelObjs;
 
 
+
+    std::vector<Bullet> bullets;
 
     GalagaLevel(std::string configFilePath) {
 
@@ -112,6 +115,10 @@ public:
         for (Bady obj : levelObjs) {
             obj.render(gRenderer);
         }
+        for(Bullet bullet: bullets) {
+        	bullet.render(gRenderer);
+        }
+        player.render(gRenderer);
     }
 
 

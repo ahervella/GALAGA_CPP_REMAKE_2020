@@ -41,8 +41,24 @@ public:
 
 	/**
 	 * Returns the player's score
+	 *
+	 * @return The player's score
 	 */
 	int getScore();
+
+	/**
+	 * Sets the score for the player
+	 *
+	 * @param int score to set
+	 */
+	void setScore(int s);
+
+	/**
+	 * Returns whether the player just fired a bullet
+	 *
+	 * @return has player just fired a bullet?
+	 */
+	bool hasFired();
 
 	/**
  	 * Uses a direction from which the player collides with an object to make a state update on the player
@@ -73,6 +89,8 @@ private:
 	int cooldown = 120;
 	//Keeping track of the number of frames since the last shot
 	int sinceLastShot = 120;
+	//Signals to the level that a bullet needs to be created and fired from the player's current position
+	bool bulletFired = false;
 
 	//SDL_Rect Src;
 	//SDL_Rect Dest;

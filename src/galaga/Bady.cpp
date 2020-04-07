@@ -15,3 +15,31 @@ Bady::Bady(Vector3D pos, Vector3D dim) :
 Bady::~Bady()
 {
 }
+
+void Bady::update() {
+	//TODO: Make enemy more interesting
+	if(!bulletFired) {
+		if(sinceLastShot >= cooldown) {
+			sinceLastShot = 0;
+			bulletFired = true;
+		}
+	}
+	else {
+		bulletFired = false;
+	}
+}
+
+bool Bady::hasFired() {
+	return bulletFired;
+}
+
+bool Bady::collisionUpdate(GameObject::SIDE collision, int otherTag) {
+	switch(otherTag) {
+			case Constants::Galaga::Game::Tag::PLAYER_BULLET_TAG:
+				if(collision != GameObject::SIDE::NONE) {
+					//TODO: Eliminate enemy
+					return true;
+				}
+	}
+	return false;
+}
