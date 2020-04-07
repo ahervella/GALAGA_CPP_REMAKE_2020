@@ -17,9 +17,10 @@
 #include <sys/types.h>
 #include <string.h>
 
-#include "../final/PlayerShip.hpp"
 
 #include "GameObject.hpp"
+#include "PlayerShip.hpp"
+
 #include "TinyMath.hpp"
 
 #include "Ball.hpp"

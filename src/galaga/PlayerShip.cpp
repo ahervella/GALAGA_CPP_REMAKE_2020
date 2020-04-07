@@ -1,5 +1,4 @@
-#include "../final/PlayerShip.hpp"
-
+#include "PlayerShip.hpp"
 #include "Constants.hpp"
 //#include "ResourceManager.hpp"
 

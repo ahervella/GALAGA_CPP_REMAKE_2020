@@ -20,7 +20,6 @@
 #include <time.h>
 #include <vector>
 
-#include "../final/GalagaLevel.hpp"
 
 #include "Textbox.hpp"
 
@@ -28,6 +27,7 @@
 
 #include "../platformer/Level.hpp"
 #include "BreakoutLevel.hpp"
+#include "GalagaLevel.hpp"
 
 /**
  * The class that runs our games/level editors. Maintains the code to run each game/editor, and the game/editor is determined by a

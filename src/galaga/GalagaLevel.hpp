@@ -5,16 +5,16 @@
  *      Author: Karina
  */
 
-#ifndef SRC_FINAL_GALAGALEVEL_HPP_
-#define SRC_FINAL_GALAGALEVEL_HPP_
+#ifndef SRC_GALAGA_GALAGALEVEL_HPP_
+#define SRC_GALAGA_GALAGALEVEL_HPP_
 
 #include <vector>
 #include <string>
 #include <iostream>
 #include <fstream>
 
-#include "../final/Bady.hpp"
-#include "../final/PlayerShip.hpp"
+#include "Bady.hpp"
+#include "PlayerShip.hpp"
 
 class GalagaLevel {
 
@@ -152,4 +152,4 @@ private:
 };
 
 
-#endif /* SRC_FINAL_GALAGALEVEL_HPP_ */
+#endif /* SRC_GALAGA_GALAGALEVEL_HPP_ */

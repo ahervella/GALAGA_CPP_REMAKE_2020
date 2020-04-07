@@ -1,4 +1,4 @@
-#include "../final/Bady.hpp"
+#include "Bady.hpp"
 
 Bady::Bady() : GameObject() {}
 
