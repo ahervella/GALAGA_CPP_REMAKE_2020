@@ -77,7 +77,7 @@ public:
 
                 switch (contents[i][j]) {
                     case '.':
-                        break;
+                        continue;
                     case '1':
                         badyTextureFileName = Constants::Galaga::TexturePath::BADY1;
                         break;

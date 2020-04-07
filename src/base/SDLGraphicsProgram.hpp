@@ -108,7 +108,7 @@ public:
     /**
      * Edits a tile in the galaga level editor
      */
-    void editTileGalaga(Vector3D blockPos, int badyTypeInt);
+    void editTileGalaga(Vector3D blockPos, std::string blockStr);
     /**
      * edits the tile at the given position to be of new type blockStr
      * @param blockPos the position of the tile we will edit.
