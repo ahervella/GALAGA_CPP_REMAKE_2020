@@ -31,16 +31,16 @@ namespace Constants {
 
         namespace TexturePath{
             const std::string CLEAR = getResourcePath("platformer/sprites") + "clear.png";
-            const std::string BADY1 = getResourcePath("galaga") + "Bady1.png";
-            const std::string BADY2 = getResourcePath("galaga") + "Bady2.png";
-            const std::string BADY3 = getResourcePath("galaga") + "Bady3.png";
-            const std::string BADY4 = getResourcePath("galaga") + "Bady4.png";
-            const std::string BACKGROUND = getResourcePath("galaga") + "galaga-background.png";
+            const std::string BADY1 = getResourcePath("final") + "Bady1.png";
+            const std::string BADY2 = getResourcePath("final") + "Bady2.png";
+            const std::string BADY3 = getResourcePath("final") + "Bady3.png";
+            const std::string BADY4 = getResourcePath("final") + "Bady4.png";
+            const std::string BACKGROUND = getResourcePath("final") + "galaga-background.png";
 
         }
 
         namespace SFXPath {
-            const std::string MUSIC = getResourcePath("galaga") + "Csum_-_01_-_Wild_Colours.wav";
+            const std::string MUSIC = getResourcePath("final") + "Csum_-_01_-_Wild_Colours.wav";
         }
     }
 
