@@ -358,11 +358,10 @@ void SDLGP_Galaga::render()
 {
     SDL_RenderCopy(getSDLRenderer(), *backgroundImage, NULL, NULL);
 
-    renderTexts();
-
     GalagaLevels[currLevelIndex].render(getSDLRenderer());
     playerShip.render(getSDLRenderer());
 
+    renderTexts();
 
     SDL_RenderPresent(getSDLRenderer());
 
