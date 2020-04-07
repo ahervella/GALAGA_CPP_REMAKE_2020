@@ -80,6 +80,8 @@ public:
 
     virtual void render(SDL_Renderer *gRenderer);
 
+    virtual void renderCustomFillRect(SDL_Renderer * gRenderer, SDL_Rect customFillRect);
+
     virtual void update();
 
     void setSpritesheet(std::string spritesheetFileName, SDL_Renderer* gRenderer){

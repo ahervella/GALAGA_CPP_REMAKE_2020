@@ -177,7 +177,7 @@ void SDLGraphicsProgram::loadBackgroundMusicAndImage() {
     backgroundMusic = resourceManager->getMusicResource(this->backgroundMusicFile);
 
     //Load background image
-    this->backgroundImageFile = Constants::Platformer::TexturePath::BACKGROUND;
+    //this->backgroundImageFile = Constants::Platformer::TexturePath::BACKGROUND;
     backgroundImage = resourceManager->getTextureResource(getSDLRenderer(), this->backgroundImageFile);
 
 }

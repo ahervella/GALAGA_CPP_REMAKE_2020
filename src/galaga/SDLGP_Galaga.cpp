@@ -236,7 +236,7 @@ void SDLGP_Galaga::update()
     		if(objs[k].collisionUpdate(objs[k].isColliding(bullets[i]), tag)) {
     			hit = true;
     			badysToRemove.push_back(k);
-        		p->setScore(p->getScore() + 1);
+        		playerShip.setScore(playerShip.getScore() + 1);
     			break;
     		}
     	}

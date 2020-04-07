@@ -113,12 +113,12 @@ public:
      */
     void render(SDL_Renderer* gRenderer){
         for (Bady obj : levelObjs) {
-            obj.render(gRenderer);
+            obj.renderCustomFillRect(gRenderer,
+                    {(int) obj.pos.x, (int) obj.pos.y, (int) (obj.dim.x) - 2, (int) (obj.dim.y) - 2});
         }
         for(Bullet bullet: bullets) {
         	bullet.render(gRenderer);
         }
-        player.render(gRenderer);
     }
 
 
