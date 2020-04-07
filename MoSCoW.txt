@@ -10,7 +10,7 @@ Must Have:
 
 Should Have:
 - X Life counter
-- Stats up top (1UP, High Score, 2UP)
+- X Stats up top (1UP, High Score, 2UP)
 
 Could Have:
 - Animated sprites for blown up ships
