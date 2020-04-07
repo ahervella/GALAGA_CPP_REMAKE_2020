@@ -465,6 +465,11 @@ SDLGraphicsProgram::SDLGraphicsProgram(int gameCode) :
     {
     	backgroundMusicFile = Constants::Platformer::SFXPath::MUSIC;
     }
+    else if(gc == 3)
+    {
+    	backgroundMusicFile = Constants::Galaga::SFXPath::MUSIC;
+    }
+
 
     //Load background music
     backgroundMusic = resourceManager->getMusicResource(this->backgroundMusicFile);
