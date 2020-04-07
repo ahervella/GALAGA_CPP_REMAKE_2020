@@ -26,6 +26,10 @@ public:
 
 	void initLevel();
 
+	void resetToLevel();
+
+	void changeLanguage(int langIndex);
+
 private:
 	std::vector<GalagaLevel> GalagaLevels;
 

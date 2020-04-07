@@ -72,6 +72,7 @@ protected:
 
     //level count
     int levelCount = 0;
+    int lifeCount = DEFAULT_LIVES;
 
     // Screen dimension constants
     int screenWidth = 500;

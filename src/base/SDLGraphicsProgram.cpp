@@ -12,6 +12,7 @@
 //const SDL_Color TEXT_COLOR_LOSE = {255, 0, 0, 255};
 //const SDL_Color TEXT_COLOR_WIN = {0, 255, 0, 255};
 
+
 //Define SDLGraphicsProgram functions
 
 // Initialization function

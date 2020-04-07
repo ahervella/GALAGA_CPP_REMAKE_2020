@@ -17,7 +17,8 @@ Paddle paddle;
 int prevCollisionID = -1;
 int brickCollisionIndex = -1;
 
-int lifeCount = DEFAULT_LIVES;
+//in SDLGraphicsProgram hpp
+//int lifeCount = DEFAULT_LIVES;
 
 int BRICK_GROUP_X_POS = -1;
 int BRICK_ROWS = -1;
