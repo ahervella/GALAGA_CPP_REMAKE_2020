@@ -31,7 +31,7 @@ SDLGP_Breakout::SDLGP_Breakout()
 	//Ball init with sound files
    	ball.init(Constants::Breakout::SFXPath::BALL_BLOCK, Constants::Breakout::SFXPath::BALL_WALL);
    	backgroundMusicFile = Constants::Breakout::SFXPath::MUSIC;
-
+   	loadBackgroundMusicAndImage();
    	initLevel();
 }
 
@@ -66,55 +66,57 @@ void SDLGP_Breakout::render() {
     paddle.render(getSDLRenderer());
 
 
-    //render lives left texture
-    SDL_Texture *livesTextImage = renderText(livesText.text, livesText.textResPath, livesText.clr, livesText.textSize,
-                                             getSDLRenderer());
-    renderTexture(livesTextImage, getSDLRenderer(), livesText.x, livesText.y);
+//    //render lives left texture
+//    SDL_Texture *livesTextImage = renderText(livesText.text, livesText.textResPath, livesText.clr, livesText.textSize,
+//                                             getSDLRenderer());
+//    renderTexture(livesTextImage, getSDLRenderer(), livesText.x, livesText.y);
+//
+//    //render score texture
+//    SDL_Texture *scoreTextImage = renderText(scoreText.text, scoreText.textResPath, scoreText.clr, scoreText.textSize,
+//                                             getSDLRenderer());
+//    renderTexture(scoreTextImage, getSDLRenderer(), scoreText.x, scoreText.y);
+//
+//
+//
+//    //render center texture
+//    //Trying to skip new line characters here with strtok. There are better ways, but this will work
+//    int y = centerText.y;
+//    //
+//    bool first = true;
+//    char * origText = new char[centerText.text.length() + 1];
+//    strcpy(origText, centerText.text.c_str());
+//    //Loop for writing new lines on a seaparate line
+//    char * line = strtok(origText, "\\");
+//    while (line != NULL) {
+//    	//A hack for skipping the 'n' in '\n' after strtok skips the '\'.
+//    	//The first time around, the beginning of the string is the start of the string and not the trailing 'n'
+//    	if(first) {
+//    		first = false;
+//    	}
+//    	//After the first strtok call, the string will start with 'n'. Skip that.
+//    	else {
+//    		//Make sure there is a character afterwards
+//    		if(*line + 1 != '\0') {
+//    			line += 1;
+//    		}
+//    	}
+//    	SDL_Texture *centerTextImage = renderText(line, livesText.textResPath, centerText.clr,
+//    	                                              centerText.textSize, getSDLRenderer());
+//    	//TODO: Get centered position here. It fits, but it could look better, y'know?
+//    	renderTexture(centerTextImage, getSDLRenderer(), centerText.x, y);
+//
+//        SDL_DestroyTexture(centerTextImage);
+//        line = strtok(NULL, "\\");
+//        y += centerText.textSize;
+//    }
+//
+//    delete [] origText;
 
-    //render score texture
-    SDL_Texture *scoreTextImage = renderText(scoreText.text, scoreText.textResPath, scoreText.clr, scoreText.textSize,
-                                             getSDLRenderer());
-    renderTexture(scoreTextImage, getSDLRenderer(), scoreText.x, scoreText.y);
-
-
-
-    //render center texture
-    //Trying to skip new line characters here with strtok. There are better ways, but this will work
-    int y = centerText.y;
-    //
-    bool first = true;
-    char * origText = new char[centerText.text.length() + 1];
-    strcpy(origText, centerText.text.c_str());
-    //Loop for writing new lines on a seaparate line
-    char * line = strtok(origText, "\\");
-    while (line != NULL) {
-    	//A hack for skipping the 'n' in '\n' after strtok skips the '\'.
-    	//The first time around, the beginning of the string is the start of the string and not the trailing 'n'
-    	if(first) {
-    		first = false;
-    	}
-    	//After the first strtok call, the string will start with 'n'. Skip that.
-    	else {
-    		//Make sure there is a character afterwards
-    		if(*line + 1 != '\0') {
-    			line += 1;
-    		}
-    	}
-    	SDL_Texture *centerTextImage = renderText(line, livesText.textResPath, centerText.clr,
-    	                                              centerText.textSize, getSDLRenderer());
-    	//TODO: Get centered position here. It fits, but it could look better, y'know?
-    	renderTexture(centerTextImage, getSDLRenderer(), centerText.x, y);
-
-        SDL_DestroyTexture(centerTextImage);
-        line = strtok(NULL, "\\");
-        y += centerText.textSize;
-    }
-
-    delete [] origText;
+    renderTexts();
 
     SDL_RenderPresent(getSDLRenderer());
-    SDL_DestroyTexture(livesTextImage);
-    SDL_DestroyTexture(scoreTextImage);
+    //SDL_DestroyTexture(livesTextImage);
+    //SDL_DestroyTexture(scoreTextImage);
 
 }
 

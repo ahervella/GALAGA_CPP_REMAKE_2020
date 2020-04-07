@@ -10,7 +10,8 @@
 SDLGP_Platformer::SDLGP_Platformer()
 {
 	backgroundMusicFile = Constants::Platformer::SFXPath::MUSIC;
-
+	backgroundImageFile = Constants::Platformer::TexturePath::BACKGROUND;
+	loadBackgroundMusicAndImage();
 	initLevel();
 }
 
@@ -110,7 +111,6 @@ void SDLGP_Platformer::loop() {
 
     //construct current level (probably level 1, index 0)
     PlatformerLevels[currLevelIndex].constructLevel(getSDLRenderer());
-
     // Main loop flag
     // If this is quit = 'true' then the program terminates.
     bool quit = false;
@@ -123,6 +123,10 @@ void SDLGP_Platformer::loop() {
     bool rightJustPressed = false;
     bool leftJustPressed = false;
     Mix_PlayMusic(*(backgroundMusic), -1);
+
+    //Quick fix for being frozen at start of game
+    //Will need to remove later to print instructions to screen before starting
+    GameObject::gameOver = false;
 
     //std::cout<<"working3"<<std::endl;
 

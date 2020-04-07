@@ -68,6 +68,16 @@ public:
     // Get Pointer to Renderer
     SDL_Renderer* getSDLRenderer();
 
+    /**
+     * Renders the text boxes on screen
+     */
+    void renderTexts();
+
+    /**
+     * Loads the background music and image for this game
+     */
+    void loadBackgroundMusicAndImage();
+
 protected:
 
     //level count

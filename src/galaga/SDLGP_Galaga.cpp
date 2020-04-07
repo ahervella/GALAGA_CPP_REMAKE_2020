@@ -12,6 +12,8 @@
 SDLGP_Galaga::SDLGP_Galaga()
 {
 	initLevel();
+	this->backgroundImageFile = Constants::Galaga::TexturePath::BACKGROUND;
+	loadBackgroundMusicAndImage();
 }
 
 SDLGP_Galaga::~SDLGP_Galaga()
@@ -202,6 +204,8 @@ void SDLGP_Galaga::update()
 void SDLGP_Galaga::render()
 {
     SDL_RenderCopy(getSDLRenderer(), *backgroundImage, NULL, NULL);
+
+    renderTexts();
 
     GalagaLevels[currLevelIndex].render(getSDLRenderer());
 
