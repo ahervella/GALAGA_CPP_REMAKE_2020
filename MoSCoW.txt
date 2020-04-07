@@ -3,13 +3,13 @@ Proposal: Our game is a Galaga-like game in which a player contols a spaceship a
 *Milestone 2
 
 Must Have:
-- Player-controllable ship that moves left and right and can shoot bullets
-- Static enemies
+- X Player-controllable ship that moves left and right and can shoot bullets
+- XStatic enemies
 - Win condition: wiping out all enemies of level
 - Lose condition: losing all lives
 
 Should Have:
-- Life counter
+- X Life counter
 - Stats up top (1UP, High Score, 2UP)
 
 Could Have:

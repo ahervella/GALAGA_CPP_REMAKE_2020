@@ -43,7 +43,7 @@ public:
 private:
 	//Frames for cooldown of firing
 	float cooldown = 180;
-	float sinceLastShot = 180;
+	float sinceLastShot = 0;
 	bool bulletFired = false;
 
 };

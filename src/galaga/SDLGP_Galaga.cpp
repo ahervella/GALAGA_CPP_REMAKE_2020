@@ -268,8 +268,8 @@ void SDLGP_Galaga::update()
         	badysToKeep.push_back(objs[k]);
         }
     }
-    GalagaLevels[currLevelIndex].bullets = bulletsToKeep;
-    GalagaLevels[currLevelIndex].levelObjs = badysToKeep;
+    //GalagaLevels[currLevelIndex].bullets = bulletsToKeep;
+    //GalagaLevels[currLevelIndex].levelObjs = badysToKeep;
 
     /*
     for(size_t j = 0; j < PlatformerLevels[currLevelIndex].enemyObjs.size(); ++j) {
