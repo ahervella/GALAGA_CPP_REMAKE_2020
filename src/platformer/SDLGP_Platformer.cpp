@@ -93,6 +93,8 @@ void SDLGP_Platformer::render() {
 
 	SDL_RenderCopy(getSDLRenderer(), *backgroundImage, NULL, NULL);
 
+	//TODO: Text
+
 	PlatformerLevels[currLevelIndex].render(getSDLRenderer());
 
     SDL_RenderPresent(getSDLRenderer());
