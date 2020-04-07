@@ -185,11 +185,15 @@ void SDLGP_Galaga::update()
 
     }
      */
-    std::vector<Bullet> bulletsToRemove;
-    std::vector<Bady> badysToRemove;
+
+
+    std::vector<int> bulletsToRemove;
+    std::vector<int>badysToRemove;
+    //std::vector<Bullet> bulletsToRemove;
+    //std::vector<Bady> badysToRemove;
     for(size_t i = 0; i < bullets.size(); ++i) {
     	if(bullets[i].pos.y < 0 || bullets[i].pos.y > (Constants::Galaga::Game::UNIT * Constants::Galaga::Game::SCREEN_UNIT_HEIGHT)) {
-    		bulletsToRemove.push_back(bullets[i]);
+    		bulletsToRemove.push_back(i);
     		continue;
     	}
     	//Could be a player bullet or enemy bullet
@@ -198,7 +202,7 @@ void SDLGP_Galaga::update()
     	for(size_t k = 0; k < objs.size(); ++k) {
     		if(objs[k].collisionUpdate(objs[k].isColliding(bullets[i]), tag)) {
     			hit = true;
-    			badysToRemove.push_back(objs[k]);
+    			badysToRemove.push_back(k);
         		p->setScore(p->getScore() + 1);
     			break;
     		}
@@ -211,39 +215,28 @@ void SDLGP_Galaga::update()
     		    return;
     		}
     	}
-    	if(!hit) {
-    		bulletsToRemove.push_back(bullets[i]);
+    	if(hit) {
+    		bulletsToRemove.push_back(i);
     	}
     }
 
-    //Removing enemies and bullets that need to be removed
+    std::vector<Bullet> bulletsToKeep;
+    std::vector<Bady> badysToKeep;
+    for(size_t i = 0; i < bullets.size(); ++i) {
+    	auto it = std::find(bulletsToRemove.begin(), bulletsToRemove.end(), i);
+    	if(it == bulletsToRemove.end()) {
+    		bulletsToKeep.push_back(bullets[i]);
+    	}
+    }
 
-    for (auto obj: bulletsToRemove) {
-        auto elem = std::find(bullets.begin(), bullets.end(), obj);
-        if (elem != bullets.end()) {
-          bullets.erase(elem);
+    for(size_t k = 0; k < bullets.size(); ++k) {
+        auto it = std::find(badysToRemove.begin(), badysToRemove.end(), k);
+        if(it == badysToRemove.end()) {
+        	badysToKeep.push_back(objs[k]);
         }
     }
-    GalagaLevels[currLevelIndex].bullets = bullets;
-
-    for (auto obj: badysToRemove) {
-           auto elem = std::find(objs.begin(), objs.end(), obj);
-           if (elem != objs.end()) {
-             objs.erase(elem);
-           }
-    }
-    GalagaLevels[currLevelIndex].levelObjs = objs;
-
-//    for(Bullet b: bulletsToRemove) {
-//    	GalagaLevels[currLevelIndex].bullets.erase(std::remove
-//    			(GalagaLevels[currLevelIndex].bullets.begin(), GalagaLevels[currLevelIndex].bullets.end(), b),
-//				GalagaLevels[currLevelIndex].bullets.end());
-//    }
-//    for(Bady b: badysToRemove) {
-//    	GalagaLevels[currLevelIndex].levelObjs.erase(std::remove
-//    	    			(GalagaLevels[currLevelIndex].levelObjs.begin(), GalagaLevels[currLevelIndex].levelObjs.end(), b),
-//    					GalagaLevels[currLevelIndex].levelObjs.end());
-//    }
+    GalagaLevels[currLevelIndex].bullets = bulletsToKeep;
+    GalagaLevels[currLevelIndex].levelObjs = badysToKeep;
 
     /*
     for(size_t j = 0; j < PlatformerLevels[currLevelIndex].enemyObjs.size(); ++j) {
