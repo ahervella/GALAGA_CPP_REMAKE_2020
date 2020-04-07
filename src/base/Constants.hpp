@@ -19,11 +19,12 @@ namespace Constants {
             const float SCREEN_UNIT_WIDTH = 12;//20
             const float SCREEN_UNIT_HEIGHT = 14;//11
             const Vector3D PLAYER_UNIT_DIM = Vector3D(1, 1);//1.4, 2);
-            const int LIVES = 0;
+            const int LIVES = 3;
 
             namespace Tag {
                 const int BADY_TAG = 1;
                 const int PLAYER_TAG = 2;
+                const int PLAYER_BULLET_TAG = 3;
             }
 
         }
@@ -34,6 +35,7 @@ namespace Constants {
             const std::string BADY2 = getResourcePath("galaga") + "Bady2.png";
             const std::string BADY3 = getResourcePath("galaga") + "Bady3.png";
             const std::string BADY4 = getResourcePath("galaga") + "Bady4.png";
+            const std::string BACKGROUND = getResourcePath("galaga") + "galaga-background.png";
 
         }
 

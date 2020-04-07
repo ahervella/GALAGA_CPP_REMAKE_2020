@@ -14,6 +14,7 @@
 #include <fstream>
 
 #include "Bady.hpp"
+#include "PlayerShip.hpp"
 
 class GalagaLevel {
 
@@ -23,6 +24,8 @@ public:
     std::vector<std::string> contents;
 
     std::vector<Bady> levelObjs;
+
+    PlayerShip player;
 
     GalagaLevel(std::string configFilePath) {
 
@@ -109,6 +112,7 @@ public:
         for (Bady obj : levelObjs) {
             obj.render(gRenderer);
         }
+        player.render(gRenderer);
     }
 
 
