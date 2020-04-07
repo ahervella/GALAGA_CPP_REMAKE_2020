@@ -171,10 +171,6 @@ void SDLGP_Galaga::update()
     std::vector<Bady> objs = GalagaLevels[currLevelIndex].levelObjs;//levels[currLevelIndex].levelObjs;
 
 
-    playerShip.move();
-    playerShip.update();
-
-
     std::vector<Bullet> bullets = GalagaLevels[currLevelIndex].bullets;
     //If we have a collision, let the player figure out what to do based on where the collision is from
     //TODO: For future, figure out
@@ -302,6 +298,9 @@ void SDLGP_Galaga::update()
     	GalagaLevels[currLevelIndex].bullets[k].update();
     }
 
+
+    playerShip.move();
+    playerShip.update();
     /*
     for(size_t k = 0; k < PlatformerLevels[currLevelIndex].enemyObjs.size(); ++k) {
     	PlatformerLevels[currLevelIndex].enemyObjs[k].move();
