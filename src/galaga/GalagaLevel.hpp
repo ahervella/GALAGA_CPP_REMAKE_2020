@@ -67,7 +67,6 @@ public:
                                                i * Constants::Galaga::Game::UNIT * Constants::Galaga::Game::BADY_UNIT_DIM.y);
 
 
-
                 Vector3D badyDim = Constants::Galaga::Game::BADY_UNIT_DIM * Constants::Galaga::Game::UNIT;
 
                 std::string badyTextureFileName = Constants::Galaga::TexturePath::BADY1;
@@ -84,7 +83,7 @@ public:
                         break;
                     case '2':
                         badyTextureFileName = Constants::Galaga::TexturePath::BADY2;
-                        break
+                        break;
                     case '3':
                         badyTextureFileName = Constants::Galaga::TexturePath::BADY3;
                         break;
@@ -93,7 +92,7 @@ public:
                         break;
                 }
 
-                bady = Bady(elementPos, collectibleDim, badyTextureFileName, gRenderer);
+                bady = Bady(elementPos, badyDim, badyTextureFileName, gRenderer);
                 levelObjs.push_back(bady);
             }
         }

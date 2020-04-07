@@ -27,6 +27,7 @@
 
 #include "../platformer/Level.hpp"
 #include "BreakoutLevel.hpp"
+#include "GalagaLevel.hpp"
 
 /**
  * The class that runs our games/level editors. Maintains the code to run each game/editor, and the game/editor is determined by a
@@ -75,18 +76,24 @@ public:
     void updateBreakout();
     // Per frame update for Platformer
     void updatePlatformer();
+    // Per frame update for Galaga
+    void updateGalaga();
     // Per frame update for Editor
     void updateEditor();
     // Renders shapes to the screen for Breakout
     void renderBreakout();
     // Renders shapes to the screen for Platformer
     void renderPlatformer();
+    // Renders shapes to the screen for Galaga
+    void renderGalaga();
     // Renders shapes to the screen for Editor
     void renderEditor();
     // loop that runs forever for Breakout
     void loopBreakout();
     // loop that runs forever for Platformer
     void loopPlatformer();
+    // loop that runs forever for the Galaga
+    void loopGalaga();
     // loop that runs forever for the Editor
     void loopEditor();
 
@@ -98,6 +105,10 @@ public:
      * Edits a tile in the platformer level editor
      */
     void editTilePlatformer(Vector3D blockPos, std::string blockStr);
+    /**
+     * Edits a tile in the galaga level editor
+     */
+    void editTileGalaga(Vector3D blockPos, int badyTypeInt);
     /**
      * edits the tile at the given position to be of new type blockStr
      * @param blockPos the position of the tile we will edit.
@@ -179,6 +190,7 @@ private:
 
     std::vector<Level *> edt_levels_platformer;
     std::vector<BreakoutLevel *> edt_levels_breakout;
+    std::vector<GalagaLevel *> edt_levels_galaga;
     std::vector<Textbox> edt_menuTexts;
 
     bool lvlSelectMode = true;
@@ -186,6 +198,7 @@ private:
     //levels for each type of game
     std::vector<BreakoutLevel> BreakoutLevels;
     std::vector<Level> PlatformerLevels;
+    std::vector<GalagaLevel> GalagaLevels;
 
     // The window we'll be rendering to
     SDL_Window* gWindow;

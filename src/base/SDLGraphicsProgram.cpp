@@ -43,6 +43,10 @@
 #define TEXT_X_ANCHOR_PLATFORMER Constants::Platformer::Game::SCREEN_UNIT_WIDTH * Constants::Platformer::Game::UNIT / 2 - 175
 #define TEXT_Y_ANCHOR_PLATFORMER Constants::Platformer::Game::SCREEN_UNIT_HEIGHT * Constants::Platformer::Game::UNIT / 2 - 100
 
+#define TEXT_X_ANCHOR_GALAGA Constants::Galaga::Game::SCREEN_UNIT_WIDTH * Constants::Galaga::Game::UNIT / 2 - 175
+#define TEXT_Y_ANCHOR_GALAGA Constants::Galaga::Game::SCREEN_UNIT_HEIGHT * Constants::Galaga::Game::UNIT / 2 - 100
+
+
 int BRICK_GROUP_X_POS = -1;
 
 int BRICK_ROWS = -1;
@@ -510,7 +514,7 @@ void SDLGraphicsProgram::update() {
         updatePlatformer();
     return;
     case 3:
-        //galaga
+        updateGalaga();
         return;
 }
 
@@ -604,6 +608,9 @@ void SDLGraphicsProgram::updatePlatformer() {
     }
 }
 
+//TODO: still need to implement
+void SDLGalagaProgram::updateGalaga(){}
+
 void SDLGraphicsProgram::updateEditor() {
     //render background
     SDL_SetRenderDrawColor(gRenderer, 0x22, 0x22, 0x22, 0xFF);
@@ -626,7 +633,11 @@ void SDLGraphicsProgram::updateEditor() {
             }
             break;
         case -3:
-            //galaga stuff
+            if (!lvlSelectMode) {
+                edt_cursor.pos = Vector3D(
+                        edt_cursorBlockPos.x * Constants::Galaga::Game::UNIT,
+                        edt_cursorBlockPos.y * Constants::Galaga::Game::UNIT);
+            }
             break;
     }
 
@@ -725,6 +736,9 @@ void SDLGraphicsProgram::renderPlatformer() {
 
 }
 
+//TODO: still need to implement
+void SDLGraphicsProgram::renderGalaga() {}
+
 void SDLGraphicsProgram::renderEditor() {
 
 	//TODO: See if this needs to be removed to get plain black image for Breakout Editor and kept for Platformer editor
@@ -761,11 +775,10 @@ void SDLGraphicsProgram::renderEditor() {
                 edt_levels_platformer[edt_currLevelIndex]->render(getSDLRenderer());
                 break;
             case -3:
-                //galaga stuff
+                edt_levels_galaga[edt_currLevelIndex]->render(getSDLRenderer());
                 break;
         }
 
-        std::cout<<"blahahahahhaaha"<<std::endl;
         edt_cursor.render(getSDLRenderer());
     }
 //
@@ -794,7 +807,7 @@ void SDLGraphicsProgram::loop() {
             loopPlatformer();
             return;
         case 3:
-            //galaga
+            loopGalaga();
             return;
     }
 }
@@ -1159,6 +1172,8 @@ void SDLGraphicsProgram::loopPlatformer() {
     SDL_StopTextInput();
 }
 
+//TODO: still need to implement
+void SDLGraphicsProgram::loopGalaga() {}
 
 void SDLGraphicsProgram::loopEditor() {
 
@@ -1188,7 +1203,15 @@ void SDLGraphicsProgram::loopEditor() {
                                     gRenderer);
             break;
         case -3:
-            //galaga stuff
+            edt_cursor = GameObject(Vector3D(0,
+                                             (Constants::Galaga::Game::SCREEN_UNIT_HEIGHT) * Constants::Galaga::Game::UNIT, 0),
+                                    Vector3D(Constants::Galaga::Game::BADY_UNIT_DIM.x * Constants::Galaga::Game::UNIT,
+                                             Constants::Galaga::Game::BADY_UNIT_DIM.y * Constants::Galaga::Game::UNIT, 0),
+                                    -1,
+                                    {0, 0, 250, 100},
+                                    {255, 0, 0, 255},
+                                    Constants::Galaga::TexturePath::CLEAR,
+                                    gRenderer);
             break;
     }
 
@@ -1555,7 +1578,13 @@ void SDLGraphicsProgram::initLevelLoadingEditor() {
             edt_levels_platformer.clear();
             break;
         case -3:
-            //galaga stuff
+            mainMenuText = Textbox("MAIN MENU: ", TEXT_SIZE, TEXT_X_ANCHOR_GALAGA, TEXT_Y_ANCHOR_GALAGA);
+
+            for(GalagaLevel* lvl : edt_levels_galaga){
+                delete lvl;
+            }
+
+            edt_levels_platformer.clear();
             break;
     }
 
@@ -1664,16 +1693,21 @@ void SDLGraphicsProgram::initLevelLoadingGames(){
     DIR *dp;
     struct dirent *dirp;
     struct stat filestat;
-
-
     std::string resourceConfigsPath = "";
-    if(gc == 1) {
-    	resourceConfigsPath = getResourcePath("breakout/level_config");
 
+
+    switch(gc){
+        case 1:
+            resourceConfigsPath = getResourcePath("breakout/level_config");
+            break;
+        case 2:
+            resourceConfigsPath = getResourcePath("platformer/level_config");
+            break;
+        case 3:
+            resourceConfigsPath = getResourcePath("galaga/level_config");
+            break;
     }
-    if(gc == 2) {
-        resourceConfigsPath = getResourcePath("platformer/level_config");
-    }
+
 
     //open directory path
     dp = opendir(resourceConfigsPath.c_str());
@@ -1733,11 +1767,17 @@ void SDLGraphicsProgram::getLanguages(){
     struct dirent *dirp;
     struct stat filestat;
     std::string resourceConfigsPath = "";
-    if(gc == 1) {
-    	resourceConfigsPath = getResourcePath("breakout/lang_config");
-    }
-    if(gc == 2) {
-    	resourceConfigsPath = getResourcePath("platformer/lang_config");
+
+    switch(gc){
+        case 1:
+            resourceConfigsPath = getResourcePath("breakout/lang_config");
+            break;
+        case 2:
+            resourceConfigsPath = getResourcePath("platformer/lang_config");
+            break;
+        case 3:
+            resourceConfigsPath = getResourcePath("galaga/lang_config");
+            break;
     }
 
     dp = opendir(resourceConfigsPath.c_str());
@@ -1849,17 +1889,26 @@ void SDLGraphicsProgram::changeLanguage(int langIndex){
     	int level_num = 0;
     	int level_max = 0;
     	//A result of using two different variables each for lives and level number depending on the game.
-    	if(gc == 1) {
-    		lives = lifeCount;
-    		level_num = levelCount;
-    		level_max = BreakoutLevels.size();
-    	}
-    	else if(gc == 2) {
-    		lives = Player::lifeCount;
-    		level_num = currLevelIndex;
-    		level_max = PlatformerLevels.size();
 
+    	switch (gc){
+    	    case 1:
+                lives = lifeCount;
+                level_num = levelCount;
+                level_max = BreakoutLevels.size();
+    	        break;
+    	    case 2:
+                lives = Player::lifeCount;
+                level_num = currLevelIndex;
+                level_max = PlatformerLevels.size();
+    	        break;
+    	    case 3:
+                lives = Player::lifeCount;
+                level_num = currLevelIndex;
+                level_max = GalagaLevels.size();
+    	        break;
     	}
+
+
     	if(lives < 0) {
     		centerText.text = gameTexts["LOSE"];
     	}
@@ -1989,6 +2038,34 @@ void SDLGraphicsProgram::editTilePlatformer(Vector3D blockPos, std::string block
 
     }
 
+void SDLGraphicsProgram::editTileGalaga(Vector3D blockPos, int badyTypeInt) {
+
+    GalagaLevel* lvl = edt_levels_galaga[edt_currLevelIndex];
+
+    std::vector<std::string> contents;
+
+    for (std::string blah : lvl->contents){
+        contents.push_back(blah);
+    }
+
+
+            contents[blockPos.y].replace(blockPos.x, 1, badyTypeInt);
+            break;
+
+
+    std::string newContents;
+
+    for(size_t i = 0; i < contents.size(); i++){
+        newContents += contents[i];
+        if (i != contents.size() -1){
+            newContents += "\n";
+        }
+    }
+
+    lvl->writeToCfgFile(newContents, gRenderer);
+
+}
+
 void SDLGraphicsProgram::levelHelper(int lvlInt) {
 
     //std::cout<<edt_levels_platformer.size()<<"  level sizessss"<<std::endl;
@@ -2005,7 +2082,8 @@ void SDLGraphicsProgram::levelHelper(int lvlInt) {
             currLevel = edt_levels_platformer.size() + 1;
             break;
         case -3:
-            //galaga stuff
+            sizeCompare = edt_levels_galaga.size();
+            currLevel = edt_levels_galaga.size() + 1;
             break;
     }
 
@@ -2019,6 +2097,8 @@ void SDLGraphicsProgram::levelHelper(int lvlInt) {
 
         std::string conts;
 
+        //this is for adding any default levels if the editor user decides to edit say level 4 and currently
+        //only level 1 and 2 exist. Will loop through all and by default put the player at the top left
         switch(gc){
             case -1:
                 for (int i = 0; i < Constants::Breakout::Game::SCREEN_UNIT_HEIGHT; i++) {
@@ -2037,6 +2117,7 @@ void SDLGraphicsProgram::levelHelper(int lvlInt) {
                     }
                 }
                 break;
+
             case -2:
                 for (int i = 0; i < Constants::Platformer::Game::SCREEN_UNIT_HEIGHT; i++) {
 
@@ -2054,8 +2135,20 @@ void SDLGraphicsProgram::levelHelper(int lvlInt) {
                     }
                 }
                 break;
+
             case -3:
-                //galaga stuff
+                //galaga doesn't need to know the player starting position
+                for (int i = 0; i < Constants::Platformer::Game::SCREEN_UNIT_HEIGHT; i++) {
+
+                    for (int k = 0; k < Constants::Platformer::Game::SCREEN_UNIT_WIDTH; k++) {
+
+
+                        conts += ".";
+                    }
+                    if (i != Constants::Platformer::Game::SCREEN_UNIT_HEIGHT - 1) {
+                        conts += "\n";
+                    }
+                }
                 break;
         }
 
@@ -2075,7 +2168,7 @@ void SDLGraphicsProgram::levelHelper(int lvlInt) {
                 edt_levels_platformer.push_back(new Level(getResourcePath("level_config") + "lvl0" + std::to_string(currLevel) + ".cfg"));
                 break;
             case -3:
-                //galaga stuff
+                edt_levels_galaga.push_back(new Level(getResourcePath("level_config") + "lvl0" + std::to_string(currLevel) + ".cfg"));
                 break;
         }
 
