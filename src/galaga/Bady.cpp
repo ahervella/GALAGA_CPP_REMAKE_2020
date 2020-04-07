@@ -20,7 +20,7 @@ void Bady::update() {
 	//TODO: Make enemy more interesting
 	if(!bulletFired) {
 
-		sinceLastShot += 1;
+		//sinceLastShot += 1;
 
 		if(sinceLastShot >= cooldown) {
 			sinceLastShot = 0;

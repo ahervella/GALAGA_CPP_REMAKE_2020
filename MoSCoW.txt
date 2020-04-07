@@ -4,7 +4,7 @@ Proposal: Our game is a Galaga-like game in which a player contols a spaceship a
 
 Must Have:
 - X Player-controllable ship that moves left and right and can shoot bullets
-- XStatic enemies
+- X Static enemies
 - Win condition: wiping out all enemies of level
 - Lose condition: losing all lives
 

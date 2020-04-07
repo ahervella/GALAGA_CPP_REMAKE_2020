@@ -30,6 +30,8 @@ public:
 
     void makePlayerShip();
 
+    void getLanguages();
+
     void changeLanguage(int langIndex);
 
     void resetShipPosition();

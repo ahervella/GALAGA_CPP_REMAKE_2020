@@ -34,6 +34,51 @@ void SDLGP_Galaga::makePlayerShip() {
 }
 
 
+void SDLGP_Galaga::getLanguages()
+{
+    std::ifstream fin;
+    DIR *dp;
+    struct dirent *dirp;
+    struct stat filestat;
+    std::string resourceConfigsPath = "";
+
+    resourceConfigsPath = getResourcePath("galaga/lang_config");
+
+    dp = opendir(resourceConfigsPath.c_str());
+
+    if (dp == NULL)
+    {
+        std::cout << "Error opening " << resourceConfigsPath << std::endl;
+        return;
+    }
+
+    while ((dirp = readdir( dp )))
+    {
+        std::string contents;
+
+        std::string filePath = resourceConfigsPath + dirp->d_name;
+
+        std::string skipStringMessage = "Skipped: " + (std::string(dirp->d_name));
+
+        if ((std::string(dirp->d_name)).find(".") == 0){
+            std::cout<< skipStringMessage <<std::endl<<std::endl;
+            continue;}
+
+        //prevent from getting other hidden non text file paths
+        if (stat( filePath.c_str(), &filestat )) {
+            std::cout<< skipStringMessage <<std::endl<<std::endl;
+            continue;}
+
+        if (S_ISDIR( filestat.st_mode ))  {
+            std::cout<< skipStringMessage <<std::endl<<std::endl;
+            continue;}
+
+        std::cout<< "Not skipping: " + (std::string(dirp->d_name) )<<std::endl<<std::endl;
+
+        languageFiles.push_back(filePath);
+    }
+}
+
 void SDLGP_Galaga::changeLanguage(int langIndex){
 
     if(currLanguageStream) {
@@ -545,7 +590,11 @@ void SDLGP_Galaga::loseLife()
 
 void SDLGP_Galaga::initLevel()
 {
-    std::ifstream fin;
+	getLanguages();
+	//Default to English
+	changeLanguage(0);
+
+	std::ifstream fin;
     DIR *dp;
     struct dirent *dirp;
     struct stat filestat;
