@@ -3,12 +3,12 @@ Michael Reveliotis, Alejandro Hervella, Karina Sinha
 
 
 -- How many hours did it take you to complete this project? (answer for each milestone)
-Milestone 1: 5 hours (and counting...)
-Milestone 2: (Alejandro: started 6:15 pm)
+Milestone 1: 8 hours
+Milestone 2: 8 hours
 
 -- Did you implement any extentions? If so, which ones and how can they be tried out? Who implemented each?
 Milestone 1: Not yet
-Milestone 2:
+Milestone 2: Not yet
 
 -- Did you use any code or resources from previous assignments? If so, list below.
 Breakout and Platformer projects (Michael and Alejandro's, pretty much all the code)
