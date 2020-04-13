@@ -31,14 +31,24 @@ void Bullet::render(SDL_Renderer* gRenderer) {
 	Src.w = w;
 	Src.h = h;
 
-	Dest.x = pos.x;
-	Dest.y = pos.y;
-	Dest.w = dim.x;
-	Dest.h = dim.y;
+
+	Dest.w = dim.x / 0.2;
+	Dest.h = dim.y / 0.2;
+    Dest.x = pos.x - (Dest.w - dim.x)/2;
+    Dest.y = pos.y - (Dest.h - dim.y)/2;
 
 	SDL_RenderCopy(gRenderer, *spritesheet, &Src, &Dest);
 
 
+}
+
+bool Bullet::collisionUpdate(GameObject::SIDE collision, int otherTag) {
+    if(collision != GameObject::SIDE::NONE) {
+                //TODO: Eliminate enemy
+                return true;
+            }
+
+    return false;
 }
 
 

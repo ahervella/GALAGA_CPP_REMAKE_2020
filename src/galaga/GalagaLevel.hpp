@@ -113,8 +113,13 @@ public:
      */
     void render(SDL_Renderer* gRenderer){
         for (Bady obj : levelObjs) {
-            obj.renderCustomFillRect(gRenderer,
-                    {(int) obj.pos.x, (int) obj.pos.y, (int) (obj.dim.x) - 2, (int) (obj.dim.y) - 2});
+
+            int dimX = (int) (obj.dim.x) * 0.7;
+            int dimY = (int) (obj.dim.y) * 0.7;
+            int posX = (int) obj.pos.x + ((int) (obj.dim.x) - dimX)/2;
+            int posY = (int) obj.pos.y + ((int) (obj.dim.y) - dimY)/2;
+
+            obj.renderCustomFillRect(gRenderer, {posX, posY, dimX, dimY});
         }
         for(Bullet bullet: bullets) {
         	bullet.render(gRenderer);

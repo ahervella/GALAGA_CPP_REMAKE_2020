@@ -222,6 +222,14 @@ void SDLGP_Galaga::update()
     	if(GalagaLevels[currLevelIndex].levelObjs[i].hasFired()) {
     		Vector3D pos = GalagaLevels[currLevelIndex].levelObjs[i].pos;
     		Vector3D dim = GalagaLevels[currLevelIndex].levelObjs[i].dim;
+
+    		//shrink bullet to be 20% of ship size
+    		dim *= 0.2;
+
+    		//center bullet
+    		pos.x += (dim.x / 0.2 - dim.x) /2;
+            pos.y += (dim.y / 0.2 - dim.y) /2;
+
     		GalagaLevels[currLevelIndex].bullets.push_back
 				(Bullet(pos, dim, Constants::Galaga::Game::Tag::BADY_BULLET_TAG, Constants::Galaga::TexturePath::BULLET, gRenderer));
     	}
@@ -231,6 +239,14 @@ void SDLGP_Galaga::update()
     if(playerShip.hasFired()) {
     	Vector3D pos = playerShip.pos;
     	Vector3D dim = playerShip.dim;
+
+        //shrink bullet to be 20% of ship size
+        dim *= 0.2;
+
+        //center bullet
+        pos.x += ((dim.x / 0.2) - dim.x)/2;
+        pos.y += ((dim.y / 0.2) - dim.y)/2;
+
     	GalagaLevels[currLevelIndex].bullets.push_back
     			(Bullet(pos, dim, Constants::Galaga::Game::Tag::PLAYER_BULLET_TAG, Constants::Galaga::TexturePath::BULLET, gRenderer));
     }
@@ -269,7 +285,7 @@ void SDLGP_Galaga::update()
 
     //if bullet is beyond screen, need to remove
     for(size_t i = 0; i < bullets->size(); ++i) {
-    	if((*bullets)[i].pos.y < 0 || (*bullets)[i].pos.y > (Constants::Galaga::Game::UNIT * Constants::Galaga::Game::SCREEN_UNIT_HEIGHT)) {
+    	if((*bullets)[i].pos.y < 0 || (*bullets)[i].pos.y > (Constants::Galaga::Game::UNIT * (Constants::Galaga::Game::SCREEN_UNIT_HEIGHT + 1))) {
     		bulletsToRemove.push_back(i);
     		continue;
     	}
@@ -280,7 +296,18 @@ void SDLGP_Galaga::update()
     	int tag = (*bullets)[i].tag;
     	bool hit = false;
     	for(size_t k = 0; k < objs->size(); ++k) {
-    		if((*objs)[k].collisionUpdate((*objs)[k].isColliding((*bullets)[i]), tag)) {
+
+
+
+
+                //bug of bullets only destroying stuff at the opposite end of the collision was due to
+                //having objst check for collision updates rather than the bullet checking for collision
+                //updates, simply because of how the collisions were set up :/
+    		//if((*objs)[k].collisionUpdate((*objs)[k].isColliding((*bullets)[i]), tag)) {
+
+    		//now its fixed: vvvvv
+            if((*bullets)[i].collisionUpdate((*bullets)[i].isColliding((*objs)[k]), tag)) {
+                std::cout<<"collision side: "<<(*objs)[k].isColliding((*bullets)[i])<<std::endl;
     			hit = true;
     			badysToRemove.push_back(k);
         		playerShip.setScore(playerShip.getScore() + 1);
@@ -289,7 +316,10 @@ void SDLGP_Galaga::update()
     	}
 
     	//if did not collide with a bady, check if colliding with player
-    	if(!hit && playerShip.collisionUpdate(playerShip.isColliding((*bullets)[i]), tag)) {
+
+    	//same fix here as above: vvvvvvvvvv
+        //if(!hit && playerShip.collisionUpdate(playerShip.isColliding((*bullets)[i]), tag)) {
+        if(!hit && (*bullets)[i].collisionUpdate((*bullets)[i].isColliding(playerShip), tag)) {
     		hit = true;
     		loseLife();
     		if(GameObject::gameOver) {

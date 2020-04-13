@@ -13,6 +13,8 @@ public:
 
 	void render(SDL_Renderer* gRenderer) override;
 
+    bool collisionUpdate(GameObject::SIDE collision, int otherTag);
+
 private:
 	//Vertical speed
 	float speed = 5;

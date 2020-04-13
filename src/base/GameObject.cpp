@@ -245,10 +245,10 @@ GameObject::~GameObject()
 
     }
 
-void GameObject::renderCustomFillRect(SDL_Renderer * gRenderer, SDL_Rect customFillRect)
+void GameObject::renderCustomFillRect(SDL_Renderer * gRenderer, SDL_Rect customDimRect)
 {
 
-    SDL_Rect fillRect = customFillRect;
+    SDL_Rect fillRect;// = customFillRect;
     //sets render color to fill color
 
 
@@ -259,8 +259,8 @@ void GameObject::renderCustomFillRect(SDL_Renderer * gRenderer, SDL_Rect customF
     SDL_SetRenderDrawColor(gRenderer, lineClr.r, lineClr.g, lineClr.b, lineClr.a);
     SDL_RenderDrawRect(gRenderer, &fillRect);
 
-    SDL_Rect dest = {(int) pos.x, (int)pos.y, (int)dim.x, (int)dim.y};
-    SDL_RenderCopy(gRenderer, *spritesheet, NULL, &dest);
+    //SDL_Rect dest = customDimRect;//{(int) pos.x, (int)pos.y, (int)dim.x, (int)dim.y};
+    SDL_RenderCopy(gRenderer, *spritesheet, NULL, &customDimRect);
 
 }
 

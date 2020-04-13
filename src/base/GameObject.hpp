@@ -80,7 +80,7 @@ public:
 
     virtual void render(SDL_Renderer *gRenderer);
 
-    virtual void renderCustomFillRect(SDL_Renderer * gRenderer, SDL_Rect customFillRect);
+    virtual void renderCustomFillRect(SDL_Renderer * gRenderer, SDL_Rect customDimRect);
 
     virtual void update();
 
