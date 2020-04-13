@@ -188,6 +188,9 @@ void SDLGP_Galaga::resetShipPosition(){
 
 void SDLGP_Galaga::resetToLevel(){
 
+    GalagaLevels[currLevelIndex].resetLevel();
+
+    GalagaLevels[currLevelIndex].constructLevel(getSDLRenderer());
 
     resetShipPosition();
 
@@ -345,6 +348,12 @@ void SDLGP_Galaga::update()
     }
 
 
+    //Check for level complete!
+    if (objs->size() <= 0){
+        gameOver();
+        return;
+    }
+
     //Now update all game objects and player and general movement
     for(size_t i = 0; i < GalagaLevels[currLevelIndex].levelObjs.size(); ++i) {
     	GalagaLevels[currLevelIndex].levelObjs[i].update();
@@ -450,6 +459,7 @@ void SDLGP_Galaga::loop()
                             }
 
                             currLevelIndex++;
+
 
                             if(currLevelIndex != 0){
                                 resetToLevel();
