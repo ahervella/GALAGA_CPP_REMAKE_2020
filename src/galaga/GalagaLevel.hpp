@@ -48,6 +48,7 @@ public:
         this -> configFileStream = ResourceManager::getInstance()->getConfigFileResource(configFilePath);
         parseStreamToString();
 
+
     }
 
     void destroy(){
@@ -58,6 +59,8 @@ public:
     void resetLevel(){
         destroy();
         init(this -> configFilePath);
+
+        bullets.clear();
     }
 
 

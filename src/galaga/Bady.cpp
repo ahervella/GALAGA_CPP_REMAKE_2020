@@ -1,5 +1,6 @@
 #include "Bady.hpp"
 #include <math.h>
+#include <ctime>
 
 Bady::Bady() : GameObject() {
 
@@ -38,8 +39,9 @@ Bady::~Bady()
 }
 
 void Bady::randomizeShootStartTime(){
-    sinceLastShot = (int) rand() % (int)cooldown;
-    std::cout<<"sinceLastShottttttttttttt: "<<sinceLastShot<<std::endl;
+
+    sinceLastShot = (int) std::rand() % (int)cooldown;
+    //std::cout<<"sinceLastShottttttttttttt: "<<sinceLastShot<<std::endl;
 }
 
 void Bady::update() {

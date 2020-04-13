@@ -19,7 +19,7 @@ namespace Constants {
             const float SCREEN_UNIT_WIDTH = 12;//20
             const float SCREEN_UNIT_HEIGHT = 10;//11
             const Vector3D PLAYER_UNIT_DIM = Vector3D(1, 1);//1.4, 2);
-            const int LIVES = 0;
+            const int LIVES = 4;
 
             namespace Tag {
                 const int BADY_TAG = 1;

@@ -196,6 +196,10 @@ void SDLGP_Galaga::resetToLevel(){
 
     centerText.text = " ";
 
+    PlayerShip::lifeCount = Constants::Galaga::Game::LIVES;
+
+    livesText.setText(PlayerShip::lifeCount);
+
     //Reset score to pre-level score
     score -= currLevelScore;
     currLevelScore = 0;
@@ -538,7 +542,7 @@ void SDLGP_Galaga::loop()
                                 lifeCount = DEFAULT_LIVES;
                                 //Reset score, set score and life texts, reset center text
                                 centerText.text = " ";
-                                livesText.setText(PlayerShip::lifeCount);
+
                                 score = 0;
                                 //If we restart after losing all lives, we don't want to subtract the score earned in the level from 0
                                 currLevelScore = 0;
@@ -627,10 +631,13 @@ void SDLGP_Galaga::loseLife()
 {
 	PlayerShip::lifeCount -= 1;
 
+    std::cout<<"lost a life!  "<< PlayerShip::lifeCount<<std::endl;
 	if(PlayerShip::lifeCount < 0) {
 		gameOver();
 		return;
 	}
+
+    livesText.setText(PlayerShip::lifeCount);
 }
 
 void SDLGP_Galaga::initLevel()

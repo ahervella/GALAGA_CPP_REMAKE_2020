@@ -3,6 +3,7 @@
 
 int main(int argc, char* argv[]){
 	SDLGP_Galaga game;
+    std::srand((unsigned) std::time(nullptr));
 	game.loop();
 
 	return 0;
