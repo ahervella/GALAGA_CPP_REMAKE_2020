@@ -86,19 +86,26 @@ public:
                         continue;
                     case '1':
                         badyTextureFileName = Constants::Galaga::TexturePath::BADY1;
+                        bady = Bady(elementPos, badyDim, false, badyTextureFileName, gRenderer);
                         break;
                     case '2':
                         badyTextureFileName = Constants::Galaga::TexturePath::BADY2;
+                        bady = Bady(elementPos, badyDim, false, badyTextureFileName, gRenderer);
                         break;
                     case '3':
                         badyTextureFileName = Constants::Galaga::TexturePath::BADY3;
+                        bady = Bady(elementPos, badyDim, false, badyTextureFileName, gRenderer);
                         break;
                     case'4':
                         badyTextureFileName = Constants::Galaga::TexturePath::BADY4;
+                        bady = Bady(elementPos, badyDim, false, badyTextureFileName, gRenderer);
                         break;
+                    case '5':
+                    	badyTextureFileName = Constants::Galaga::TexturePath::BADY1;
+                    	bady = Bady(elementPos, badyDim, true, badyTextureFileName, gRenderer);
+                    	break;
                 }
 
-                bady = Bady(elementPos, badyDim, badyTextureFileName, gRenderer);
                 levelObjs.push_back(bady);
             }
         }
