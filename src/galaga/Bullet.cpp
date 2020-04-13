@@ -43,10 +43,25 @@ void Bullet::render(SDL_Renderer* gRenderer) {
 }
 
 bool Bullet::collisionUpdate(GameObject::SIDE collision, int otherTag) {
+
+
     if(collision != GameObject::SIDE::NONE) {
-                //TODO: Eliminate enemy
-                return true;
-            }
+
+        switch(otherTag){
+            case Constants::Galaga::Game::Tag::BADY_TAG:
+                if (this->tag == Constants::Galaga::Game::Tag::PLAYER_BULLET_TAG){
+                    return true;
+                }
+                break;
+
+            case Constants::Galaga::Game::Tag::PLAYER_TAG:
+                if (this->tag == Constants::Galaga::Game::Tag::BADY_BULLET_TAG){
+                    return true;
+                }
+
+        }
+
+    }
 
     return false;
 }

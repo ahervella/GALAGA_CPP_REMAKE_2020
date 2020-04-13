@@ -293,11 +293,11 @@ void SDLGP_Galaga::update()
     	//Check for collisions with either players or badys, and update
     	//the list of badys to remve if so (for badys)
     	//first with badys
-    	int tag = (*bullets)[i].tag;
+
     	bool hit = false;
     	for(size_t k = 0; k < objs->size(); ++k) {
 
-
+            int targetTag = (*objs)[k].tag;
 
 
                 //bug of bullets only destroying stuff at the opposite end of the collision was due to
@@ -306,7 +306,7 @@ void SDLGP_Galaga::update()
     		//if((*objs)[k].collisionUpdate((*objs)[k].isColliding((*bullets)[i]), tag)) {
 
     		//now its fixed: vvvvv
-            if((*bullets)[i].collisionUpdate((*bullets)[i].isColliding((*objs)[k]), tag)) {
+            if((*bullets)[i].collisionUpdate((*bullets)[i].isColliding((*objs)[k]), targetTag)) {
                 std::cout<<"collision side: "<<(*objs)[k].isColliding((*bullets)[i])<<std::endl;
     			hit = true;
     			badysToRemove.push_back(k);
@@ -315,11 +315,13 @@ void SDLGP_Galaga::update()
     		}
     	}
 
+
+
     	//if did not collide with a bady, check if colliding with player
 
     	//same fix here as above: vvvvvvvvvv
         //if(!hit && playerShip.collisionUpdate(playerShip.isColliding((*bullets)[i]), tag)) {
-        if(!hit && (*bullets)[i].collisionUpdate((*bullets)[i].isColliding(playerShip), tag)) {
+        if(!hit && (*bullets)[i].collisionUpdate((*bullets)[i].isColliding(playerShip), playerShip.tag)) {
     		hit = true;
     		loseLife();
     		if(GameObject::gameOver) {

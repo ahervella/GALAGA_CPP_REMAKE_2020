@@ -106,6 +106,7 @@ public:
                     	break;
                 }
 
+
                 levelObjs.push_back(bady);
             }
         }

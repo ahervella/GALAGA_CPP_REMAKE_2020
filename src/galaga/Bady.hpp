@@ -49,10 +49,12 @@ public:
 
 	void refreshMoveDestination();
 
+	void randomizeShootStartTime();
+
 private:
 	//Frames for cooldown of firing
-	float cooldown = 180;
-	float sinceLastShot = 0;
+	int cooldown = 240;
+	int sinceLastShot = 0;
 	bool bulletFired = false;
 
 	///variables to handle movement

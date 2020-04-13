@@ -1,7 +1,11 @@
 #include "Bady.hpp"
 #include <math.h>
 
-Bady::Bady() : GameObject() {}
+Bady::Bady() : GameObject() {
+
+    randomizeShootStartTime();
+
+}
 
 Bady::Bady(Vector3D pos, Vector3D dim, bool m, std::string spritesheetFile, SDL_Renderer* gRenderer) :
 		GameObject(pos, dim, Constants::Galaga::Game::Tag::BADY_TAG, spritesheetFile, gRenderer)
@@ -18,16 +22,24 @@ Bady::Bady(Vector3D pos, Vector3D dim, bool m, std::string spritesheetFile, SDL_
         refreshMoveDestination();
 	}
 
+    randomizeShootStartTime();
+
 }
 
 Bady::Bady(Vector3D pos, Vector3D dim) :
 		GameObject(pos, dim, Constants::Galaga::Game::Tag::BADY_TAG)
 {
 	mobile = false;
+    randomizeShootStartTime();
 }
 
 Bady::~Bady()
 {
+}
+
+void Bady::randomizeShootStartTime(){
+    sinceLastShot = (int) rand() % (int)cooldown;
+    std::cout<<"sinceLastShottttttttttttt: "<<sinceLastShot<<std::endl;
 }
 
 void Bady::update() {
@@ -54,7 +66,7 @@ void Bady::update() {
 	//TODO: Make enemy more interesting
 	if(!bulletFired) {
 
-		//sinceLastShot += 1;
+		sinceLastShot += 1;
 
 		if(sinceLastShot >= cooldown) {
 			sinceLastShot = 0;
