@@ -40,6 +40,8 @@ void Bady::update() {
 
 	if (mobile)
 	{
+		//std::cout << pos.x << " " << pos.y << std::endl;
+
 		pos.x = (pos.x + m0x * (mForward? 1:-1));
 		pos.y = (pos.y + m0y * (mForward? 1:-1));
 
@@ -58,7 +60,6 @@ void Bady::update() {
 			mStep = 0;
 			locationIndex++;
 
-			std::cout << "Loop 1" << std::endl;
 		}
 
 		else if (mStep >= mSteps && locationIndex >= ds.size())
@@ -74,8 +75,6 @@ void Bady::update() {
 
 			mStep = 0;
 			locationIndex = 1;
-
-			std::cout << "Loop 2" << std::endl;
 		}
 	}
 
@@ -115,7 +114,7 @@ void Bady::populateLocations()
 {
 	auto loc = std::make_pair<int, int>(10, 10);
 	auto loc2 = std::make_pair<int, int>(20, 15);
-	auto loc3 = std::make_pair<int, int>(0, 0);
+	auto loc3 = std::make_pair<int, int>(100, 100);
 
 	ds.push_back(loc);
 	ds.push_back(loc2);
