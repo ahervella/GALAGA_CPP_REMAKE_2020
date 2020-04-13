@@ -15,7 +15,6 @@ SDLGP_Galaga::SDLGP_Galaga()
     this->backgroundMusicFile = Constants::Galaga::SFXPath::MUSIC;
 	initLevel();
 	this->backgroundImageFile = Constants::Galaga::TexturePath::BACKGROUND;
-	backgroundMusicFile = Constants::Galaga::SFXPath::MUSIC;
 	loadBackgroundMusicAndImage();
 }
 
