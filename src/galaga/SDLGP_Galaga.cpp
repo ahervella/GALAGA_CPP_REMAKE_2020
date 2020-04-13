@@ -14,6 +14,7 @@ SDLGP_Galaga::SDLGP_Galaga()
 {
 	initLevel();
 	this->backgroundImageFile = Constants::Galaga::TexturePath::BACKGROUND;
+	backgroundMusicFile = Constants::Galaga::SFXPath::MUSIC;
 	loadBackgroundMusicAndImage();
 }
 
@@ -439,6 +440,13 @@ void SDLGP_Galaga::loop()
 
     bool rightJustPressed = false;
     bool leftJustPressed = false;
+
+    bool easterEggUp = false;
+    bool easterEggB = false;
+
+    bool easterEggL = false;
+    bool easterEggA = false;
+
     Mix_PlayMusic(*(backgroundMusic), -1);
 
 
@@ -552,6 +560,31 @@ void SDLGP_Galaga::loop()
                             GameObject::gameOver = false;
                             break;
                         }
+                        break;
+                    case SDLK_UP:
+                    	if (!easterEggUp)
+                    	{
+                    		easterEggUp = true;
+                    	}
+                    	break;
+                    case SDLK_b:
+                    	if (!easterEggB && easterEggUp)
+                    	{
+                    		easterEggB = true;
+                    	}
+                    	break;
+                    case SDLK_l:
+                    	if (!easterEggL)
+                    	{
+                    		easterEggL = true;
+                    	}
+                    	break;
+                    case SDLK_a:
+                    	if (!easterEggA && easterEggL)
+                    	{
+                    		easterEggA = true;
+                    	}
+                    	break;
                 }
             }
 
@@ -581,6 +614,27 @@ void SDLGP_Galaga::loop()
 
             if (!leftJustPressed && !rightJustPressed){
                 playerShip.changeDirection(0);
+            }
+
+            //easter egg codes
+            if (easterEggUp && easterEggB)
+            {
+            	//increase score by 30, then set bools to false
+            	playerShip.setScore(playerShip.getScore() + 30);
+            	scoreText.setText(playerShip.getScore());
+
+            	easterEggUp = false;
+            	easterEggB = false;
+            }
+
+            if(easterEggL && easterEggA)
+            {
+            	//award 3 extra lives, then set bools to false;
+            	PlayerShip::lifeCount += 3;
+            	livesText.setText(PlayerShip::lifeCount);
+
+            	easterEggL = false;
+            	easterEggA = false;
             }
         }
 
