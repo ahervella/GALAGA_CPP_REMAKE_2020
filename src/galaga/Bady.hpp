@@ -45,6 +45,10 @@ public:
 	//adds locatiosn for enemies to travel to
 	void populateLocations();
 
+	void incrementMoveDestination();
+
+	void refreshMoveDestination();
+
 private:
 	//Frames for cooldown of firing
 	float cooldown = 180;
@@ -62,7 +66,7 @@ private:
 	float m0y;
 
 	std::vector<std::pair<int, int>> ds;
-	int speed = 1.5f;
+	int speed = 1;
 };
 
 

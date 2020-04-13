@@ -11,17 +11,11 @@ Bady::Bady(Vector3D pos, Vector3D dim, bool m, std::string spritesheetFile, SDL_
 	if (m)
 	{
 		mForward = true;
-		locationIndex = 1;
+		locationIndex = 0;
 		mStep = 0;
 
-		m0x = ds[0].first - pos.x;
-		m0y = ds[0].second - pos.y;
-
-		float len = sqrtf(m0x + m0x + m0y + m0y);
-		m0x = m0x / len * speed;
-		m0y = m0y / len * speed;
-
-		mSteps = len / speed;
+		//set the first m0, and mSteps with the current locationIndex (0)
+        refreshMoveDestination();
 	}
 
 }
@@ -38,45 +32,22 @@ Bady::~Bady()
 
 void Bady::update() {
 
+    //if moving
 	if (mobile)
 	{
+	    //update position
 		pos.x = (pos.x + m0x * (mForward? 1:-1));
 		pos.y = (pos.y + m0y * (mForward? 1:-1));
 
+		//increase step
 		mStep++;
-		if (mStep >= mSteps && locationIndex < ds.size())
-		{
-			m0x = ds[locationIndex - 1].first - pos.x;
-			m0y = ds[locationIndex - 1].second - pos.y;
 
-			float len = sqrtf(m0x + m0x + m0y + m0y);
-			m0x = m0x / len * speed;
-			m0y = m0y / len * speed;
-
-			mSteps = len / speed;
-
-			mStep = 0;
-			locationIndex++;
-
-			std::cout << "Loop 1" << std::endl;
+		//check for when ship has finished this destination
+		if (mStep >= mSteps){
+            incrementMoveDestination();
 		}
 
-		else if (mStep >= mSteps && locationIndex >= ds.size())
-		{
-			m0x = ds[0].first - pos.x;
-			m0y = ds[0].second - pos.y;
 
-			float len = sqrtf(m0x + m0x + m0y + m0y);
-			m0x = m0x / len * speed;
-			m0y = m0y / len * speed;
-
-			mSteps = len / speed;
-
-			mStep = 0;
-			locationIndex = 1;
-
-			std::cout << "Loop 2" << std::endl;
-		}
 	}
 
 
@@ -113,11 +84,42 @@ bool Bady::collisionUpdate(GameObject::SIDE collision, int otherTag) {
 
 void Bady::populateLocations()
 {
-	auto loc = std::make_pair<int, int>(10, 10);
-	auto loc2 = std::make_pair<int, int>(20, 15);
+	auto loc = std::make_pair<int, int>(100, 100);
+	auto loc2 = std::make_pair<int, int>(300, 100);
 	auto loc3 = std::make_pair<int, int>(0, 0);
 
 	ds.push_back(loc);
 	ds.push_back(loc2);
 	ds.push_back(loc3);
+}
+
+
+
+//Moves on to the next locationIndex and loops if all have been done
+void Bady::incrementMoveDestination(){
+    mStep = 0;
+    locationIndex++;
+
+    refreshMoveDestination();
+
+
+    //check to see if all destinations have been done and should loop again
+    if (locationIndex + 1>= ds.size())
+    {
+        locationIndex = 0;
+    }
+}
+
+
+
+//Refreshes the move destination, m0, and mSteps with the current locationIndex
+void Bady::refreshMoveDestination(){
+    m0x = ds[locationIndex].first - pos.x;
+    m0y = ds[locationIndex].second - pos.y;
+
+    float len = sqrtf(m0x * m0x + m0y * m0y);
+    m0x = m0x / len * speed;
+    m0y = m0y / len * speed;
+
+    mSteps = len / speed;
 }
