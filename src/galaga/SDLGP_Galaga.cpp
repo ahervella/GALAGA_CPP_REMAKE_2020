@@ -179,8 +179,7 @@ void SDLGP_Galaga::resetShipPosition(){
     int shipPosX = (Constants::Galaga::Game::SCREEN_UNIT_WIDTH / 2 - Constants::Galaga::Game::PLAYER_UNIT_DIM.x)
                    * Constants::Galaga::Game::UNIT;
 
-    int shipPosY = (Constants::Galaga::Game::SCREEN_UNIT_HEIGHT - (2 * Constants::Galaga::Game::PLAYER_UNIT_DIM.y))
-                   * Constants::Galaga::Game::UNIT;
+    int shipPosY = (Constants::Galaga::Game::SCREEN_UNIT_HEIGHT) * Constants::Galaga::Game::UNIT;
 
     Vector3D shipDim = Constants::Galaga::Game::PLAYER_UNIT_DIM * Constants::Galaga::Game::UNIT;
     playerShip.resetPosition(Vector3D(shipPosX, shipPosY), shipDim);
