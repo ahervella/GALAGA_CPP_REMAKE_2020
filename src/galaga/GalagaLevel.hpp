@@ -82,8 +82,6 @@ public:
 
                 Bady bady;
 
-
-
                 switch (contents[i][j]) {
                     case '.':
                         continue;
@@ -109,6 +107,7 @@ public:
                     	break;
                 }
 
+                std::cout<<"check xxxxx2"<<std::endl;
 
                 levelObjs.push_back(bady);
             }

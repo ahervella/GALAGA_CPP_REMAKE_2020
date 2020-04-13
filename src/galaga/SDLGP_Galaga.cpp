@@ -12,6 +12,7 @@ PlayerShip playerShip;
 
 SDLGP_Galaga::SDLGP_Galaga()
 {
+    this->backgroundMusicFile = Constants::Galaga::SFXPath::MUSIC;
 	initLevel();
 	this->backgroundImageFile = Constants::Galaga::TexturePath::BACKGROUND;
 	loadBackgroundMusicAndImage();

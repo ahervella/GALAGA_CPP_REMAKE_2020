@@ -34,11 +34,12 @@ public:
 
     void editTilePlatformer(Vector3D blockPos, std::string blockStr);
 
-	void editTileGalaga(Vector3D blockPos, int badyTypeInt);
+	void editTileGalaga(Vector3D blockPos, std::string blockStr);
 
     //helper for editing the editorTile files in real time.
     void levelHelper(int lvlInt);
 
+    void loadBackgroundMusicAndImage();
 
 
 private:

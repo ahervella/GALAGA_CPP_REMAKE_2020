@@ -131,6 +131,9 @@ void SDLGP_Editor::loop() {
                                     {255, 0, 0, 255},
                                     Constants::Breakout::TexturePath::CLEAR,
                                     gRenderer);
+
+            backgroundMusicFile = Constants::Breakout::SFXPath::MUSIC;
+            backgroundImageFile = Constants::Platformer::TexturePath::BACKGROUND;
             break;
         case 2:
             edt_cursor = GameObject(Vector3D(0,
@@ -142,6 +145,9 @@ void SDLGP_Editor::loop() {
                                     {255, 0, 0, 255},
                                     Constants::Platformer::TexturePath::CLEAR,
                                     gRenderer);
+
+            backgroundMusicFile = Constants::Platformer::SFXPath::MUSIC;
+            backgroundImageFile = Constants::Platformer::TexturePath::BACKGROUND;
             break;
         case 3:
             edt_cursor = GameObject(Vector3D(0,
@@ -153,6 +159,9 @@ void SDLGP_Editor::loop() {
                                     {255, 0, 0, 255},
                                     Constants::Galaga::TexturePath::CLEAR,
                                     gRenderer);
+
+            backgroundMusicFile = Constants::Galaga::SFXPath::MUSIC;
+            backgroundImageFile = Constants::Galaga::TexturePath::BACKGROUND;
             break;
     }
 
@@ -163,7 +172,6 @@ void SDLGP_Editor::loop() {
     //doing this here because can't call virtual function in constructor!
     initLevelLoadingEditor();
 
-
     // Main loop flag
     // If this is quit = 'true' then the program terminates.
     bool quit = false;
@@ -173,8 +181,11 @@ void SDLGP_Editor::loop() {
     // Enable text input
     SDL_StartTextInput();
 
-    Mix_PlayMusic(*(backgroundMusic), -1);
+    loadBackgroundMusicAndImage();
+    backgroundMusic = resourceManager->getMusicResource(this->backgroundMusicFile);
 
+
+    Mix_PlayMusic(*(backgroundMusic), -1);
     //std::cout<<"working3"<<std::endl;
 
     // While application is running
@@ -223,7 +234,9 @@ void SDLGP_Editor::loop() {
                                 }
                                 break;
                             case 3:
-                                //galaga stuff
+                                if(edt_cursorBlockPos.y < Constants::Galaga::Game::SCREEN_UNIT_HEIGHT){
+                                    edt_cursorBlockPos = Vector3D(edt_cursorBlockPos.x, edt_cursorBlockPos.y + 1);
+                                }
                                 break;
                         }
 
@@ -245,7 +258,9 @@ void SDLGP_Editor::loop() {
                                 }
                                 break;
                             case 3:
-                                //galaga stuff
+                                if(edt_cursorBlockPos.x < Constants::Galaga::Game::SCREEN_UNIT_WIDTH){
+                                    edt_cursorBlockPos = Vector3D(edt_cursorBlockPos.x + 1, edt_cursorBlockPos.y);
+                                }
                                 break;
                         }
 
@@ -262,7 +277,9 @@ void SDLGP_Editor::loop() {
                         //right
                         break;
                     case SDLK_1:
-                        if(!lvlSelectMode){break;}
+                        if(!lvlSelectMode){
+                            editTile(edt_cursorBlockPos, "1");
+                            break;}
                         //doshit
                         edt_currLevelIndex = 0;
 
@@ -274,7 +291,7 @@ void SDLGP_Editor::loop() {
                                 edt_levels_platformer[edt_currLevelIndex]->constructLevel(getSDLRenderer());
                                 break;
                             case 3:
-                                //galaga stuff
+                                edt_levels_galaga[edt_currLevelIndex]->constructLevel(getSDLRenderer());
                                 break;
                         }
 
@@ -283,7 +300,9 @@ void SDLGP_Editor::loop() {
                         //1 key
                         break;
                     case SDLK_2:
-                        if(!lvlSelectMode){break;}
+                        if(!lvlSelectMode){
+                            editTile(edt_cursorBlockPos, "2");
+                            break;}
                         edt_currLevelIndex = 1;
 
                         levelHelper(2);
@@ -296,7 +315,7 @@ void SDLGP_Editor::loop() {
                                 edt_levels_platformer[edt_currLevelIndex]->constructLevel(getSDLRenderer());
                                 break;
                             case 3:
-                                //galaga stuff
+                                edt_levels_galaga[edt_currLevelIndex]->constructLevel(getSDLRenderer());
                                 break;
                         }
 
@@ -307,7 +326,9 @@ void SDLGP_Editor::loop() {
 
 
                     case SDLK_3:
-                        if(!lvlSelectMode){break;}
+                        if(!lvlSelectMode){
+                            editTile(edt_cursorBlockPos, "3");
+                            break;}
                         edt_currLevelIndex = 2;
 
                         levelHelper(3);
@@ -320,7 +341,7 @@ void SDLGP_Editor::loop() {
                                 edt_levels_platformer[edt_currLevelIndex]->constructLevel(getSDLRenderer());
                                 break;
                             case 3:
-                                //galaga stuff
+                                edt_levels_galaga[edt_currLevelIndex]->constructLevel(getSDLRenderer());
                                 break;
                         }
 
@@ -328,7 +349,11 @@ void SDLGP_Editor::loop() {
                         break;
 
                     case SDLK_4:
-                        if(!lvlSelectMode){break;}
+                        if(!lvlSelectMode) {
+                            editTile(edt_cursorBlockPos, "4");
+                        }//break;}
+                        break;
+                        /*
                         edt_currLevelIndex = 3;
 
                         levelHelper(4);
@@ -341,13 +366,14 @@ void SDLGP_Editor::loop() {
                                 edt_levels_platformer[edt_currLevelIndex]->constructLevel(getSDLRenderer());
                                 break;
                             case 3:
-                                //galaga stuff
+                                edt_levels_galaga[edt_currLevelIndex]->constructLevel(getSDLRenderer());
                                 break;
                         }
 
                         lvlSelectMode = false;
-                        break;
-
+                        */
+                        //break;
+                    /*
                     case SDLK_5:
                         if(!lvlSelectMode){break;}
                         edt_currLevelIndex = 4;
@@ -362,7 +388,7 @@ void SDLGP_Editor::loop() {
                                 edt_levels_platformer[edt_currLevelIndex]->constructLevel(getSDLRenderer());
                                 break;
                             case 3:
-                                //galaga stuff
+                                edt_levels_galaga[edt_currLevelIndex]->constructLevel(getSDLRenderer());
                                 break;
                         }
 
@@ -383,13 +409,13 @@ void SDLGP_Editor::loop() {
                                 edt_levels_platformer[edt_currLevelIndex]->constructLevel(getSDLRenderer());
                                 break;
                             case 3:
-                                //galaga stuff
+                                edt_levels_galaga[edt_currLevelIndex]->constructLevel(getSDLRenderer());
                                 break;
                         }
 
                         lvlSelectMode = false;
                         break;
-
+                        */
                     case SDLK_c:
                         editTile(edt_cursorBlockPos, "c");
                         //edt_levels_platformer[edt_currLevelIndex].writeToCfgFile("s");
@@ -426,7 +452,7 @@ void SDLGP_Editor::loop() {
 
                         if(lvlSelectMode){break;}
                         lvlSelectMode = true;
-                        initLevelLoadingEditor();
+                        //initLevelLoadingEditor();
                         break;
                 }
             }
@@ -435,10 +461,8 @@ void SDLGP_Editor::loop() {
 
         // Update our scene
         update();
-
         // Render
         render();
-
         //Cap frame rate
         unsigned int endFrame = SDL_GetTicks();
         unsigned int frameTick = endFrame - startFrame;
@@ -471,7 +495,6 @@ void SDLGP_Editor::initLevelLoadingEditor() {
              "Press the m key to return to the main menu from the editor." <<std::endl<< std::endl<<
              "Press the q key to quit at any time!"<<std::endl<< std::endl;
 
-    std::cout<<"the pipe is leaking"<<std::endl;
     switch(gameCode){
         case 1:
             mainMenuText = Textbox("MAIN MENU: ", TEXT_SIZE, TEXT_X_ANCHOR_BREAKOUT, TEXT_Y_ANCHOR_BREAKOUT);
@@ -523,7 +546,7 @@ void SDLGP_Editor::initLevelLoadingEditor() {
             resourceConfigsPath = getResourcePath("platformer/level_config");
             break;
         case 3:
-            //galaga resourceConfigsPath...
+            resourceConfigsPath = getResourcePath("galaga/level_config");
             break;
     }
 
@@ -576,7 +599,8 @@ void SDLGP_Editor::initLevelLoadingEditor() {
                 edt_levels_platformer.push_back(new Level(filePath));
                 break;
             case 3:
-                //galaga stuff
+                edt_menuTexts.push_back(Textbox(filename, TEXT_SIZE/1.5, TEXT_X_ANCHOR_GALAGA, TEXT_Y_ANCHOR_GALAGA + textYPosIncrementer));
+                edt_levels_galaga.push_back(new GalagaLevel(filePath));
                 break;
         }
 
@@ -598,7 +622,7 @@ void SDLGP_Editor::editTile(Vector3D blockPos, std::string blockStr) {
             editTilePlatformer(blockPos, blockStr);
             break;
         case 3:
-            //galaga stuff
+            editTileGalaga(blockPos, blockStr);
             break;
     }
 
@@ -624,6 +648,10 @@ void SDLGP_Editor::editTileBreakout(Vector3D blockPos, std::string blockStr) {
         case 'B':
 
             contents[blockPos.y].replace(blockPos.x, 1, "X");
+            break;
+
+        case '.':
+            contents[blockPos.y].replace(blockPos.x, 1, ".");
             break;
     }
 
@@ -703,7 +731,7 @@ void SDLGP_Editor::editTilePlatformer(Vector3D blockPos, std::string blockStr) {
 
     }
 
-void SDLGP_Editor::editTileGalaga(Vector3D blockPos, int badyTypeInt) {
+void SDLGP_Editor::editTileGalaga(Vector3D blockPos, std::string blockStr) {
 
     GalagaLevel* lvl = edt_levels_galaga[edt_currLevelIndex];
 
@@ -713,8 +741,17 @@ void SDLGP_Editor::editTileGalaga(Vector3D blockPos, int badyTypeInt) {
         contents.push_back(blah);
     }
 
+    switch(blockStr[0]){
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '.':
+            contents[blockPos.y].replace(blockPos.x, 1, blockStr);
+            break;
 
-            contents[blockPos.y].replace(blockPos.x, 1, std::to_string(badyTypeInt));
+    }
+
 
 
 
@@ -800,14 +837,14 @@ void SDLGP_Editor::levelHelper(int lvlInt) {
 
             case 3:
                 //galaga doesn't need to know the player starting position
-                for (int i = 0; i < Constants::Platformer::Game::SCREEN_UNIT_HEIGHT; i++) {
+                for (int i = 0; i < Constants::Galaga::Game::SCREEN_UNIT_HEIGHT; i++) {
 
-                    for (int k = 0; k < Constants::Platformer::Game::SCREEN_UNIT_WIDTH; k++) {
+                    for (int k = 0; k < Constants::Galaga::Game::SCREEN_UNIT_WIDTH; k++) {
 
 
                         conts += ".";
                     }
-                    if (i != Constants::Platformer::Game::SCREEN_UNIT_HEIGHT - 1) {
+                    if (i != Constants::Galaga::Game::SCREEN_UNIT_HEIGHT - 1) {
                         conts += "\n";
                     }
                 }
@@ -832,5 +869,19 @@ void SDLGP_Editor::levelHelper(int lvlInt) {
 
         currLevel++;
     }
+}
+
+void SDLGP_Editor::loadBackgroundMusicAndImage() {
+
+    //Resource Manager initialization
+    resourceManager = ResourceManager::getInstance();
+
+    //Load background music
+    backgroundMusic = resourceManager->getMusicResource(this->backgroundMusicFile);
+
+    //Load background image
+    //this->backgroundImageFile = Constants::Platformer::TexturePath::BACKGROUND;
+    backgroundImage = resourceManager->getTextureResource(getSDLRenderer(), this->backgroundImageFile);
+
 }
 

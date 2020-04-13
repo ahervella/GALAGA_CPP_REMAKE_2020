@@ -248,7 +248,7 @@ GameObject::~GameObject()
 void GameObject::renderCustomFillRect(SDL_Renderer * gRenderer, SDL_Rect customDimRect)
 {
 
-    SDL_Rect fillRect;// = customFillRect;
+    SDL_Rect fillRect = customDimRect;
     //sets render color to fill color
 
 
