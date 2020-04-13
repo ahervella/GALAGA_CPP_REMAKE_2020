@@ -210,18 +210,11 @@ void SDLGP_Galaga::update()
     SDL_SetRenderDrawColor(gRenderer, 0x22, 0x22, 0x22, 0xFF);
     SDL_RenderClear(gRenderer);
 
-    //Check for collision between player and enemies/bullets
-
-    std::vector<Bady> objs = GalagaLevels[currLevelIndex].levelObjs;//levels[currLevelIndex].levelObjs;
-
-
-    std::vector<Bullet> bullets = GalagaLevels[currLevelIndex].bullets;
-    //If we have a collision, let the player figure out what to do based on where the collision is from
-    //TODO: For future, figure out
 
     scoreText.setText(playerShip.getScore());
 
 
+    //add bullets if hasFired is true for any bady
     for(size_t i = 0; i < GalagaLevels[currLevelIndex].levelObjs.size(); ++i) {
     	if(GalagaLevels[currLevelIndex].levelObjs[i].hasFired()) {
     		Vector3D pos = GalagaLevels[currLevelIndex].levelObjs[i].pos;
@@ -230,6 +223,8 @@ void SDLGP_Galaga::update()
 				(Bullet(pos, dim, Constants::Galaga::Game::Tag::BADY_BULLET_TAG, Constants::Galaga::TexturePath::BULLET, gRenderer));
     	}
     }
+
+    //add bullet if hasFired is true for player
     if(playerShip.hasFired()) {
     	Vector3D pos = playerShip.pos;
     	Vector3D dim = playerShip.dim;
@@ -260,27 +255,38 @@ void SDLGP_Galaga::update()
      */
 
 
+
+    //pointers in case its making a copy of the vector list, cause we need to edit the reference
+    std::vector<Bady>* objs = &GalagaLevels[currLevelIndex].levelObjs;//levels[currLevelIndex].levelObjs;
+    std::vector<Bullet>* bullets = &GalagaLevels[currLevelIndex].bullets;
+
+    //keep track of what to remove via index
     std::vector<int> bulletsToRemove;
     std::vector<int>badysToRemove;
-    //std::vector<Bullet> bulletsToRemove;
-    //std::vector<Bady> badysToRemove;
-    for(size_t i = 0; i < bullets.size(); ++i) {
-    	if(bullets[i].pos.y < 0 || bullets[i].pos.y > (Constants::Galaga::Game::UNIT * Constants::Galaga::Game::SCREEN_UNIT_HEIGHT)) {
+
+    //if bullet is beyond screen, need to remove
+    for(size_t i = 0; i < bullets->size(); ++i) {
+    	if((*bullets)[i].pos.y < 0 || (*bullets)[i].pos.y > (Constants::Galaga::Game::UNIT * Constants::Galaga::Game::SCREEN_UNIT_HEIGHT)) {
     		bulletsToRemove.push_back(i);
     		continue;
     	}
-    	//Could be a player bullet or enemy bullet
-    	int tag = bullets[i].tag;
+
+    	//Check for collisions with either players or badys, and update
+    	//the list of badys to remve if so (for badys)
+    	//first with badys
+    	int tag = (*bullets)[i].tag;
     	bool hit = false;
-    	for(size_t k = 0; k < objs.size(); ++k) {
-    		if(objs[k].collisionUpdate(objs[k].isColliding(bullets[i]), tag)) {
+    	for(size_t k = 0; k < objs->size(); ++k) {
+    		if((*objs)[k].collisionUpdate((*objs)[k].isColliding((*bullets)[i]), tag)) {
     			hit = true;
     			badysToRemove.push_back(k);
         		playerShip.setScore(playerShip.getScore() + 1);
     			break;
     		}
     	}
-    	if(!hit && playerShip.collisionUpdate(playerShip.isColliding(bullets[i]), tag)) {
+
+    	//if did not collide with a bady, check if colliding with player
+    	if(!hit && playerShip.collisionUpdate(playerShip.isColliding((*bullets)[i]), tag)) {
     		hit = true;
     		loseLife();
     		if(GameObject::gameOver) {
@@ -288,53 +294,58 @@ void SDLGP_Galaga::update()
     		    return;
     		}
     	}
+
+    	//if the bullet collided need to remove
     	if(hit) {
     		bulletsToRemove.push_back(i);
     	}
     }
 
-    std::vector<Bullet> bulletsToKeep;
-    std::vector<Bady> badysToKeep;
-    for(size_t i = 0; i < bullets.size(); ++i) {
-    	auto it = std::find(bulletsToRemove.begin(), bulletsToRemove.end(), i);
-    	if(it == bulletsToRemove.end()) {
-    		bulletsToKeep.push_back(bullets[i]);
-    	}
-    }
 
-    for(size_t k = 0; k < bullets.size(); ++k) {
-        auto it = std::find(badysToRemove.begin(), badysToRemove.end(), k);
-        if(it == badysToRemove.end()) {
-        	badysToKeep.push_back(objs[k]);
+    //remove bullets via index, and modify any indexes each time that are larger (affected by removal)
+    //the current removing index
+
+    //if no bullets to remove, don't bother
+    if (bulletsToRemove.size() > 0){
+        for(size_t i = 0; i < bulletsToRemove.size(); ++i) {
+            //remove bullet based on index
+            bullets->erase(bullets->begin() + bulletsToRemove[i]);
+
+            //adjust the index of each bulletToRemove if the bullet that
+            //was just removed was less than any of the bullets
+            for(size_t k = 0; k < bulletsToRemove.size(); ++k){
+                if (i == k){continue;}
+
+                if (bulletsToRemove[i] < bulletsToRemove[k]){
+                    bulletsToRemove[k] -= 1;
+                }
+            }
+
         }
     }
-    //GalagaLevels[currLevelIndex].bullets = bulletsToKeep;
-    //GalagaLevels[currLevelIndex].levelObjs = badysToKeep;
 
-    /*
-    for(size_t j = 0; j < PlatformerLevels[currLevelIndex].enemyObjs.size(); ++j) {
-         if(p->collisionUpdate(p->isColliding(PlatformerLevels[currLevelIndex].enemyObjs[j]), Constants::Platformer::Game::Tag::ENEMY_TAG)) {
-               std::cout << "LOSE: TOUCHED ENEMY" << std::endl;
-               loseLife();
-               if(GameObject::gameOver) {
-                   //Stop the game if we hit game over after losing a life
-                   return;
-               }
-           }
-           for(size_t s = 0; s < objs.size(); ++s) {
-               PlatformerLevels[currLevelIndex].enemyObjs[j].collisionUpdate
-                (PlatformerLevels[currLevelIndex].enemyObjs[j].isColliding(objs[s]), objs[s].tag);
-           }
+
+    //same shit now for badysToRemove
+
+    //remove badys via index, and modify any indexes each time that are larger (affected by removal)
+    //the current removing index
+    if (badysToRemove.size() > 0){
+        for(size_t i = 0; i < badysToRemove.size(); ++i) {
+            objs->erase(objs->begin() + badysToRemove[i]);
+
+            for(size_t k = 0; k < badysToRemove.size(); ++k){
+                if (i == k){continue;}
+
+                if (badysToRemove[i] < badysToRemove[k]){
+                    badysToRemove[k] -= 1;
+                }
+            }
+
+        }
     }
-    */
 
 
-    //all velocities should be final at this point in frame for player, apply to position
-    //std::cout<<"size: " + std::to_string(objs.size())<<std::endl;
-
-    //p->move();
-    //p->update();
-
+    //Now update all game objects and player and general movement
     for(size_t i = 0; i < GalagaLevels[currLevelIndex].levelObjs.size(); ++i) {
     	GalagaLevels[currLevelIndex].levelObjs[i].update();
     }
@@ -345,12 +356,6 @@ void SDLGP_Galaga::update()
 
     playerShip.move();
     playerShip.update();
-    /*
-    for(size_t k = 0; k < PlatformerLevels[currLevelIndex].enemyObjs.size(); ++k) {
-    	PlatformerLevels[currLevelIndex].enemyObjs[k].move();
-    	PlatformerLevels[currLevelIndex].enemyObjs[k].update();
-    }
-    */
 }
 
 void SDLGP_Galaga::render()
