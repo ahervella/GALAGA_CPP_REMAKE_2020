@@ -202,10 +202,10 @@ void SDLGP_Galaga::resetToLevel(){
     livesText.setText(PlayerShip::lifeCount);
 
     //Reset score to pre-level score
-    score -= currLevelScore;
+    playerShip.setScore(playerShip.getScore() - currLevelScore);
     currLevelScore = 0;
 
-    scoreText.setText(score);
+    scoreText.setText(playerShip.getScore());
 }
 
 void SDLGP_Galaga::update()
@@ -316,6 +316,7 @@ void SDLGP_Galaga::update()
     			hit = true;
     			badysToRemove.push_back(k);
         		playerShip.setScore(playerShip.getScore() + 1);
+        		currLevelScore++;
         		(*objs)[k].playHitSFX();
     			break;
     		}
@@ -556,10 +557,10 @@ void SDLGP_Galaga::loop()
                                 //Reset score, set score and life texts, reset center text
                                 centerText.text = " ";
 
-                                score = 0;
+                                playerShip.setScore(0);
                                 //If we restart after losing all lives, we don't want to subtract the score earned in the level from 0
                                 currLevelScore = 0;
-                                scoreText.setText(score);
+                                scoreText.setText(playerShip.getScore());
                             }
                             resetToLevel();
                             GameObject::gameOver = false;

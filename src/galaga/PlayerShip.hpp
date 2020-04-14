@@ -103,7 +103,7 @@ private:
 	std::string loseSFXFileName;
 
 	//A cooldown for shooting (set in frames)
-	int cooldown = 10;//120;
+	int cooldown = 30;//120;
 	//Keeping track of the number of frames since the last shot
 	int sinceLastShot = 120;
 	//Signals to the level that a bullet needs to be created and fired from the player's current position

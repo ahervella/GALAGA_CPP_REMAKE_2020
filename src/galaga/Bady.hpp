@@ -74,7 +74,7 @@ private:
 	std::string hitSFXFileName;
 
 	//Frames for cooldown of firing
-	int cooldown = 240;
+	int cooldown = 120;
 	int sinceLastShot = 0;
 	bool bulletFired = false;
 
