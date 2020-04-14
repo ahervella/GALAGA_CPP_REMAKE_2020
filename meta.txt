@@ -9,10 +9,13 @@ Milestone 2: 8 hours
 -- Did you implement any extentions? If so, which ones and how can they be tried out? Who implemented each?
 Milestone 1: Not yet
 Milestone 2: Not yet
+Milestone 3: Added optional enemy movement, it is simple for now (all moveable
+enemies take the same path) but easily editable in Bady::populateLocations().
+Running main-galaga will spawn one moving enemy per level.
 
 -- Did you use any code or resources from previous assignments? If so, list below.
 Breakout and Platformer projects (Michael and Alejandro's, pretty much all the code)
-
+Reused Lab 7 code to add in enemy movement.
 
 -- Did you use any external resources? If so, cite them below.
 Galaga:
@@ -50,7 +53,8 @@ N/A
 
 
 -- (Optional) What was your favorite part of the project?
-
+Karina: I liked adding in the easter eggs (UP + B to add 30 to score, L + A
+to add 3 extra lives to player)
 
 
 -- (Optional) How would you improve the project?

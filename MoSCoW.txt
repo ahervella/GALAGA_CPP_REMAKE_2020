@@ -23,13 +23,13 @@ Won’t Have:
 *Milestone 3
 
 Must Have:
-- Background music
-- SFX
-- Multiple levels
+- [X] Background music
+- [X] SFX
+- [X] Multiple levels
 
 Should Have:
 - Main Menu
-- Secret easter eggs(pressing certain keys at once gives you 5 extra lives, for example)
+- [X] Secret easter eggs(pressing certain keys at once gives you 5 extra lives, for example)
 
 Could Have:
 - Power-ups for different kinds of blasters
@@ -40,4 +40,4 @@ Won’t Have:
 - Dramatic explosions/death animations
 
 Extensions
-- Distinct enemy patterns (e.g. one ship spins clockwise before approaching its position) (Karina’s extension)
+- [X] Distinct enemy patterns (e.g. one ship spins clockwise before approaching its position) (Karina’s extension)
