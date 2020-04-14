@@ -45,6 +45,10 @@ namespace Constants {
 
         namespace SFXPath {
             const std::string MUSIC = getResourcePath("galaga") + "Csum_-_01_-_Wild_Colours.wav";
+            const std::string SHOOT = getResourcePath("galaga") + "428638__iut-paris8__quillard-charles-2018-laser.wav";
+            const std::string LOSE = getResourcePath("galaga") + "350986__cabled-mess__lose-c-01.wav";
+            const std::string LOSELIFE = getResourcePath("galaga") + "107788__leviclaassen__hit-001.wav";
+            const std::string ENEMYHIT = getResourcePath("galaga") + "362423__alphatrooper18__explosion1.wav";
         }
     }
 

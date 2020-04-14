@@ -20,6 +20,10 @@ Galaga:
     Music: https://freemusicarchive.org/music/Csum/Anaerobica/01_Csum_-_Wild_Colours
     Background: https://www.tynker.com/community/projects/play/galaga/596d22c71c36d1e4608b456f
     Bullet: https://pngio.com/PNG/a30136-galaga-png.html
+    Bullet shooting SFX: https://freesound.org/people/iut_Paris8/sounds/428638/
+    Lose SFX: https://freesound.org/people/cabled_mess/sounds/350986/
+    Hit (lose life) SFX: https://freesound.org/people/leviclaassen/sounds/107788/
+    Enemy hit: https://freesound.org/people/alphatrooper18/sounds/362423/
 
 
 Breakout:

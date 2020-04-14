@@ -68,7 +68,23 @@ public:
      */
 	bool collisionUpdate(GameObject::SIDE collisionDirection, int otherTag);
 
+	/**
+	 * Resets player to a given position
+	 *
+	 * @param pos the postion to reset to
+	 * @param dim the dimensions of the player ship on screen
+	 */
     void resetPosition(Vector3D pos, Vector3D dim);
+
+    /**
+     * Plays the sound effect for losing all lives
+     */
+    void playLoseSFXFile();
+
+    /**
+     * Plays the sound effect for losing a life
+     */
+    void playHitSFXFile();
 
 private:
 	//Player's score
@@ -77,9 +93,10 @@ private:
 	int speed = 3;
 	//The direction the player will move when calling move (0 = neutral, 1 = right, -1 = left)
 	int direction;
-	//Shooting sound effect and filename for resource management
-	std::shared_ptr<Mix_Chunk*> shootSFX;
-	std::string shootSFXFileName;
+
+	//Sound effect for being hit by a bullet
+	std::shared_ptr<Mix_Chunk*> hitSFX;
+	std::string hitSFXFileName;
 
 	//Losing sound effect and filename for resource management
 	std::shared_ptr<Mix_Chunk*> loseSFX;

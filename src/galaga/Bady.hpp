@@ -42,16 +42,37 @@ public:
 	 */
 	bool collisionUpdate(GameObject::SIDE collisionDirection, int otherTag);
 
-	//adds locatiosn for enemies to travel to
+	/**
+	 * adds locations for enemies to travel to
+	 */
 	void populateLocations();
 
+	/**
+	 * Moves on to the next locationIndex and loops if all have been done
+	 */
 	void incrementMoveDestination();
 
+	/**
+	 * Refreshes the move destination, m0, and mSteps with the current locationIndex
+	 */
 	void refreshMoveDestination();
 
+	/**
+	 * Randomizes the time at which an enemy begins to shoot
+	 */
 	void randomizeShootStartTime();
 
+	/**
+	 * Play the soudn effect for getting hit by a bullet
+	 */
+	void playHitSFX();
+
 private:
+
+	//Sound effect for being hit by a bullet
+	std::shared_ptr<Mix_Chunk*> hitSFX;
+	std::string hitSFXFileName;
+
 	//Frames for cooldown of firing
 	int cooldown = 240;
 	int sinceLastShot = 0;

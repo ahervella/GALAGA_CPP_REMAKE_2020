@@ -25,6 +25,9 @@ Bady::Bady(Vector3D pos, Vector3D dim, bool m, std::string spritesheetFile, SDL_
 
     randomizeShootStartTime();
 
+    hitSFXFileName = Constants::Galaga::SFXPath::ENEMYHIT;
+    hitSFX = ResourceManager::getInstance()->getSFXResource(hitSFXFileName);
+
 }
 
 Bady::Bady(Vector3D pos, Vector3D dim) :
@@ -32,10 +35,20 @@ Bady::Bady(Vector3D pos, Vector3D dim) :
 {
 	mobile = false;
     randomizeShootStartTime();
+    hitSFXFileName = Constants::Galaga::SFXPath::ENEMYHIT;
+    hitSFX = ResourceManager::getInstance()->getSFXResource(hitSFXFileName);
 }
 
 Bady::~Bady()
 {
+	if(hitSFX) {
+		hitSFX.reset();
+		ResourceManager::getInstance()->deleteSFXResource(hitSFXFileName);
+	}
+}
+
+void Bady::playHitSFX() {
+	Mix_PlayChannel(-1, *hitSFX, 0);
 }
 
 void Bady::randomizeShootStartTime(){
@@ -109,7 +122,6 @@ void Bady::populateLocations()
 
 
 
-//Moves on to the next locationIndex and loops if all have been done
 void Bady::incrementMoveDestination(){
     mStep = 0;
     locationIndex++;
@@ -126,7 +138,6 @@ void Bady::incrementMoveDestination(){
 
 
 
-//Refreshes the move destination, m0, and mSteps with the current locationIndex
 void Bady::refreshMoveDestination(){
     m0x = ds[locationIndex].first - pos.x;
     m0y = ds[locationIndex].second - pos.y;

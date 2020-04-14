@@ -316,6 +316,7 @@ void SDLGP_Galaga::update()
     			hit = true;
     			badysToRemove.push_back(k);
         		playerShip.setScore(playerShip.getScore() + 1);
+        		(*objs)[k].playHitSFX();
     			break;
     		}
     	}
@@ -331,7 +332,11 @@ void SDLGP_Galaga::update()
     		loseLife();
     		if(GameObject::gameOver) {
     		    //Stop the game if we hit game over after losing a life
+    			playerShip.playLoseSFXFile();
     		    return;
+    		}
+    		else {
+    			playerShip.playHitSFXFile();
     		}
     	}
 

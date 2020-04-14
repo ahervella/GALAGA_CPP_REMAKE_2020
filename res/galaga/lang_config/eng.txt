@@ -2,6 +2,6 @@ SCORE Score:
 LIVES Lives Left: 
 WIN You won! Press 'n' for next level!
 DONE All levels done!
-LOSE Game Over!
+LOSE Game Over! Press 'r' to restart this\nlevel or 'q' to quit!
 START Press 'Space' to start!\nUse arrow keys to move left and right.\nPress space to fire!\nPress 'r' to restart a level at any time\n(you will lose your score earned during\nthe level)
 LANG_MENU Use the number keys to select language!

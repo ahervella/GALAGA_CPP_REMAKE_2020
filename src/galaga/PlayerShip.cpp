@@ -10,35 +10,37 @@ PlayerShip::PlayerShip() {}
 PlayerShip::PlayerShip(Vector3D pos, Vector3D dim, std::string spritesheetFile, SDL_Renderer* gRenderer) :
 			GameObject(pos, dim, Constants::Galaga::Game::Tag::PLAYER_TAG, spritesheetFile, gRenderer)
 {
-	//this->shootSFXFileName = Constants::Galaga::SFXPath::
-	//this->loseSFXFileName = Constants::Galaga::SFXPath::
+	this->hitSFXFileName = Constants::Galaga::SFXPath::LOSELIFE;
+	this->hitSFX = ResourceManager::getInstance()->getSFXResource(hitSFXFileName);
+
+	this->loseSFXFileName = Constants::Galaga::SFXPath::LOSE;
+	this->loseSFX = ResourceManager::getInstance()->getSFXResource(loseSFXFileName);
 }
 
 PlayerShip::PlayerShip(Vector3D pos, Vector3D dim) :
 		GameObject(pos, dim, Constants::Galaga::Game::Tag::PLAYER_TAG)
 {
-	//this->shootSFXFileName = Constants::Galaga::SFXPath::
 
-	//this->loseSFXFileName = Constants::Galaga::SFXPath::
-    if (spritesheet) {
-        spritesheet.reset();
-        ResourceManager::getInstance()->deleteTextureResource(spritesheetFileName);
-    }
+	this->loseSFXFileName = Constants::Galaga::SFXPath::LOSE;
+	this->loseSFX = ResourceManager::getInstance()->getSFXResource(loseSFXFileName);
 }
 
 PlayerShip::~PlayerShip() {
-	if(shootSFX) {
-		shootSFX.reset();
-		ResourceManager::getInstance()->deleteSFXResource(shootSFXFileName);
+	if(hitSFX) {
+		hitSFX.reset();
+		ResourceManager::getInstance()->deleteSFXResource(hitSFXFileName);
 	}
 	if(loseSFX) {
 	    loseSFX.reset();
 	    ResourceManager::getInstance()->deleteSFXResource(loseSFXFileName);
 	}
+	//Not necessary, GameObject destructor does this for us
+	/*
 	if (spritesheet) {
 	    spritesheet.reset();
 	    ResourceManager::getInstance()->deleteTextureResource(spritesheetFileName);
 	}
+	*/
 }
 void PlayerShip::move()
 {
@@ -101,6 +103,14 @@ void PlayerShip::shoot()
 	}
 }
 
+void PlayerShip::playLoseSFXFile() {
+	Mix_PlayChannel(-1, *loseSFX, 0);
+}
+
+void PlayerShip::playHitSFXFile() {
+	Mix_PlayChannel(-1, *hitSFX, 0);
+}
+
 bool PlayerShip::hasFired() {
 	return bulletFired;
 }
@@ -118,6 +128,7 @@ bool PlayerShip::collisionUpdate(GameObject::SIDE collisionDirection, int otherT
 			case Constants::Galaga::Game::Tag::BADY_BULLET_TAG:
 				if(collisionDirection != GameObject::SIDE::NONE) {
 					//TODO: Lose a life (handled by level)
+					playLoseSFXFile();
 					return true;
 				}
 	}

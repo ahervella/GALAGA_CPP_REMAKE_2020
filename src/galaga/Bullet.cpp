@@ -14,6 +14,19 @@ Bullet::Bullet(Vector3D pos, Vector3D dim, int ownerTag, std::string spritesheet
 	if(ownerTag == Constants::Galaga::Game::Tag::PLAYER_BULLET_TAG) {
 		speed = -5;
 	}
+
+	this->shootSFXFileName = Constants::Galaga::SFXPath::SHOOT;
+	this->shootSFX = ResourceManager::getInstance()->getSFXResource(shootSFXFileName);
+
+	this->playShootSFXFile();
+}
+
+Bullet::~Bullet()
+{
+	if(shootSFX) {
+		shootSFX.reset();
+        ResourceManager::getInstance()->deleteSFXResource(shootSFXFileName);
+	}
 }
 
 void Bullet::update() {
@@ -64,6 +77,10 @@ bool Bullet::collisionUpdate(GameObject::SIDE collision, int otherTag) {
     }
 
     return false;
+}
+
+void Bullet::playShootSFXFile() {
+	Mix_PlayChannel(-1, *shootSFX, 0);
 }
 
 
