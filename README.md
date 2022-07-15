@@ -1,4 +1,4 @@
-# Galaga Remake! - cs4850-project
+# Galaga C++ Remake! - cs4850-project
 
 This was the final project for our Building Game Engines class from the Spring of 2020. The group consisted of myself (Alejandro), Mikey, and Karina. I worked mostly on the game logic, level editor, and rendering portions (as well as making the art!). Feel free to see each of our contributions through our commits!
 
